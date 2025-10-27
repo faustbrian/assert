@@ -673,6 +673,111 @@ expect($data2)->soft->toMatchSchema($schema2);
 Expectation::assertSoft();
 ```
 
+## OR Operator
+
+The `or()` operator creates alternative expectation groups. If **any** group passes completely without errors, the entire expectation chain succeeds. This is useful for validating values that can match multiple different patterns.
+
+### Basic OR Usage
+
+```php
+use function Cline\Assert\expect;
+
+// Value must be string OR integer OR null
+expect($value)
+    ->or()
+    ->toBeString()
+    ->or()
+    ->toBeInt()
+    ->or()
+    ->toBeNull();
+
+// Value must match one of several specific values
+expect($status)
+    ->or()
+    ->toBe('pending')
+    ->or()
+    ->toBe('active')
+    ->or()
+    ->toBe('completed');
+```
+
+### OR with Multiple Assertions per Group
+
+Each group can contain multiple assertions. **All** assertions within a group must pass for that group to succeed:
+
+```php
+// String with length 10 OR positive integer
+expect($input)
+    ->or()
+    ->toBeString()
+    ->toHaveLength(10)
+    ->or()
+    ->toBeInt()
+    ->toBePositive();
+
+// Valid email format OR valid phone format
+expect($contact)
+    ->or()
+    ->toBeString()
+    ->toBeEmail()
+    ->or()
+    ->toBeString()
+    ->toMatch('/^\+?[1-9]\d{1,14}$/');
+```
+
+### OR with Negation
+
+The `not` modifier works within OR groups:
+
+```php
+// Must be non-empty string OR positive integer
+expect($value)
+    ->or()
+    ->toBeString()
+    ->not->toBeEmpty()
+    ->or()
+    ->toBeInt()
+    ->toBePositive();
+```
+
+### Complex OR Patterns
+
+```php
+// API response validation: success OR error format
+expect($response)
+    ->or()
+    ->toHaveKey('data')
+    ->toHaveKey('status')
+    ->or()
+    ->toHaveKey('error')
+    ->toHaveKey('message');
+
+// Union type validation
+expect($identifier)
+    ->or()
+    ->toBeInt()
+    ->toBePositive()
+    ->or()
+    ->toBeString()
+    ->toMatch('/^[A-Z]{3}\d{3}$/');
+```
+
+### Error Messages
+
+When all groups fail, you get a combined error message showing why each group failed:
+
+```php
+expect('invalid')
+    ->or()
+    ->toBeInt()
+    ->or()
+    ->toBeNull();
+
+// Throws: All OR groups failed:
+// Group 1: Expected value to be integer. Got: string
+// Group 2: Expected value to be null. Got: string
+```
+
 ## Snapshot Testing
 
 Store and compare snapshots for regression testing:
@@ -783,6 +888,24 @@ expect($admin)
     ->toHaveProperty('role')
     ->and($user)->toHaveProperty('role')
     ->and($guest)->not->toHaveProperty('role');
+
+// OR operator - value must match at least one group
+expect($status)
+    ->or()
+    ->toBe('pending')
+    ->or()
+    ->toBe('active')
+    ->or()
+    ->toBe('completed');
+
+// OR with multiple assertions per group
+expect($input)
+    ->or()
+    ->toBeString()
+    ->toHaveLength(10)
+    ->or()
+    ->toBeInt()
+    ->toBePositive();
 ```
 
 ## Best Practices

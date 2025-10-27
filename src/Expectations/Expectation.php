@@ -57,15 +57,29 @@ use function throw_unless;
  */
 final class Expectation
 {
+    /** @var array<InvalidArgumentException> */
     private static array $softErrors = [];
 
     private bool $negate = false;
 
     private bool $soft = false;
 
+    /** @var array<array{success: bool, errors: array<InvalidArgumentException>}> */
+    private array $orGroups = [];
+
+    private bool $orMode = false;
+
     public function __construct(
         private readonly mixed $value,
     ) {}
+
+    /**
+     * Evaluate OR groups when expectation chain ends.
+     */
+    public function __destruct()
+    {
+        $this->evaluateOrGroups();
+    }
 
     /**
      * Forward undefined method calls to static matcher methods when value is null.
@@ -1092,6 +1106,55 @@ final class Expectation
     }
 
     /**
+     * Create alternative expectation groups - if any group passes, the entire expectation passes.
+     *
+     * Each call to or() starts a new group. All assertions between or() calls
+     * belong to the same group. If any complete group passes without throwing,
+     * the entire chain succeeds.
+     */
+    public function or(): self
+    {
+        // Start new group with clean state (assumes success until an assertion fails)
+        $this->orMode = true;
+        $this->orGroups[] = ['success' => true, 'errors' => []];
+
+        return $this;
+    }
+
+    /**
+     * Evaluate OR groups - if any group succeeded, return success.
+     * Otherwise throw combined errors from all groups.
+     */
+    private function evaluateOrGroups(): void
+    {
+        if (!$this->orMode || empty($this->orGroups)) {
+            return;
+        }
+
+        // Check if any group succeeded
+        foreach ($this->orGroups as $group) {
+            if ($group['success'] ?? false) {
+                return; // Success!
+            }
+        }
+
+        // All groups failed - throw combined error
+        $messages = [];
+        foreach ($this->orGroups as $index => $group) {
+            if (!empty($group['errors'])) {
+                $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
+            }
+        }
+
+        throw new InvalidArgumentException(
+            sprintf("All OR groups failed:\n%s", implode("\n", $messages)),
+            0,
+            null,
+            $this->value,
+        );
+    }
+
+    /**
      * Conditionally apply expectations.
      */
     public function when(bool|callable $condition, callable $callback): self
@@ -1365,7 +1428,7 @@ final class Expectation
     }
 
     /**
-     * Invoke an assertion method, handling negation.
+     * Invoke an assertion method, handling negation and OR groups.
      *
      * @param array<mixed> $args
      */
@@ -1373,6 +1436,53 @@ final class Expectation
     {
         /** @var callable $callable */
         $callable = [Assertion::class, $method];
+
+        // OR mode - collect assertions into groups
+        if ($this->orMode) {
+            // Ensure we have at least one group
+            if (empty($this->orGroups)) {
+                $this->orGroups[] = ['success' => true, 'errors' => []];
+            }
+
+            $lastGroupIndex = count($this->orGroups) - 1;
+
+            // If this group already failed, don't bother running more assertions
+            if (!($this->orGroups[$lastGroupIndex]['success'] ?? true)) {
+                return $this;
+            }
+
+            try {
+                if ($this->negate) {
+                    $this->negate = false;
+
+                    try {
+                        $callable(...[$this->value, ...$args]);
+
+                        throw new InvalidArgumentException(
+                            sprintf('Expected assertion %s to fail but it passed', $method),
+                            0,
+                            null,
+                            $this->value,
+                        );
+                    } catch (InvalidArgumentException $exception) {
+                        throw_if(str_contains($exception->getMessage(), 'Expected assertion'), $exception);
+
+                        // Assertion failed as expected - continue with group
+                        return $this;
+                    }
+                }
+
+                $callable(...[$this->value, ...$args]);
+
+                // Assertion passed - group remains successful (assuming it was)
+            } catch (InvalidArgumentException $exception) {
+                // Assertion failed - mark group as failed and add error
+                $this->orGroups[$lastGroupIndex]['success'] = false;
+                $this->orGroups[$lastGroupIndex]['errors'][] = $exception;
+            }
+
+            return $this;
+        }
 
         if ($this->negate) {
             $this->negate = false;
