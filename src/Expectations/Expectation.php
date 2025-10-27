@@ -71,6 +71,8 @@ final class Expectation
 
     private bool $xorMode = false;
 
+    private ?string $collectionMode = null; // 'all', 'any', 'none'
+
     public function __construct(
         private readonly mixed $value,
     ) {}
@@ -105,6 +107,9 @@ final class Expectation
      * - ->and: Continue chaining on same value (alternative to ->and())
      * - ->or: Start new OR group (alternative to ->or())
      * - ->xor: Start new XOR group (alternative to ->xor())
+     * - ->all: All items in collection must match
+     * - ->any: At least one item in collection must match
+     * - ->none: No items in collection should match
      * - ->each: Apply expectation to each element in collection
      */
     public function __get(string $name): mixed
@@ -126,6 +131,27 @@ final class Expectation
 
         if ($name === 'xor') {
             return $this->xor();
+        }
+
+        if ($name === 'all') {
+            $clone = clone $this;
+            $clone->collectionMode = 'all';
+
+            return $clone;
+        }
+
+        if ($name === 'any') {
+            $clone = clone $this;
+            $clone->collectionMode = 'any';
+
+            return $clone;
+        }
+
+        if ($name === 'none') {
+            $clone = clone $this;
+            $clone->collectionMode = 'none';
+
+            return $clone;
         }
 
         if ($name === 'each') {
@@ -1577,6 +1603,11 @@ final class Expectation
             }
         }
 
+        // Collection mode - apply assertion to collection items
+        if ($this->collectionMode !== null) {
+            return $this->handleCollectionMode($method, $args);
+        }
+
         // Soft assertion mode - collect errors instead of throwing
         if ($this->soft) {
             try {
@@ -1589,6 +1620,72 @@ final class Expectation
         }
 
         $callable(...[$this->value, ...$args]);
+
+        return $this;
+    }
+
+    /**
+     * Handle collection quantifier modes (all/any/none).
+     */
+    private function handleCollectionMode(string $method, array $args): self
+    {
+        if (!is_iterable($this->value)) {
+            throw new InvalidArgumentException(
+                sprintf('Collection mode (%s) requires an iterable value. Got: %s', $this->collectionMode, gettype($this->value)),
+                0,
+                null,
+                $this->value,
+            );
+        }
+
+        /** @var callable $callable */
+        $callable = [Assertion::class, $method];
+        $items = is_array($this->value) ? $this->value : iterator_to_array($this->value);
+        $matchedCount = 0;
+        $errors = [];
+
+        foreach ($items as $key => $item) {
+            try {
+                $callable(...[$item, ...$args]);
+                $matchedCount++;
+            } catch (InvalidArgumentException $exception) {
+                $errors[$key] = $exception;
+            }
+        }
+
+        $mode = $this->collectionMode;
+        $totalCount = count($items);
+
+        // Evaluate based on mode
+        if ($mode === 'all') {
+            if ($matchedCount !== $totalCount) {
+                $failedKeys = array_keys($errors);
+                throw new InvalidArgumentException(
+                    sprintf('Expected all items to match. %d/%d items failed at keys: %s', $totalCount - $matchedCount, $totalCount, implode(', ', $failedKeys)),
+                    0,
+                    null,
+                    $this->value,
+                );
+            }
+        } elseif ($mode === 'any') {
+            if ($matchedCount === 0) {
+                throw new InvalidArgumentException(
+                    sprintf('Expected at least one item to match. All %d items failed', $totalCount),
+                    0,
+                    null,
+                    $this->value,
+                );
+            }
+        } elseif ($mode === 'none') {
+            if ($matchedCount > 0) {
+                throw new InvalidArgumentException(
+                    sprintf('Expected no items to match. %d/%d items matched', $matchedCount, $totalCount),
+                    0,
+                    null,
+                    $this->value,
+                );
+            }
+        }
 
         return $this;
     }
