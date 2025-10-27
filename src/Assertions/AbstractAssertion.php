@@ -596,6 +596,11 @@ abstract class AbstractAssertion
         return true;
     }
 
+    public static function strictEquals(mixed $value, mixed $value2, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        return self::same($value, $value2, $message, $propertyPath);
+    }
+
     public static function notEq(mixed $value1, mixed $value2, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         if ($value1 == $value2) {
@@ -852,6 +857,65 @@ abstract class AbstractAssertion
             );
 
             throw self::createException($value, $message, ValidationError::ValueNull->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function notUndefined(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        if (null === $value) {
+            $message = self::generateMessage($message ?: 'Expected value to be defined (not null).');
+
+            throw self::createException($value, $message, ValidationError::ValueNull->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function undefined(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        if (null !== $value) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be undefined (null). Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::ValueNotNull->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function nullable(mixed $value, string $type, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        if (null === $value) {
+            return true;
+        }
+
+        $typeCheck = match ($type) {
+            'string' => is_string($value),
+            'int', 'integer' => is_int($value),
+            'float', 'double' => is_float($value),
+            'bool', 'boolean' => is_bool($value),
+            'array' => is_array($value),
+            'object' => is_object($value),
+            'callable' => is_callable($value),
+            'iterable' => is_iterable($value),
+            'resource' => is_resource($value),
+            'numeric' => is_numeric($value),
+            'scalar' => is_scalar($value),
+            default => $value instanceof $type,
+        };
+
+        if (!$typeCheck) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected null or %s. Got: %s'),
+                $type,
+                static::typeToString($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidType->value, $propertyPath);
         }
 
         return true;

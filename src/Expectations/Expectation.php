@@ -341,6 +341,15 @@ final class Expectation
     }
 
     /**
+     * Assert that value is strictly equal to expected (===) with deep comparison.
+     * More explicit alternative to toBe() for complex types.
+     */
+    public function toStrictEqual(mixed $expected): self
+    {
+        return $this->invoke('strictEquals', [$expected]);
+    }
+
+    /**
      * Assert that arrays are equal, ignoring element order.
      */
     public function toEqualCanonicalizing(array $expected): self
@@ -362,6 +371,30 @@ final class Expectation
     public function toBeNull(): self
     {
         return $this->invoke('null');
+    }
+
+    /**
+     * Assert that value is defined (not null and isset).
+     */
+    public function toBeDefined(): self
+    {
+        return $this->invoke('notUndefined');
+    }
+
+    /**
+     * Assert that value is undefined (null or not set).
+     */
+    public function toBeUndefined(): self
+    {
+        return $this->invoke('undefined');
+    }
+
+    /**
+     * Assert that value is nullable (allows null or specific type).
+     */
+    public function toBeNullable(string $type): self
+    {
+        return $this->invoke('nullable', [$type]);
     }
 
     /**
@@ -1543,6 +1576,15 @@ final class Expectation
         ), 0, null, $this->value);
 
         return $this;
+    }
+
+    /**
+     * Assert that value (callable) throws an error.
+     * Alias for toThrow().
+     */
+    public function toThrowError(?string $exceptionClass = null, ?string $message = null): self
+    {
+        return $this->toThrow($exceptionClass, $message);
     }
 
     /**
