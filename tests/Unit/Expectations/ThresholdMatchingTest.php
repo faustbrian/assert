@@ -25,19 +25,19 @@ describe('Threshold Matching', function (): void {
 
         test('fails when fewer groups pass', function (): void {
             expect(
-                fn (): mixed => assertExpect(123)
+                assertExpect(123)
                     ->exactly(2)
                     ->or->toBeString()
-                    ->or->toBeInt(),
+                    ->or->toBeInt(...),
             )->toThrow(InvalidArgumentException::class);
         });
 
         test('fails when more groups pass', function (): void {
             expect(
-                fn (): mixed => assertExpect('123')
+                assertExpect('123')
                     ->exactly(1)
                     ->or->toBeString()
-                    ->or->toBeNumeric(),
+                    ->or->toBeNumeric(...),
             )->toThrow(InvalidArgumentException::class);
         });
     });
@@ -64,10 +64,10 @@ describe('Threshold Matching', function (): void {
 
         test('fails when fewer groups pass', function (): void {
             expect(
-                fn (): mixed => assertExpect(123)
+                assertExpect(123)
                     ->atLeast(2)
                     ->or->toBeString()
-                    ->or->toBeInt(),
+                    ->or->toBeInt(...),
             )->toThrow(InvalidArgumentException::class);
         });
     });
@@ -93,10 +93,10 @@ describe('Threshold Matching', function (): void {
 
         test('fails when more groups pass', function (): void {
             expect(
-                fn (): mixed => assertExpect('123')
+                assertExpect('123')
                     ->atMost(1)
                     ->or->toBeString()
-                    ->or->toBeNumeric(),
+                    ->or->toBeNumeric(...),
             )->toThrow(InvalidArgumentException::class);
         });
     });

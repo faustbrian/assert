@@ -86,15 +86,6 @@ final class Expectation
     ) {}
 
     /**
-     * Reset evaluation state and deep clone arrays when cloning.
-     */
-    public function __clone(): void
-    {
-        $this->evaluated = false;
-        $this->orGroups = $this->orGroups; // Deep clone happens automatically for arrays
-    }
-
-    /**
      * Evaluate OR groups when expectation chain ends.
      */
     public function __destruct()
@@ -102,6 +93,14 @@ final class Expectation
         if (!$this->evaluated) {
             $this->evaluateOrGroups();
         }
+    }
+
+    /**
+     * Reset evaluation state and deep clone arrays when cloning.
+     */
+    public function __clone(): void
+    {
+        $this->evaluated = false; // Deep clone happens automatically for arrays
     }
 
     /**
