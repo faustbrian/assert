@@ -68,38 +68,6 @@ final class Expectation
     ) {}
 
     /**
-     * Create an asymmetric matcher for any value of specific type.
-     */
-    public static function any(string $type): AnyMatcher
-    {
-        return new AnyMatcher($type);
-    }
-
-    /**
-     * Create an asymmetric matcher for any non-null value.
-     */
-    public static function anything(): AnythingMatcher
-    {
-        return new AnythingMatcher();
-    }
-
-    /**
-     * Create an asymmetric matcher for strings containing substring.
-     */
-    public static function stringContaining(string $substring): StringContainingMatcher
-    {
-        return new StringContainingMatcher($substring);
-    }
-
-    /**
-     * Create an asymmetric matcher for arrays containing subset.
-     */
-    public static function arrayContaining(array $subset): ArrayContainingMatcher
-    {
-        return new ArrayContainingMatcher($subset);
-    }
-
-    /**
      * Forward undefined method calls to static matcher methods when value is null.
      */
     public function __call(string $name, array $arguments): mixed
@@ -141,6 +109,38 @@ final class Expectation
         }
 
         throw new BadMethodCallException(sprintf("Property '%s' does not exist on Expectation", $name));
+    }
+
+    /**
+     * Create an asymmetric matcher for any value of specific type.
+     */
+    public static function any(string $type): AnyMatcher
+    {
+        return new AnyMatcher($type);
+    }
+
+    /**
+     * Create an asymmetric matcher for any non-null value.
+     */
+    public static function anything(): AnythingMatcher
+    {
+        return new AnythingMatcher();
+    }
+
+    /**
+     * Create an asymmetric matcher for strings containing substring.
+     */
+    public static function stringContaining(string $substring): StringContainingMatcher
+    {
+        return new StringContainingMatcher($substring);
+    }
+
+    /**
+     * Create an asymmetric matcher for arrays containing subset.
+     */
+    public static function arrayContaining(array $subset): ArrayContainingMatcher
+    {
+        return new ArrayContainingMatcher($subset);
     }
 
     /**
