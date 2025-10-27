@@ -386,6 +386,40 @@ abstract class AbstractAssertion
         return true;
     }
 
+    /**
+     * @param array<mixed> $value
+     * @param array<mixed> $values
+     */
+    public static function containAllValues(array $value, array $values, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        foreach ($values as $expectedValue) {
+            if (!in_array($expectedValue, $value, true)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected array to contain value %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($expectedValue),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidValueInArray->value, $propertyPath, ['value' => $expectedValue]);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array<mixed> $value
+     * @param array<mixed> $keys
+     */
+    public static function containAllKeys(array $value, array $keys, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        foreach ($keys as $expectedKey) {
+            self::keyExists($value, $expectedKey, $message, $propertyPath);
+        }
+
+        return true;
+    }
+
     public static function eqArraySubset(mixed $value, mixed $value2, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         self::isArray($value, $message, $propertyPath);
@@ -1731,6 +1765,70 @@ abstract class AbstractAssertion
             $message = sprintf(
                 self::generateMessage($message ?: 'Expected a numeric. Got: %s'),
                 static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidNumeric->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function positive(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::numeric($value, $message, $propertyPath);
+
+        if ($value <= 0) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected %s to be positive.'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidMin->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function negative(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::numeric($value, $message, $propertyPath);
+
+        if ($value >= 0) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected %s to be negative.'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidMax->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function even(int $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::integer($value, $message, $propertyPath);
+
+        if ($value % 2 !== 0) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected %d to be even.'),
+                $value,
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidNumeric->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function odd(int $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::integer($value, $message, $propertyPath);
+
+        if ($value % 2 === 0) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected %d to be odd.'),
+                $value,
             );
 
             throw self::createException($value, $message, ValidationError::InvalidNumeric->value, $propertyPath);

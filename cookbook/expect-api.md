@@ -106,6 +106,16 @@ expect(NAN)->toBeNan();
 // Equality with tolerance
 expect(3.14159)->toEqualWithDelta(3.14, 0.01);
 expect(100)->toEqualWithDelta(99, 1.0);
+
+// Floating point comparison (alias)
+expect(3.14159)->toBeCloseTo(3.14, 0.01);
+expect(3.005)->toBeCloseTo(3.0); // Default delta 0.01
+
+// Numeric properties
+expect(42)->toBePositive();
+expect(-10)->toBeNegative();
+expect(4)->toBeEven();
+expect(7)->toBeOdd();
 ```
 
 ## String Expectations
@@ -151,10 +161,15 @@ expect(['name' => 'John'])->toHaveKey('name');
 expect(['a' => 1, 'b' => 2])->toHaveKey('b');
 expect(['name' => 'John', 'email' => 'j@ex.com'])->toHaveKeys(['name', 'email']);
 
+// Batch key/value checks
+expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainAllKeys(['a', 'c']);
+expect([1, 2, 3, 4, 5])->toContainAllValues([1, 3, 5]);
+
 // Value membership
 expect([1, 2, 3])->toContain(2);
 expect(['a', 'b', 'c'])->toContain('b');
 expect(2)->toBeIn([1, 2, 3]);
+expect('active')->toBeOneOf(['pending', 'active', 'completed']); // Alias for toBeIn
 
 // Deep equality
 expect([['a' => 1], ['b' => 2]])->toContainEqual(['a' => 1]);
@@ -433,6 +448,28 @@ expect($data)->ray();
 expect($value)->ray('Debug label');
 ```
 
+## Custom Validation
+
+### toSatisfy() - Custom Predicate
+
+Apply custom validation logic via callback:
+
+```php
+// Simple conditions
+expect($age)->toSatisfy(fn($v) => $v > 18);
+expect($email)->toSatisfy(fn($v) => filter_var($v, FILTER_VALIDATE_EMAIL) !== false);
+
+// Complex business logic
+expect($user)->toSatisfy(function($u) {
+    return $u->age > 18
+        && $u->verified === true
+        && !empty($u->email);
+});
+
+// With data structures
+expect($array)->toSatisfy(fn($a) => count($a) > 0 && isset($a['required_key']));
+```
+
 ## Chaining Examples
 
 ### Complex Validations
@@ -523,7 +560,7 @@ $expectation = expect($value)
 
 ## Complete Feature List
 
-### Core Expectations (43)
+### Core Expectations (53)
 
 **Equality & Boolean:**
 - `toBe()`, `toEqual()`, `toBeNull()`, `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
@@ -534,7 +571,8 @@ $expectation = expect($value)
 
 **Numeric:**
 - `toBeGreaterThan()`, `toBeGreaterThanOrEqual()`, `toBeLessThan()`, `toBeLessThanOrEqual()`
-- `toBeBetween()`, `toBeInfinite()`, `toBeNan()`, `toEqualWithDelta()`
+- `toBeBetween()`, `toBeInfinite()`, `toBeNan()`, `toEqualWithDelta()`, `toBeCloseTo()`
+- `toBePositive()`, `toBeNegative()`, `toBeEven()`, `toBeOdd()`
 
 **String:**
 - `toStartWith()`, `toEndWith()`, `toMatch()`, `toHaveLength()`
@@ -544,9 +582,13 @@ $expectation = expect($value)
 
 **Collections:**
 - `toContain()`, `toHaveCount()`, `toHaveKey()`, `toHaveKeys()`, `toHaveLength()`
-- `toBeIn()`, `toContainEqual()`, `toContainOnlyInstancesOf()`, `toHaveSameSize()`
+- `toBeIn()`, `toBeOneOf()`, `toContainEqual()`, `toContainOnlyInstancesOf()`, `toHaveSameSize()`
+- `toContainAllKeys()`, `toContainAllValues()`
 - `toMatchArray()`, `toEqualCanonicalizing()`
 - `toHaveSnakeCaseKeys()`, `toHaveKebabCaseKeys()`, `toHaveCamelCaseKeys()`, `toHaveStudlyCaseKeys()`
+
+**Custom:**
+- `toSatisfy()` - Custom predicate validation
 
 **Objects:**
 - `toBeInstanceOf()`, `toHaveProperty()`, `toHaveProperties()`, `toHaveMethod()`, `toMatchObject()`

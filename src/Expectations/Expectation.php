@@ -319,6 +319,38 @@ final class Expectation
     }
 
     /**
+     * Assert that value is a positive number.
+     */
+    public function toBePositive(): self
+    {
+        return $this->invoke('positive');
+    }
+
+    /**
+     * Assert that value is a negative number.
+     */
+    public function toBeNegative(): self
+    {
+        return $this->invoke('negative');
+    }
+
+    /**
+     * Assert that value is an even integer.
+     */
+    public function toBeEven(): self
+    {
+        return $this->invoke('even');
+    }
+
+    /**
+     * Assert that value is an odd integer.
+     */
+    public function toBeOdd(): self
+    {
+        return $this->invoke('odd');
+    }
+
+    /**
      * Assert that value contains only digits.
      */
     public function toBeDigits(): self
@@ -585,6 +617,14 @@ final class Expectation
     }
 
     /**
+     * Assert that value satisfies the provided callback.
+     */
+    public function toSatisfy(callable $callback): self
+    {
+        return $this->invoke('satisfy', [$callback]);
+    }
+
+    /**
      * Assert that string has specific length or array has specific count.
      */
     public function toHaveLength(int $length): self
@@ -656,11 +696,45 @@ final class Expectation
     }
 
     /**
+     * Assert that array contains all the given values.
+     */
+    public function toContainAllValues(array $values): self
+    {
+        return $this->invoke('containAllValues', [$values]);
+    }
+
+    /**
+     * Assert that array contains all the given keys.
+     */
+    public function toContainAllKeys(array $keys): self
+    {
+        return $this->invoke('containAllKeys', [$keys]);
+    }
+
+    /**
      * Assert that value is in the given array.
      */
     public function toBeIn(array $haystack): self
     {
         return $this->invoke('inArray', [$haystack]);
+    }
+
+    /**
+     * Assert that value is one of the given options.
+     * Alias for toBeIn().
+     */
+    public function toBeOneOf(array $options): self
+    {
+        return $this->toBeIn($options);
+    }
+
+    /**
+     * Assert that numeric values are close within precision.
+     * Alias for toEqualWithDelta().
+     */
+    public function toBeCloseTo(float|int $expected, float $delta = 0.01): self
+    {
+        return $this->toEqualWithDelta($expected, $delta);
     }
 
     /**
