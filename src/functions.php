@@ -12,6 +12,7 @@ namespace Cline\Assert;
 use Cline\Assert\Assert;
 use Cline\Assert\Assertions\AssertionChain;
 use Cline\Assert\Assertions\LazyAssertion;
+use Cline\Assert\Expectations\Expectation;
 use Deprecated;
 
 /**
@@ -65,4 +66,21 @@ function thatNullOr($value, $defaultMessage = null, ?string $defaultPropertyPath
 function lazy(): LazyAssertion
 {
     return Assert::lazy();
+}
+
+/**
+ * Start a Pest-style expectation chain.
+ *
+ * Returns an Expectation instance that provides Jest/Pest-compatible
+ * toXxx() methods for fluent assertions.
+ *
+ * @example
+ *
+ *  expect($value)->toBeString();
+ *  expect($value)->not->toBeNull();
+ *  expect($items)->toHaveCount(3);
+ */
+function expect(mixed $value): Expectation
+{
+    return new Expectation($value);
 }
