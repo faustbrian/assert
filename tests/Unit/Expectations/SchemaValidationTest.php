@@ -170,4 +170,51 @@ describe('Schema Validation', function (): void {
             expect($invalidArgumentException->getMessage())->toContain('age');
         }
     });
+
+    test('validates numeric value exactly at maximum boundary', function (): void {
+        expect(fn (): Expectation => assertExpect(10)->toMatchSchema([
+            'type' => 'integer',
+            'maximum' => 10,
+        ]))->not->toThrow(Throwable::class);
+    });
+
+    test('validates numeric value exceeding maximum', function (): void {
+        expect(fn (): Expectation => assertExpect(15)->toMatchSchema([
+            'type' => 'integer',
+            'maximum' => 10,
+        ]))->toThrow(InvalidArgumentException::class);
+    });
+
+    test('validates string exactly at maxLength boundary', function (): void {
+        expect(fn (): Expectation => assertExpect('hello')->toMatchSchema([
+            'type' => 'string',
+            'maxLength' => 5,
+        ]))->not->toThrow(Throwable::class);
+    });
+
+    test('validates string exceeding maxLength', function (): void {
+        expect(fn (): Expectation => assertExpect('hello world')->toMatchSchema([
+            'type' => 'string',
+            'maxLength' => 5,
+        ]))->toThrow(InvalidArgumentException::class);
+    });
+
+    test('validates unknown type in schema', function (): void {
+        expect(fn (): Expectation => assertExpect('anything')->toMatchSchema([
+            'type' => 'custom-type',
+        ]))->not->toThrow(Throwable::class);
+    });
+
+    test('formats array item validation errors with index', function (): void {
+        try {
+            assertExpect([1, 'invalid', 3])->toMatchSchema([
+                'type' => 'array',
+                'items' => ['type' => 'integer'],
+            ]);
+
+            throw new Exception('Should have thrown');
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            expect($invalidArgumentException->getMessage())->toContain('[1]');
+        }
+    });
 });

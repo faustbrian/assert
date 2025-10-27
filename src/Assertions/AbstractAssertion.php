@@ -1965,7 +1965,7 @@ abstract class AbstractAssertion
     public static function subsetOf(mixed $value, array $superset, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         self::isArray($value, $message, $propertyPath);
-        /** @phpstan-var array<mixed> $value */  // @phpstan-ignore-line missingType.iterableValue
+        /** @phpstan-var array<array-key, mixed> $value */
         $diff = array_diff($value, $superset);
 
         if ($diff !== []) {
@@ -1982,10 +1982,9 @@ abstract class AbstractAssertion
 
     public static function sorted(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
-        /** @var array $value */
         self::isArray($value, $message, $propertyPath);
+        /** @phpstan-var array<array-key, mixed> $value */
 
-        // @phpstan-ignore-next-line missingType.iterableValue
         $sorted = $value;
         sort($sorted);
 
@@ -2608,9 +2607,8 @@ abstract class AbstractAssertion
     {
         self::isArray($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
-        // @phpstan-ignore-next-line varTag.differentVariable
-        /** @phpstan-var array<mixed> $value */
-        /** @var array<mixed> $expected */
+        /** @phpstan-var array<array-key, mixed> $value */
+        /** @phpstan-var array<array-key, mixed> $expected */
 
         foreach ($expected as $key => $expectedValue) {
             // @phpstan-ignore-next-line argument.type
@@ -2643,9 +2641,8 @@ abstract class AbstractAssertion
     {
         self::isObject($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
-        /** @var object $value */  // @phpstan-ignore-line varTag.differentVariable
-        // @phpstan-ignore-next-line varTag.differentVariable
-        /** @var array<mixed> $expected */
+        /** @phpstan-var object $value */
+        /** @phpstan-var array<array-key, mixed> $expected */
 
         foreach ($expected as $property => $expectedValue) {
             if (!property_exists($value, $property)) {
@@ -2677,9 +2674,8 @@ abstract class AbstractAssertion
     {
         self::isCountable($value, $message, $propertyPath);
         self::isCountable($expected, $message, $propertyPath);
-        /** @phpstan-var array|\Countable $value */
-        // @phpstan-ignore-next-line missingType.iterableValue
-        /** @phpstan-var array|\Countable $expected */  // @phpstan-ignore-line missingType.iterableValue
+        /** @phpstan-var array<array-key, mixed>|\Countable $value */
+        /** @phpstan-var array<array-key, mixed>|\Countable $expected */
         $actualCount = count($value);
         $expectedCount = count($expected);
 
