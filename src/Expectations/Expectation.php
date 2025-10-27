@@ -46,6 +46,7 @@ use function is_string;
 use function iterator_to_array;
 use function json_decode;
 use function method_exists;
+use function ray;
 use function sprintf;
 use function str_contains;
 use function throw_if;

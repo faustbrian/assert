@@ -912,7 +912,7 @@ abstract class AbstractAssertion
             $message = sprintf(
                 self::generateMessage($message ?: 'Expected null or %s. Got: %s'),
                 $type,
-                static::typeToString($value),
+                static::stringify($value),
             );
 
             throw self::createException($value, $message, ValidationError::InvalidType->value, $propertyPath);

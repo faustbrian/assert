@@ -146,6 +146,13 @@ describe('Uncovered Expectation Paths', function (): void {
             expect(fn (): Expectation => assertExpect(true)->toBeNullable('boolean'))
                 ->not->toThrow(Throwable::class);
         });
+
+        test('toBeNullable() fails for type mismatch', function (): void {
+            expect(fn (): Expectation => assertExpect('test')->toBeNullable('integer'))
+                ->toThrow(InvalidArgumentException::class, 'Expected null or integer');
+            expect(fn (): Expectation => assertExpect(42)->toBeNullable('string'))
+                ->toThrow(InvalidArgumentException::class, 'Expected null or string');
+        });
     });
 
     describe('Directory assertions', function (): void {

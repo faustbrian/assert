@@ -71,11 +71,9 @@ describe('Additional Coverage for Expectation', function (): void {
                 }
             };
 
-            // Note: This test reveals a bug in Expectation.php line 1218
-            // The exception is passed as wrong parameter to InvalidArgumentException
-            // Skipping this test for now as it's a source code bug
-            expect(true)->toBeTrue();
-        })->skip('Reveals bug in source code at line 1218');
+            expect(fn (): Expectation => assertExpect(42)->toMatchConstraint($constraint))
+                ->toThrow(InvalidArgumentException::class, 'Constraint evaluation failed');
+        });
 
         test('toMatchConstraint() with negation passes when constraint fails', function (): void {
             $constraint = new class()
