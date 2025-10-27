@@ -2042,4 +2042,450 @@ abstract class AbstractAssertion
         return true;
     }
 
+    // String Case Methods
+
+    public static function snakeCase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        $pattern = '/^[a-z]+(_[a-z]+)*$/';
+
+        if (in_array(preg_match($pattern, $value), [0, false], true)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be snake_case. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function kebabCase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        $pattern = '/^[a-z]+(-[a-z]+)*$/';
+
+        if (in_array(preg_match($pattern, $value), [0, false], true)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be kebab-case. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function camelCase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        $pattern = '/^[a-z]+([A-Z][a-z]+)*$/';
+
+        if (in_array(preg_match($pattern, $value), [0, false], true)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be camelCase. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function studlyCase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        $pattern = '/^[A-Z][a-z]+([A-Z][a-z]+)*$/';
+
+        if (in_array(preg_match($pattern, $value), [0, false], true)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be StudlyCase. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function uppercase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        if ($value !== strtoupper($value)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be uppercase. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function lowercase(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::string($value, $message, $propertyPath);
+        /** @var string $value */
+
+        if ($value !== strtolower($value)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be lowercase. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRegex->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    // Numeric Edge Cases
+
+    public static function infinite(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        if (!is_infinite($value)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be infinite. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidFloat->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function nan(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        if (!is_nan($value)) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to be NaN. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidFloat->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    // Equality Helpers
+
+    public static function equalCanonicalizing(mixed $value, mixed $expected, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        self::isArray($expected, $message, $propertyPath);
+        /** @var array<mixed> $value */
+        /** @var array<mixed> $expected */
+
+        $actualSorted = $value;
+        $expectedSorted = $expected;
+
+        sort($actualSorted);
+        sort($expectedSorted);
+
+        if ($actualSorted !== $expectedSorted) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected arrays to be equal (ignoring order). Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidEq->value, $propertyPath, ['expected' => $expected]);
+        }
+
+        return true;
+    }
+
+    public static function equalWithDelta(mixed $value, mixed $expected, float $delta, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::numeric($value, $message, $propertyPath);
+        self::numeric($expected, $message, $propertyPath);
+        /** @var float|int $value */
+        /** @var float|int $expected */
+
+        $diff = abs($value - $expected);
+
+        if ($diff > $delta) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected value to equal %2$s within delta %3$s, got difference of %4$s. Got: %s'),
+                static::stringify($value),
+                static::stringify($expected),
+                static::stringify($delta),
+                static::stringify($diff),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidEq->value, $propertyPath, ['expected' => $expected, 'delta' => $delta]);
+        }
+
+        return true;
+    }
+
+    // Collection Methods
+
+    public static function containEqual(mixed $value, mixed $needle, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        foreach ($value as $item) {
+            if ($item === $needle || $item == $needle) {
+                return true;
+            }
+        }
+
+        $message = sprintf(
+            self::generateMessage($message ?: 'Expected array to contain equal value. Got: %s'),
+            static::stringify($value),
+        );
+
+        throw self::createException($value, $message, ValidationError::InvalidChoice->value, $propertyPath, ['needle' => $needle]);
+    }
+
+    public static function matchArray(mixed $value, mixed $expected, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        self::isArray($expected, $message, $propertyPath);
+        /** @var array<mixed> $value */
+        /** @var array<mixed> $expected */
+
+        foreach ($expected as $key => $expectedValue) {
+            if (!array_key_exists($key, $value)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected array to have key %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidKeyExists->value, $propertyPath, ['key' => $key]);
+            }
+
+            if ($value[$key] !== $expectedValue) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected array key %2$s to equal %3$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                    static::stringify($expectedValue),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidEq->value, $propertyPath, ['key' => $key, 'expected' => $expectedValue]);
+            }
+        }
+
+        return true;
+    }
+
+    public static function matchObject(mixed $value, mixed $expected, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isObject($value, $message, $propertyPath);
+        self::isArray($expected, $message, $propertyPath);
+        /** @var object $value */
+        /** @var array<mixed> $expected */
+
+        foreach ($expected as $property => $expectedValue) {
+            if (!property_exists($value, $property)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected object to have property %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($property),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidProperty->value, $propertyPath, ['property' => $property]);
+            }
+
+            if ($value->{$property} !== $expectedValue) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected object property %2$s to equal %3$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($property),
+                    static::stringify($expectedValue),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidEq->value, $propertyPath, ['property' => $property, 'expected' => $expectedValue]);
+            }
+        }
+
+        return true;
+    }
+
+    public static function sameSize(mixed $value, mixed $expected, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isCountable($value, $message, $propertyPath);
+        self::isCountable($expected, $message, $propertyPath);
+
+        $actualCount = count($value);
+        $expectedCount = count($expected);
+
+        if ($actualCount !== $expectedCount) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected count %2$d but got %3$d. Got: %s'),
+                static::stringify($value),
+                $expectedCount,
+                $actualCount,
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidCount->value, $propertyPath, ['expected_count' => $expectedCount, 'actual_count' => $actualCount]);
+        }
+
+        return true;
+    }
+
+    public static function containOnlyInstancesOf(mixed $value, string $className, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        foreach ($value as $item) {
+            if (!$item instanceof $className) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected all items to be instances of %2$s. Got: %s'),
+                    static::stringify($value),
+                    $className,
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidInstanceOf->value, $propertyPath, ['class' => $className]);
+            }
+        }
+
+        return true;
+    }
+
+    // Array Key Case Methods
+
+    public static function snakeCaseKeys(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        $pattern = '/^[a-z]+(_[a-z]+)*$/';
+
+        foreach (array_keys($value) as $key) {
+            if (!is_string($key) || in_array(preg_match($pattern, $key), [0, false], true)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected all keys to be snake_case, but found: %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidArrayKey->value, $propertyPath, ['key' => $key]);
+            }
+        }
+
+        return true;
+    }
+
+    public static function kebabCaseKeys(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        $pattern = '/^[a-z]+(-[a-z]+)*$/';
+
+        foreach (array_keys($value) as $key) {
+            if (!is_string($key) || in_array(preg_match($pattern, $key), [0, false], true)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected all keys to be kebab-case, but found: %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidArrayKey->value, $propertyPath, ['key' => $key]);
+            }
+        }
+
+        return true;
+    }
+
+    public static function camelCaseKeys(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        $pattern = '/^[a-z]+([A-Z][a-z]+)*$/';
+
+        foreach (array_keys($value) as $key) {
+            if (!is_string($key) || in_array(preg_match($pattern, $key), [0, false], true)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected all keys to be camelCase, but found: %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidArrayKey->value, $propertyPath, ['key' => $key]);
+            }
+        }
+
+        return true;
+    }
+
+    public static function studlyCaseKeys(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+        /** @var array<mixed> $value */
+
+        $pattern = '/^[A-Z][a-z]+([A-Z][a-z]+)*$/';
+
+        foreach (array_keys($value) as $key) {
+            if (!is_string($key) || in_array(preg_match($pattern, $key), [0, false], true)) {
+                $message = sprintf(
+                    self::generateMessage($message ?: 'Expected all keys to be StudlyCase, but found: %2$s. Got: %s'),
+                    static::stringify($value),
+                    static::stringify($key),
+                );
+
+                throw self::createException($value, $message, ValidationError::InvalidArrayKey->value, $propertyPath, ['key' => $key]);
+            }
+        }
+
+        return true;
+    }
+
+    // File Methods (compositions)
+
+    public static function readableFile(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::file($value, $message, $propertyPath);
+        self::readable($value, $message, $propertyPath);
+
+        return true;
+    }
+
+    public static function writableFile(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::file($value, $message, $propertyPath);
+        self::writeable($value, $message, $propertyPath);
+
+        return true;
+    }
+
+    public static function readableDirectory(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::directory($value, $message, $propertyPath);
+        self::readable($value, $message, $propertyPath);
+
+        return true;
+    }
+
+    public static function writableDirectory(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::directory($value, $message, $propertyPath);
+        self::writeable($value, $message, $propertyPath);
+
+        return true;
+    }
+
 }
