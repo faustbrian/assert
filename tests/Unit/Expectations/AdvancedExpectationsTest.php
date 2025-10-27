@@ -129,4 +129,28 @@ describe('Advanced Expectations', function (): void {
                 ->toThrow(InvalidArgumentException::class);
         });
     });
+
+    describe('Custom Validation', function (): void {
+        test('toSatisfy() accepts value matching callback', function (): void {
+            expect(fn (): Expectation => assertExpect(25)->toSatisfy(fn ($v): bool => $v > 18))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('test')->toSatisfy(fn ($v): bool => mb_strlen($v) === 4))->not->toThrow(Throwable::class);
+        });
+
+        test('toSatisfy() rejects value not matching callback', function (): void {
+            expect(fn (): Expectation => assertExpect(10)->toSatisfy(fn ($v): bool => $v > 18))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toSatisfy() works with complex conditions', function (): void {
+            $user = (object) ['age' => 25, 'verified' => true];
+            expect(fn (): Expectation => assertExpect($user)->toSatisfy(
+                fn ($u): bool => $u->age > 18 && $u->verified === true,
+            ))->not->toThrow(Throwable::class);
+        });
+
+        test('not->toSatisfy() accepts value not matching callback', function (): void {
+            expect(fn (): Expectation => assertExpect(10)->not->toSatisfy(fn ($v): bool => $v > 18))
+                ->not->toThrow(Throwable::class);
+        });
+    });
 });

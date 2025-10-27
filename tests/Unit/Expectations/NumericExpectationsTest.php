@@ -109,4 +109,94 @@ describe('Numeric Expectations', function (): void {
                 ->toBeLessThan(100))->not->toThrow(Throwable::class);
         });
     });
+
+    describe('Floating Point Comparison', function (): void {
+        test('toBeCloseTo() accepts values within delta', function (): void {
+            expect(fn (): Expectation => assertExpect(3.141_59)->toBeCloseTo(3.14, 0.01))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(100)->toBeCloseTo(99, 1.0))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeCloseTo() rejects values outside delta', function (): void {
+            expect(fn (): Expectation => assertExpect(3.5)->toBeCloseTo(3.0, 0.1))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeCloseTo() uses default delta', function (): void {
+            expect(fn (): Expectation => assertExpect(3.005)->toBeCloseTo(3.0))->not->toThrow(Throwable::class);
+        });
+    });
+
+    describe('Numeric Properties', function (): void {
+        test('toBePositive() accepts positive numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(1)->toBePositive())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(42)->toBePositive())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(0.1)->toBePositive())->not->toThrow(Throwable::class);
+        });
+
+        test('toBePositive() rejects zero and negative', function (): void {
+            expect(fn (): Expectation => assertExpect(0)->toBePositive())
+                ->toThrow(InvalidArgumentException::class);
+            expect(fn (): Expectation => assertExpect(-5)->toBePositive())
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeNegative() accepts negative numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(-1)->toBeNegative())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(-42)->toBeNegative())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(-0.1)->toBeNegative())->not->toThrow(Throwable::class);
+        });
+
+        test('toBeNegative() rejects zero and positive', function (): void {
+            expect(fn (): Expectation => assertExpect(0)->toBeNegative())
+                ->toThrow(InvalidArgumentException::class);
+            expect(fn (): Expectation => assertExpect(5)->toBeNegative())
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeEven() accepts even numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(2)->toBeEven())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(0)->toBeEven())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(-4)->toBeEven())->not->toThrow(Throwable::class);
+        });
+
+        test('toBeEven() rejects odd numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(1)->toBeEven())
+                ->toThrow(InvalidArgumentException::class);
+            expect(fn (): Expectation => assertExpect(3)->toBeEven())
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeOdd() accepts odd numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(1)->toBeOdd())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(3)->toBeOdd())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(-5)->toBeOdd())->not->toThrow(Throwable::class);
+        });
+
+        test('toBeOdd() rejects even numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(2)->toBeOdd())
+                ->toThrow(InvalidArgumentException::class);
+            expect(fn (): Expectation => assertExpect(0)->toBeOdd())
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('not->toBePositive() accepts zero and negative', function (): void {
+            expect(assertExpect(0)->not->toBePositive(...))
+                ->not->toThrow(Throwable::class);
+            expect(assertExpect(-5)->not->toBePositive(...))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('not->toBeEven() accepts odd numbers', function (): void {
+            expect(assertExpect(1)->not->toBeEven(...))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('can chain numeric helpers', function (): void {
+            expect(fn (): Expectation => assertExpect(4)
+                ->toBeInt()
+                ->toBePositive()
+                ->toBeEven())
+                ->not->toThrow(Throwable::class);
+        });
+    });
 });

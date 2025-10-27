@@ -115,4 +115,58 @@ describe('Collection Expectations', function (): void {
                 ->toThrow(InvalidArgumentException::class);
         });
     });
+
+    describe('Aliases', function (): void {
+        test('toBeOneOf() accepts value in array', function (): void {
+            expect(fn (): Expectation => assertExpect(2)->toBeOneOf([1, 2, 3]))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('active')->toBeOneOf(['pending', 'active', 'completed']))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeOneOf() rejects value not in array', function (): void {
+            expect(fn (): Expectation => assertExpect(4)->toBeOneOf([1, 2, 3]))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('not->toBeOneOf() accepts value not in array', function (): void {
+            expect(fn (): Expectation => assertExpect(4)->not->toBeOneOf([1, 2, 3]))
+                ->not->toThrow(Throwable::class);
+        });
+    });
+
+    describe('Batch Operations', function (): void {
+        test('toContainAllValues() accepts array with all values', function (): void {
+            expect(fn (): Expectation => assertExpect([1, 2, 3, 4, 5])->toContainAllValues([1, 3, 5]))
+                ->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(['a', 'b', 'c'])->toContainAllValues(['a', 'c']))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('toContainAllValues() rejects array missing values', function (): void {
+            expect(fn (): Expectation => assertExpect([1, 2, 3])->toContainAllValues([1, 2, 4]))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toContainAllKeys() accepts array with all keys', function (): void {
+            expect(fn (): Expectation => assertExpect(['a' => 1, 'b' => 2, 'c' => 3])->toContainAllKeys(['a', 'c']))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('toContainAllKeys() rejects array missing keys', function (): void {
+            expect(fn (): Expectation => assertExpect(['a' => 1, 'b' => 2])->toContainAllKeys(['a', 'c']))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('can chain collection helpers', function (): void {
+            expect(fn (): Expectation => assertExpect([1, 2, 3])
+                ->toBeArray()
+                ->toContainAllValues([1, 3])
+                ->toHaveCount(3))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('can use batch operations with each modifier', function (): void {
+            expect(fn (): Expectation => assertExpect([[1, 2, 3], [2, 3, 4]])->each->toContainAllValues([2, 3]))
+                ->not->toThrow(Throwable::class);
+        });
+    });
 });
