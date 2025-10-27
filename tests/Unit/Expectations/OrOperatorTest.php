@@ -84,4 +84,28 @@ describe('OR Operator', function (): void {
             ->toContain('@')
         )->not->toThrow(Throwable::class);
     });
+
+    test('supports property-style access', function (): void {
+        expect(fn (): Expectation => assertExpect('hello')
+            ->or
+            ->toBeString()
+        )->not->toThrow(Throwable::class);
+    });
+
+    test('property-style works with multiple groups', function (): void {
+        expect(fn (): Expectation => assertExpect(123)
+            ->or
+            ->toBeString()
+            ->or
+            ->toBeInt()
+        )->not->toThrow(Throwable::class);
+    });
+
+    test('property-style can be chained with not', function (): void {
+        expect(fn (): Expectation => assertExpect(123)
+            ->or
+            ->not->toBeString()
+            ->toBeInt()
+        )->not->toThrow(Throwable::class);
+    });
 });

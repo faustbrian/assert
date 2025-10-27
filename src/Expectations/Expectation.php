@@ -69,6 +69,8 @@ final class Expectation
 
     private bool $orMode = false;
 
+    private bool $xorMode = false;
+
     public function __construct(
         private readonly mixed $value,
     ) {}
@@ -100,6 +102,8 @@ final class Expectation
      *
      * Supports:
      * - ->not: Negate the next expectation
+     * - ->or: Start new OR group (alternative to ->or())
+     * - ->xor: Start new XOR group (alternative to ->xor())
      * - ->each: Apply expectation to each element in collection
      */
     public function __get(string $name): mixed
@@ -109,6 +113,14 @@ final class Expectation
             $clone->negate = true;
 
             return $clone;
+        }
+
+        if ($name === 'or') {
+            return $this->or();
+        }
+
+        if ($name === 'xor') {
+            return $this->xor();
         }
 
         if ($name === 'each') {
@@ -1122,20 +1134,73 @@ final class Expectation
     }
 
     /**
-     * Evaluate OR groups - if any group succeeded, return success.
+     * XOR operator - creates alternative expectation groups where exactly one must pass.
+     *
+     * Each call to xor() starts a new group. All assertions between xor() calls
+     * belong to the same group. Exactly one complete group must pass without throwing
+     * for the entire chain to succeed.
+     */
+    public function xor(): self
+    {
+        // Start new group with clean state (assumes success until an assertion fails)
+        $this->xorMode = true;
+        $this->orGroups[] = ['success' => true, 'errors' => []];
+
+        return $this;
+    }
+
+    /**
+     * Evaluate OR/XOR groups - if any group succeeded, return success (OR) or check exactly one (XOR).
      * Otherwise throw combined errors from all groups.
      */
     private function evaluateOrGroups(): void
     {
-        if (!$this->orMode || empty($this->orGroups)) {
+        if ((!$this->orMode && !$this->xorMode) || empty($this->orGroups)) {
             return;
         }
 
-        // Check if any group succeeded
+        // Count successful groups
+        $successCount = 0;
         foreach ($this->orGroups as $group) {
             if ($group['success'] ?? false) {
+                $successCount++;
+            }
+        }
+
+        // XOR mode: exactly one group must succeed
+        if ($this->xorMode) {
+            if ($successCount === 1) {
                 return; // Success!
             }
+
+            // Build error message
+            $messages = [];
+            if ($successCount === 0) {
+                foreach ($this->orGroups as $index => $group) {
+                    if (!empty($group['errors'])) {
+                        $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
+                    }
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf("All XOR groups failed (expected exactly one to pass):\n%s", implode("\n", $messages)),
+                    0,
+                    null,
+                    $this->value,
+                );
+            }
+
+            throw new InvalidArgumentException(
+                sprintf('XOR assertion failed: expected exactly one group to pass, but %d groups passed', $successCount),
+                0,
+                null,
+                $this->value,
+            );
+        }
+
+        // OR mode: at least one group must succeed
+        if ($successCount > 0) {
+            return; // Success!
         }
 
         // All groups failed - throw combined error
@@ -1428,7 +1493,7 @@ final class Expectation
     }
 
     /**
-     * Invoke an assertion method, handling negation and OR groups.
+     * Invoke an assertion method, handling negation and OR/XOR groups.
      *
      * @param array<mixed> $args
      */
@@ -1437,8 +1502,8 @@ final class Expectation
         /** @var callable $callable */
         $callable = [Assertion::class, $method];
 
-        // OR mode - collect assertions into groups
-        if ($this->orMode) {
+        // OR/XOR mode - collect assertions into groups
+        if ($this->orMode || $this->xorMode) {
             // Ensure we have at least one group
             if (empty($this->orGroups)) {
                 $this->orGroups[] = ['success' => true, 'errors' => []];

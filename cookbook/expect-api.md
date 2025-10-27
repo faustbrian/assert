@@ -684,20 +684,27 @@ use function Cline\Assert\expect;
 
 // Value must be string OR integer OR null
 expect($value)
+    ->or
+    ->toBeString()
+    ->or
+    ->toBeInt()
+    ->or
+    ->toBeNull();
+
+// With method style (both styles work the same)
+expect($value)
     ->or()
     ->toBeString()
     ->or()
-    ->toBeInt()
-    ->or()
-    ->toBeNull();
+    ->toBeInt();
 
 // Value must match one of several specific values
 expect($status)
-    ->or()
+    ->or
     ->toBe('pending')
-    ->or()
+    ->or
     ->toBe('active')
-    ->or()
+    ->or
     ->toBe('completed');
 ```
 
@@ -708,19 +715,19 @@ Each group can contain multiple assertions. **All** assertions within a group mu
 ```php
 // String with length 10 OR positive integer
 expect($input)
-    ->or()
+    ->or
     ->toBeString()
     ->toHaveLength(10)
-    ->or()
+    ->or
     ->toBeInt()
     ->toBePositive();
 
 // Valid email format OR valid phone format
 expect($contact)
-    ->or()
+    ->or
     ->toBeString()
     ->toBeEmail()
-    ->or()
+    ->or
     ->toBeString()
     ->toMatch('/^\+?[1-9]\d{1,14}$/');
 ```
@@ -732,10 +739,10 @@ The `not` modifier works within OR groups:
 ```php
 // Must be non-empty string OR positive integer
 expect($value)
-    ->or()
+    ->or
     ->toBeString()
     ->not->toBeEmpty()
-    ->or()
+    ->or
     ->toBeInt()
     ->toBePositive();
 ```
@@ -776,6 +783,144 @@ expect('invalid')
 // Throws: All OR groups failed:
 // Group 1: Expected value to be integer. Got: string
 // Group 2: Expected value to be null. Got: string
+```
+
+## XOR Operator
+
+The `xor()` operator creates alternative expectation groups where **exactly one** group must pass. If none or multiple groups pass, the assertion fails. This implements exclusive OR logic for validations.
+
+### Basic XOR Usage
+
+```php
+use function Cline\Assert\expect;
+
+// Value must be EITHER string OR integer OR null (but not multiple)
+expect($value)
+    ->xor()
+    ->toBeString()
+    ->xor()
+    ->toBeInt()
+    ->xor()
+    ->toBeNull();
+
+// Value must match exactly one type
+expect($input)
+    ->xor()
+    ->toBeInt()
+    ->xor()
+    ->toBeFloat();
+```
+
+### XOR with Multiple Assertions per Group
+
+Each group can contain multiple assertions. **All** assertions within the successful group must pass:
+
+```php
+// String with length 10 XOR positive integer (but not both)
+expect($input)
+    ->xor()
+    ->toBeString()
+    ->toHaveLength(10)
+    ->xor()
+    ->toBeInt()
+    ->toBePositive();
+
+// Valid email XOR valid phone (must be one, not both)
+expect($contact)
+    ->xor()
+    ->toBeString()
+    ->toBeEmail()
+    ->xor()
+    ->toBeString()
+    ->toMatch('/^\+?[1-9]\d{1,14}$/');
+```
+
+### XOR with Negation
+
+The `not` modifier works within XOR groups:
+
+```php
+// Must be non-empty string XOR positive integer (exclusive)
+expect($value)
+    ->xor()
+    ->toBeString()
+    ->not->toBeEmpty()
+    ->xor()
+    ->toBeInt()
+    ->toBePositive();
+```
+
+### Complex XOR Patterns
+
+```php
+// Config value: boolean XOR string XOR number (exactly one type)
+expect($configValue)
+    ->xor()
+    ->toBeBoolean()
+    ->xor()
+    ->toBeString()
+    ->xor()
+    ->toBeNumeric();
+
+// Response format: success XOR error (cannot be both)
+expect($response)
+    ->xor()
+    ->toHaveKey('data')
+    ->toHaveKey('status')
+    ->xor()
+    ->toHaveKey('error')
+    ->toHaveKey('message');
+```
+
+### Error Messages
+
+**When no groups succeed:**
+
+```php
+expect(123)
+    ->xor()
+    ->toBeString()
+    ->xor()
+    ->toBeNull();
+
+// Throws: All XOR groups failed (expected exactly one to pass):
+// Group 1: Expected value to be string. Got: integer
+// Group 2: Expected value to be null. Got: integer
+```
+
+**When multiple groups succeed:**
+
+```php
+expect('hello')
+    ->xor()
+    ->toBeString()
+    ->xor()
+    ->toHaveLength(5);
+
+// Throws: XOR assertion failed: expected exactly one group to pass, but 2 groups passed
+```
+
+### XOR vs OR
+
+- **OR (`->or()`)**: At least one group must pass (1, 2, 3, ... groups passing = success)
+- **XOR (`->xor()`)**: Exactly one group must pass (only 1 group passing = success)
+
+```php
+// OR: passes if value is string OR numeric (can be both)
+expect('123')
+    ->or()
+    ->toBeString()   // ✓ passes
+    ->or()
+    ->toBeNumeric(); // ✓ also passes
+// Result: SUCCESS (at least one passed)
+
+// XOR: fails if value matches both conditions
+expect('123')
+    ->xor()
+    ->toBeString()   // ✓ passes
+    ->xor()
+    ->toBeNumeric(); // ✓ also passes
+// Result: FAILURE (expected exactly one, got 2)
 ```
 
 ## Snapshot Testing
@@ -906,6 +1051,24 @@ expect($input)
     ->or()
     ->toBeInt()
     ->toBePositive();
+
+// XOR operator - exactly one group must pass
+expect($configValue)
+    ->xor()
+    ->toBeBoolean()
+    ->xor()
+    ->toBeString()
+    ->xor()
+    ->toBeNumeric();
+
+// XOR with multiple assertions per group
+expect($identifier)
+    ->xor()
+    ->toBeInt()
+    ->toBePositive()
+    ->xor()
+    ->toBeString()
+    ->toMatch('/^[A-Z]{3}\d{3}$/');
 ```
 
 ## Best Practices
