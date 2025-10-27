@@ -73,6 +73,10 @@ final class Expectation
 
     private ?string $collectionMode = null; // 'all', 'any', 'none'
 
+    private ?int $thresholdCount = null;
+
+    private ?string $thresholdMode = null; // 'exactly', 'atLeast', 'atMost'
+
     public function __construct(
         private readonly mixed $value,
     ) {}
@@ -1181,17 +1185,59 @@ final class Expectation
     }
 
     /**
-     * Conditionally apply expectations.
+     * Exactly n groups must pass.
      */
-    public function when(bool|callable $condition, callable $callback): self
+    public function exactly(int $count): self
     {
-        $result = is_callable($condition) ? $condition($this->value) : $condition;
-
-        if ($result) {
-            $callback($this);
-        }
+        $this->thresholdMode = 'exactly';
+        $this->thresholdCount = $count;
+        $this->orMode = true;
 
         return $this;
+    }
+
+    /**
+     * At least n groups must pass.
+     */
+    public function atLeast(int $count): self
+    {
+        $this->thresholdMode = 'atLeast';
+        $this->thresholdCount = $count;
+        $this->orMode = true;
+
+        return $this;
+    }
+
+    /**
+     * At most n groups must pass.
+     */
+    public function atMost(int $count): self
+    {
+        $this->thresholdMode = 'atMost';
+        $this->thresholdCount = $count;
+        $this->orMode = true;
+
+        return $this;
+    }
+
+    /**
+     * Inspect value without breaking chain (debugging helper).
+     */
+    public function tap(callable $callback): self
+    {
+        $callback($this->value);
+
+        return $this;
+    }
+
+    /**
+     * Transform value in chain.
+     */
+    public function pipe(callable $callback): self
+    {
+        $transformed = $callback($this->value);
+
+        return new self($transformed);
     }
 
     /**
@@ -1202,6 +1248,20 @@ final class Expectation
         $result = is_callable($condition) ? $condition($this->value) : $condition;
 
         if (!$result) {
+            $callback($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Conditionally apply expectations.
+     */
+    public function when(bool|callable $condition, callable $callback): self
+    {
+        $result = is_callable($condition) ? $condition($this->value) : $condition;
+
+        if ($result) {
             $callback($this);
         }
 
@@ -1254,6 +1314,16 @@ final class Expectation
         }
 
         throw new InvalidArgumentException('No pattern matched the value', 0, null, $this->value);
+    }
+
+    /**
+     * Dump value and continue chain (debugging helper).
+     */
+    public function dump(mixed ...$args): self
+    {
+        dump($this->value, ...$args);
+
+        return $this;
     }
 
     /**
@@ -1404,6 +1474,30 @@ final class Expectation
             if ($group['success'] ?? false) {
                 ++$successCount;
             }
+        }
+
+        // Threshold mode: check if success count meets threshold criteria
+        if ($this->thresholdMode !== null && $this->thresholdCount !== null) {
+            $expected = $this->thresholdCount;
+            $mode = $this->thresholdMode;
+
+            $passes = match ($mode) {
+                'exactly' => $successCount === $expected,
+                'atLeast' => $successCount >= $expected,
+                'atMost' => $successCount <= $expected,
+                default => false,
+            };
+
+            if ($passes) {
+                return; // Success!
+            }
+
+            throw new InvalidArgumentException(
+                sprintf('Threshold assertion failed: expected %s %d group(s) to pass, but %d passed', $mode, $expected, $successCount),
+                0,
+                null,
+                $this->value,
+            );
         }
 
         // XOR mode: exactly one group must succeed
