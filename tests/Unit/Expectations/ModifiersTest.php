@@ -8,24 +8,25 @@
  */
 
 use Cline\Assert\Exceptions\InvalidArgumentException;
+use Cline\Assert\Expectations\Expectation;
 
 use function Cline\Assert\expect as assertExpect;
 
 describe('Expectation Modifiers', function (): void {
     describe('each() Modifier', function (): void {
         test('each() with callback applies expectation to all items', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->each(fn ($item) => $item->toBeInt()))->not->toThrow(\Throwable::class);
+            expect(fn (): mixed => assertExpect([1, 2, 3])->each(fn ($item) => $item->toBeInt()))->not->toThrow(Throwable::class);
         });
 
         test('each() as property applies next assertion to all items', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->each->toBeInt())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(['a', 'b', 'c'])->each->toBeString())->not->toThrow(\Throwable::class);
+            expect(assertExpect([1, 2, 3])->each->toBeInt(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(['a', 'b', 'c'])->each->toBeString(...))->not->toThrow(Throwable::class);
         });
 
         test('each() can use multiple chained assertions', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->each(
+            expect(fn (): mixed => assertExpect([1, 2, 3])->each(
                 fn ($item) => $item->toBeInt()->toBeGreaterThan(0),
-            ))->not->toThrow(\Throwable::class);
+            ))->not->toThrow(Throwable::class);
         });
 
         test('each() receives key as second parameter', function (): void {
@@ -45,33 +46,33 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('each() requires traversable value', function (): void {
-            assertExpect(fn () => assertExpect(42)->each->toBeInt())
+            assertExpect(assertExpect(42)->each->toBeInt(...))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
 
     describe('and() Modifier', function (): void {
         test('and() without argument continues on same value', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(fn (): Expectation => assertExpect(42)
                 ->toBeInt()
                 ->and()
-                ->toBeGreaterThan(0))->not->toThrow(\Throwable::class);
+                ->toBeGreaterThan(0))->not->toThrow(Throwable::class);
         });
 
         test('and() with argument creates new expectation', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(fn (): Expectation => assertExpect(42)
                 ->toBeInt()
                 ->and('hello')
-                ->toBeString())->not->toThrow(\Throwable::class);
+                ->toBeString())->not->toThrow(Throwable::class);
         });
 
         test('and() chains multiple different values', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(fn (): Expectation => assertExpect(42)
                 ->toBeInt()
                 ->and('test')
                 ->toBeString()
                 ->and([1, 2])
-                ->toBeArray())->not->toThrow(\Throwable::class);
+                ->toBeArray())->not->toThrow(Throwable::class);
         });
 
         test('and() preserves original expectation', function (): void {
@@ -107,17 +108,17 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('when() accepts callable condition', function (): void {
-            expect(fn() => assertExpect(42)->when(
+            expect(fn (): Expectation => assertExpect(42)->when(
                 fn ($v): bool => $v > 0,
                 fn ($exp) => $exp->toBeGreaterThan(0),
-            ))->not->toThrow(\Throwable::class);
+            ))->not->toThrow(Throwable::class);
         });
 
         test('when() chains with other expectations', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(fn (): Expectation => assertExpect(42)
                 ->toBeInt()
                 ->when(true, fn ($exp) => $exp->toBeGreaterThan(0))
-                ->toBeLessThan(100))->not->toThrow(\Throwable::class);
+                ->toBeLessThan(100))->not->toThrow(Throwable::class);
         });
     });
 
@@ -145,10 +146,10 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('unless() accepts callable condition', function (): void {
-            expect(fn() => assertExpect(null)->unless(
+            expect(fn (): Expectation => assertExpect(null)->unless(
                 fn ($v): bool => $v !== null,
                 fn ($exp) => $exp->toBeNull(),
-            ))->not->toThrow(\Throwable::class);
+            ))->not->toThrow(Throwable::class);
         });
 
         test('unless() is inverse of when()', function (): void {
@@ -170,14 +171,14 @@ describe('Expectation Modifiers', function (): void {
 
     describe('Combining Modifiers', function (): void {
         test('can combine each() with negation', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->each->not->toBeString())->not->toThrow(\Throwable::class);
+            expect(assertExpect([1, 2, 3])->each->not->toBeString(...))->not->toThrow(Throwable::class);
         });
 
         test('can combine when() with and()', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(fn (): Expectation => assertExpect(42)
                 ->when(true, fn ($exp) => $exp->toBeInt())
                 ->and('test')
-                ->toBeString())->not->toThrow(\Throwable::class);
+                ->toBeString())->not->toThrow(Throwable::class);
         });
 
         test('can chain multiple conditional modifiers', function (): void {
@@ -198,11 +199,11 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('each() with when() creates complex conditions', function (): void {
-            expect(fn() => assertExpect([1, 2, 3, 4, 5])->each(function ($item): void {
+            expect(fn (): mixed => assertExpect([1, 2, 3, 4, 5])->each(function ($item): void {
                 $item
                     ->toBeInt()
                     ->when(fn ($v): bool => $v > 3, fn ($exp) => $exp->toBeGreaterThan(3));
-            }))->not->toThrow(\Throwable::class);
+            }))->not->toThrow(Throwable::class);
         });
     });
 });

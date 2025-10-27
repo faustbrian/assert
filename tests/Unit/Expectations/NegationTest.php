@@ -15,65 +15,65 @@ use function Cline\Assert\expect as assertExpect;
 describe('Negation Modifier (->not)', function (): void {
     describe('Happy Paths', function (): void {
         test('not->toBe() rejects equal values', function (): void {
-            expect(fn() => assertExpect(42)->not->toBe(43))->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('hello')->not->toBe('world'))->not->toThrow(\Throwable::class);
+            expect(fn () => assertExpect(42)->not->toBe(43))->not->toThrow(Throwable::class);
+            expect(fn () => assertExpect('hello')->not->toBe('world'))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeNull() accepts non-null values', function (): void {
-            expect(fn() => assertExpect(42)->not->toBeNull())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('test')->not->toBeNull())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(0)->not->toBeNull())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(false)->not->toBeNull())->not->toThrow(\Throwable::class);
+            expect(assertExpect(42)->not->toBeNull(...))->not->toThrow(Throwable::class);
+            expect(assertExpect('test')->not->toBeNull(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(0)->not->toBeNull(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(false)->not->toBeNull(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeTrue() accepts non-true values', function (): void {
-            expect(fn() => assertExpect(false)->not->toBeTrue())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(0)->not->toBeTrue())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('test')->not->toBeTrue())->not->toThrow(\Throwable::class);
+            expect(assertExpect(false)->not->toBeTrue(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(0)->not->toBeTrue(...))->not->toThrow(Throwable::class);
+            expect(assertExpect('test')->not->toBeTrue(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeFalse() accepts non-false values', function (): void {
-            expect(fn() => assertExpect(true)->not->toBeFalse())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(1)->not->toBeFalse())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('test')->not->toBeFalse())->not->toThrow(\Throwable::class);
+            expect(assertExpect(true)->not->toBeFalse(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(1)->not->toBeFalse(...))->not->toThrow(Throwable::class);
+            expect(assertExpect('test')->not->toBeFalse(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeTruthy() accepts falsy values', function (): void {
-            expect(fn() => assertExpect(0)->not->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('')->not->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(false)->not->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(null)->not->toBeTruthy())->not->toThrow(\Throwable::class);
+            expect(assertExpect(0)->not->toBeTruthy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect('')->not->toBeTruthy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(false)->not->toBeTruthy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(null)->not->toBeTruthy(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeFalsy() accepts truthy values', function (): void {
-            expect(fn() => assertExpect(1)->not->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('yes')->not->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(true)->not->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([1])->not->toBeFalsy())->not->toThrow(\Throwable::class);
+            expect(assertExpect(1)->not->toBeFalsy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect('yes')->not->toBeFalsy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(true)->not->toBeFalsy(...))->not->toThrow(Throwable::class);
+            expect(assertExpect([1])->not->toBeFalsy(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeEmpty() accepts non-empty values', function (): void {
-            expect(fn() => assertExpect('hello')->not->toBeEmpty())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([1, 2])->not->toBeEmpty())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(42)->not->toBeEmpty())->not->toThrow(\Throwable::class);
+            expect(assertExpect('hello')->not->toBeEmpty(...))->not->toThrow(Throwable::class);
+            expect(assertExpect([1, 2])->not->toBeEmpty(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(42)->not->toBeEmpty(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeString() accepts non-string values', function (): void {
-            expect(fn() => assertExpect(42)->not->toBeString())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([])->not->toBeString())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(true)->not->toBeString())->not->toThrow(\Throwable::class);
+            expect(assertExpect(42)->not->toBeString(...))->not->toThrow(Throwable::class);
+            expect(assertExpect([])->not->toBeString(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(true)->not->toBeString(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeInt() accepts non-integer values', function (): void {
-            expect(fn() => assertExpect('42')->not->toBeInt())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(3.14)->not->toBeInt())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([])->not->toBeInt())->not->toThrow(\Throwable::class);
+            expect(assertExpect('42')->not->toBeInt(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(3.14)->not->toBeInt(...))->not->toThrow(Throwable::class);
+            expect(assertExpect([])->not->toBeInt(...))->not->toThrow(Throwable::class);
         });
 
         test('not->toBeArray() accepts non-array values', function (): void {
-            expect(fn() => assertExpect('test')->not->toBeArray())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(42)->not->toBeArray())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(null)->not->toBeArray())->not->toThrow(\Throwable::class);
+            expect(assertExpect('test')->not->toBeArray(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(42)->not->toBeArray(...))->not->toThrow(Throwable::class);
+            expect(assertExpect(null)->not->toBeArray(...))->not->toThrow(Throwable::class);
         });
     });
 
@@ -131,10 +131,10 @@ describe('Negation Modifier (->not)', function (): void {
         });
 
         test('chaining after negation works', function (): void {
-            expect(fn() => assertExpect(42)
+            expect(assertExpect(42)
                 ->not->toBeNull()
                 ->toBeInt()
-                ->not->toBeString())->not->toThrow(\Throwable::class);
+                ->not->toBeString(...))->not->toThrow(Throwable::class);
         });
     });
 });

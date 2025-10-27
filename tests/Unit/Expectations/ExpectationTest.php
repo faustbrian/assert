@@ -34,98 +34,98 @@ describe('Expectation Foundation', function (): void {
 describe('Core Expectations', function (): void {
     describe('Happy Paths', function (): void {
         test('toBe() accepts strictly equal values', function (): void {
-            expect(fn() => assertExpect(42)->toBe(42))->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('hello')->toBe('hello'))->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(true)->toBe(true))->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(null)->toBe(null))->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(42)->toBe(42))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('hello')->toBe('hello'))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(true)->toBe(true))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(null)->toBe(null))->not->toThrow(Throwable::class);
         });
 
         test('toEqual() is alias for toBe()', function (): void {
-            expect(fn() => assertExpect(42)->toEqual(42))->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('test')->toEqual('test'))->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(42)->toEqual(42))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('test')->toEqual('test'))->not->toThrow(Throwable::class);
         });
 
         test('toBeNull() accepts null', function (): void {
-            expect(fn() => assertExpect(null)->toBeNull())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(null)->toBeNull())->not->toThrow(Throwable::class);
         });
 
         test('toBeTrue() accepts boolean true', function (): void {
-            expect(fn() => assertExpect(true)->toBeTrue())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(true)->toBeTrue())->not->toThrow(Throwable::class);
         });
 
         test('toBeFalse() accepts boolean false', function (): void {
-            expect(fn() => assertExpect(false)->toBeFalse())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(false)->toBeFalse())->not->toThrow(Throwable::class);
         });
 
         test('toBeTruthy() accepts truthy values', function (): void {
-            expect(fn() => assertExpect(1)->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('yes')->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(true)->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([1])->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect((object) [])->toBeTruthy())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(1)->toBeTruthy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('yes')->toBeTruthy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(true)->toBeTruthy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([1])->toBeTruthy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect((object) [])->toBeTruthy())->not->toThrow(Throwable::class);
         });
 
         test('toBeFalsy() accepts falsy values', function (): void {
-            expect(fn() => assertExpect(0)->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect('')->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(false)->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(null)->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([])->toBeFalsy())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect(0)->toBeFalsy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('')->toBeFalsy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(false)->toBeFalsy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(null)->toBeFalsy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([])->toBeFalsy())->not->toThrow(Throwable::class);
         });
 
         test('toBeEmpty() accepts empty values', function (): void {
-            expect(fn() => assertExpect('')->toBeEmpty())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect([])->toBeEmpty())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(0)->toBeEmpty())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect('')->toBeEmpty())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([])->toBeEmpty())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(0)->toBeEmpty())->not->toThrow(Throwable::class);
         });
     });
 
     describe('Sad Paths', function (): void {
         test('toBe() rejects non-equal values', function (): void {
-            expect(fn () => assertExpect(42)->toBe(43))
+            expect(fn (): Expectation => assertExpect(42)->toBe(43))
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeNull() rejects non-null values', function (): void {
-            expect(fn () => assertExpect(42)->toBeNull())
+            expect(fn (): Expectation => assertExpect(42)->toBeNull())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeTrue() rejects non-true values', function (): void {
-            expect(fn () => assertExpect(false)->toBeTrue())
+            expect(fn (): Expectation => assertExpect(false)->toBeTrue())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeFalse() rejects non-false values', function (): void {
-            expect(fn () => assertExpect(true)->toBeFalse())
+            expect(fn (): Expectation => assertExpect(true)->toBeFalse())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeTruthy() rejects falsy values', function (): void {
-            expect(fn () => assertExpect(0)->toBeTruthy())
+            expect(fn (): Expectation => assertExpect(0)->toBeTruthy())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeFalsy() rejects truthy values', function (): void {
-            expect(fn () => assertExpect(1)->toBeFalsy())
+            expect(fn (): Expectation => assertExpect(1)->toBeFalsy())
                 ->toThrow(InvalidArgumentException::class);
         });
     });
 
     describe('Edge Cases', function (): void {
         test('toBe() uses strict equality', function (): void {
-            expect(fn () => assertExpect('1')->toBe(1))
+            expect(fn (): Expectation => assertExpect('1')->toBe(1))
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeTruthy() uses loose comparison', function (): void {
-            expect(fn() => assertExpect('1')->toBeTruthy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(1)->toBeTruthy())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect('1')->toBeTruthy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(1)->toBeTruthy())->not->toThrow(Throwable::class);
         });
 
         test('toBeFalsy() uses loose comparison', function (): void {
-            expect(fn() => assertExpect('0')->toBeFalsy())->not->toThrow(\Throwable::class);
-            expect(fn() => assertExpect(0)->toBeFalsy())->not->toThrow(\Throwable::class);
+            expect(fn (): Expectation => assertExpect('0')->toBeFalsy())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(0)->toBeFalsy())->not->toThrow(Throwable::class);
         });
     });
 });
