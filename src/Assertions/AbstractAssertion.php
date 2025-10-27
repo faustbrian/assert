@@ -1965,7 +1965,7 @@ abstract class AbstractAssertion
     public static function subsetOf(mixed $value, array $superset, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         self::isArray($value, $message, $propertyPath);
-        /** @var array $value */
+        // @phpstan-ignore-next-line missingType.iterableValue
         /** @phpstan-var array<mixed> $value */  // @phpstan-ignore-line missingType.iterableValue
         $diff = array_diff($value, $superset);
 
@@ -1983,6 +1983,7 @@ abstract class AbstractAssertion
 
     public static function sorted(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
+        // @phpstan-ignore-next-line missingType.iterableValue
         /** @var array $value */
         self::isArray($value, $message, $propertyPath);
 
@@ -2336,9 +2337,9 @@ abstract class AbstractAssertion
 
     public static function today(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
-        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
-        // @phpstan-ignore argument.type (type narrowed by annotation above)
         /** @phpstan-var \DateTimeInterface|string $value */
+        // @phpstan-ignore-next-line argument.type
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $today = Date::today();
 
         if ($valueDate->format('Y-m-d') !== $today->format('Y-m-d')) {
@@ -2355,9 +2356,9 @@ abstract class AbstractAssertion
 
     public static function yesterday(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
-        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         /** @phpstan-var \DateTimeInterface|string $value */
-        // @phpstan-ignore argument.type (type narrowed by annotation above)
+        // @phpstan-ignore-next-line argument.type
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $yesterday = Date::yesterday();
 
         if ($valueDate->format('Y-m-d') !== $yesterday->format('Y-m-d')) {
@@ -2374,10 +2375,10 @@ abstract class AbstractAssertion
 
     public static function tomorrow(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
-        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         /** @phpstan-var \DateTimeInterface|string $value */
+        // @phpstan-ignore-next-line argument.type
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $tomorrow = Date::tomorrow();
-        // @phpstan-ignore argument.type (type narrowed by annotation above)
 
         if ($valueDate->format('Y-m-d') !== $tomorrow->format('Y-m-d')) {
             $message = sprintf(
@@ -2611,10 +2612,11 @@ abstract class AbstractAssertion
     {
         self::isArray($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
+        // @phpstan-ignore-next-line varTag.differentVariable
         /** @phpstan-var array<mixed> $value */
-        // @phpstan-ignore varTag.differentVariable (annotation narrows type for entire function)
         /** @var array<mixed> $expected */
 
+        // @phpstan-ignore-next-line argument.type
         foreach ($expected as $key => $expectedValue) {
             if (!array_key_exists($key, $value)) {
                 $message = sprintf(

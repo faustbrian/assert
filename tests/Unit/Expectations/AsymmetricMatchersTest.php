@@ -40,6 +40,178 @@ describe('Asymmetric Matchers', function (): void {
                 'date' => assertExpect()->any(DateTime::class),
             ]))->not->toThrow(Throwable::class);
         });
+
+        test('matches float type', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'price' => 19.99,
+            ])->toEqual([
+                'price' => assertExpect()->any('float'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches double type alias', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'value' => 3.14159,
+            ])->toEqual([
+                'value' => assertExpect()->any('double'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches boolean type', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'active' => true,
+            ])->toEqual([
+                'active' => assertExpect()->any('boolean'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches bool type alias', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'enabled' => false,
+            ])->toEqual([
+                'enabled' => assertExpect()->any('bool'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches array type', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'items' => [1, 2, 3],
+            ])->toEqual([
+                'items' => assertExpect()->any('array'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches object type', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'data' => new stdClass(),
+            ])->toEqual([
+                'data' => assertExpect()->any('object'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches resource type', function (): void {
+            $resource = fopen('php://memory', 'r');
+            expect(fn (): Expectation => assertExpect([
+                'handle' => $resource,
+            ])->toEqual([
+                'handle' => assertExpect()->any('resource'),
+            ]))->not->toThrow(Throwable::class);
+            fclose($resource);
+        });
+
+        test('matches null type', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'value' => null,
+            ])->toEqual([
+                'value' => assertExpect()->any('null'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches numeric type with integer', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'count' => 42,
+            ])->toEqual([
+                'count' => assertExpect()->any('numeric'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches numeric type with float', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'amount' => 42.5,
+            ])->toEqual([
+                'amount' => assertExpect()->any('numeric'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches numeric type with numeric string', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'number' => '123',
+            ])->toEqual([
+                'number' => assertExpect()->any('numeric'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches scalar type with string', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'text' => 'hello',
+            ])->toEqual([
+                'text' => assertExpect()->any('scalar'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches scalar type with integer', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'number' => 100,
+            ])->toEqual([
+                'number' => assertExpect()->any('scalar'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches scalar type with float', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'decimal' => 99.9,
+            ])->toEqual([
+                'decimal' => assertExpect()->any('scalar'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches scalar type with boolean', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'flag' => true,
+            ])->toEqual([
+                'flag' => assertExpect()->any('scalar'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches callable type with closure', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'callback' => fn () => 'test',
+            ])->toEqual([
+                'callback' => assertExpect()->any('callable'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches callable type with function name', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'handler' => 'strlen',
+            ])->toEqual([
+                'handler' => assertExpect()->any('callable'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('matches callable type with invokable object', function (): void {
+            $invokable = new class ()
+            {
+                public function __invoke(): string
+                {
+                    return 'invoked';
+                }
+            };
+
+            expect(fn (): Expectation => assertExpect([
+                'processor' => $invokable,
+            ])->toEqual([
+                'processor' => assertExpect()->any('callable'),
+            ]))->not->toThrow(Throwable::class);
+        });
+
+        test('toString returns formatted string', function (): void {
+            $matcher = assertExpect()->any('string');
+            $reflection = new ReflectionClass($matcher);
+            $method = $reflection->getMethod('toString');
+            $result = $method->invoke($matcher);
+
+            expect($result)->toBe('any(string)');
+        });
+
+        test('toString returns formatted string for custom class', function (): void {
+            $matcher = assertExpect()->any(DateTime::class);
+            $reflection = new ReflectionClass($matcher);
+            $method = $reflection->getMethod('toString');
+            $result = $method->invoke($matcher);
+
+            expect($result)->toBe('any(DateTime)');
+        });
     });
 
     describe('assertExpect()->anything() matcher', function (): void {
