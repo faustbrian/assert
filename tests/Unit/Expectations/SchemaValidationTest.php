@@ -162,11 +162,12 @@ describe('Schema Validation', function (): void {
                     'age' => ['type' => 'integer', 'minimum' => 0],
                 ],
             ]);
+
             throw new Exception('Should have thrown');
-        } catch (InvalidArgumentException $e) {
-            expect($e->getMessage())->toContain('Schema validation failed');
-            expect($e->getMessage())->toContain('name');
-            expect($e->getMessage())->toContain('age');
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            expect($invalidArgumentException->getMessage())->toContain('Schema validation failed');
+            expect($invalidArgumentException->getMessage())->toContain('name');
+            expect($invalidArgumentException->getMessage())->toContain('age');
         }
     });
 });

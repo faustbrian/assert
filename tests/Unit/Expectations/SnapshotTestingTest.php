@@ -15,19 +15,22 @@ use function Cline\Assert\expect as assertExpect;
 
 describe('Snapshot Testing', function (): void {
     beforeEach(function (): void {
-        SnapshotManager::setSnapshotDirectory(__DIR__ . '/__test_snapshots__');
+        SnapshotManager::setSnapshotDirectory(__DIR__.'/__test_snapshots__');
     });
 
     afterEach(function (): void {
         // Clean up test snapshots
-        $dir = __DIR__ . '/__test_snapshots__';
+        $dir = __DIR__.'/__test_snapshots__';
+
         if (is_dir($dir)) {
-            $files = glob($dir . '/*');
+            $files = glob($dir.'/*');
+
             foreach ($files as $file) {
                 if (is_file($file)) {
                     unlink($file);
                 }
             }
+
             rmdir($dir);
         }
     });
@@ -99,7 +102,7 @@ describe('Snapshot Testing', function (): void {
 
     test('toMatchInlineSnapshot matches expected string', function (): void {
         $data = ['name' => 'John'];
-        $expected = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $expected = json_encode($data, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
 
         expect(fn (): Expectation => assertExpect($data)->toMatchInlineSnapshot($expected))
             ->not->toThrow(Throwable::class);
@@ -107,7 +110,7 @@ describe('Snapshot Testing', function (): void {
 
     test('toMatchInlineSnapshot fails with different data', function (): void {
         $data = ['name' => 'John'];
-        $expected = json_encode(['name' => 'Jane'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $expected = json_encode(['name' => 'Jane'], \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
 
         expect(fn (): Expectation => assertExpect($data)->toMatchInlineSnapshot($expected))
             ->toThrow(InvalidArgumentException::class);
@@ -121,25 +124,27 @@ describe('Snapshot Testing', function (): void {
 
         try {
             assertExpect($modified)->toMatchSnapshot('diff-test');
+
             throw new Exception('Should have thrown');
-        } catch (InvalidArgumentException $e) {
-            expect($e->getMessage())->toContain('Snapshot "diff-test" does not match');
-            expect($e->getMessage())->toContain('Expected:');
-            expect($e->getMessage())->toContain('Received:');
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            expect($invalidArgumentException->getMessage())->toContain('Snapshot "diff-test" does not match');
+            expect($invalidArgumentException->getMessage())->toContain('Expected:');
+            expect($invalidArgumentException->getMessage())->toContain('Received:');
         }
     });
 
     test('error message shows diff for toMatchInlineSnapshot', function (): void {
         $data = ['name' => 'John'];
-        $expected = json_encode(['name' => 'Jane'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $expected = json_encode(['name' => 'Jane'], \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
 
         try {
             assertExpect($data)->toMatchInlineSnapshot($expected);
+
             throw new Exception('Should have thrown');
-        } catch (InvalidArgumentException $e) {
-            expect($e->getMessage())->toContain('Inline snapshot does not match');
-            expect($e->getMessage())->toContain('Expected:');
-            expect($e->getMessage())->toContain('Received:');
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            expect($invalidArgumentException->getMessage())->toContain('Inline snapshot does not match');
+            expect($invalidArgumentException->getMessage())->toContain('Expected:');
+            expect($invalidArgumentException->getMessage())->toContain('Received:');
         }
     });
 

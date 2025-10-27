@@ -13,6 +13,8 @@ use BadMethodCallException;
 use Cline\Assert\Assertions\Assertion;
 use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Matchers\AsymmetricMatcher;
+use Cline\Assert\Schema\SchemaValidator;
+use Cline\Assert\Snapshots\SnapshotManager;
 use stdClass;
 use Throwable;
 
@@ -838,14 +840,9 @@ final class Expectation
      */
     public function toMatchSchema(array $schema): self
     {
-        $errors = \Cline\Assert\Schema\SchemaValidator::validate($this->value, $schema);
+        $errors = SchemaValidator::validate($this->value, $schema);
 
-        if (!empty($errors)) {
-            throw new InvalidArgumentException(
-                sprintf("Schema validation failed:\n- %s", implode("\n- ", $errors)),
-                0
-            );
-        }
+        throw_unless($errors === [], InvalidArgumentException::class, sprintf("Schema validation failed:\n- %s", implode("\n- ", $errors)), 0);
 
         return $this;
     }
@@ -1179,21 +1176,17 @@ final class Expectation
      */
     public function toMatchSnapshot(string $testName): self
     {
-        $formatted = \Cline\Assert\Snapshots\SnapshotManager::formatValue($this->value);
+        $formatted = SnapshotManager::formatValue($this->value);
 
-        if (!\Cline\Assert\Snapshots\SnapshotManager::hasSnapshot($testName)) {
-            \Cline\Assert\Snapshots\SnapshotManager::saveSnapshot($testName, $formatted);
+        if (!SnapshotManager::hasSnapshot($testName)) {
+            SnapshotManager::saveSnapshot($testName, $formatted);
+
             return $this;
         }
 
-        $snapshot = \Cline\Assert\Snapshots\SnapshotManager::getSnapshot($testName);
+        $snapshot = SnapshotManager::getSnapshot($testName);
 
-        if ($formatted !== $snapshot) {
-            throw new InvalidArgumentException(
-                sprintf("Snapshot \"%s\" does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $testName, $snapshot, $formatted),
-                0
-            );
-        }
+        throw_if($formatted !== $snapshot, InvalidArgumentException::class, sprintf("Snapshot \"%s\" does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $testName, $snapshot, $formatted), 0);
 
         return $this;
     }
@@ -1203,14 +1196,9 @@ final class Expectation
      */
     public function toMatchInlineSnapshot(string $expected): self
     {
-        $formatted = \Cline\Assert\Snapshots\SnapshotManager::formatValue($this->value);
+        $formatted = SnapshotManager::formatValue($this->value);
 
-        if ($formatted !== $expected) {
-            throw new InvalidArgumentException(
-                sprintf("Inline snapshot does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $expected, $formatted),
-                0
-            );
-        }
+        throw_if($formatted !== $expected, InvalidArgumentException::class, sprintf("Inline snapshot does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $expected, $formatted), 0);
 
         return $this;
     }

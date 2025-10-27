@@ -9,14 +9,27 @@
 
 namespace Cline\Assert\Snapshots;
 
+use RuntimeException;
+
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function is_array;
 use function is_dir;
+use function is_object;
+use function is_string;
+use function json_encode;
 use function mkdir;
+use function sprintf;
+use function throw_unless;
 
 /**
  * Manages snapshot files for snapshot testing.
+ *
+ * @author Brian Faust <brian@cline.sh>
  */
 final class SnapshotManager
 {
@@ -29,7 +42,7 @@ final class SnapshotManager
 
     public static function getSnapshotPath(string $testName): string
     {
-        return self::$snapshotDir . '/' . $testName . '.snap';
+        return self::$snapshotDir.'/'.$testName.'.snap';
     }
 
     public static function hasSnapshot(string $testName): bool
@@ -40,9 +53,7 @@ final class SnapshotManager
     public static function getSnapshot(string $testName): string
     {
         $path = self::getSnapshotPath($testName);
-        if (!file_exists($path)) {
-            throw new \RuntimeException("Snapshot {$testName} does not exist");
-        }
+        throw_unless(file_exists($path), RuntimeException::class, sprintf('Snapshot %s does not exist', $testName));
 
         return file_get_contents($path);
     }
@@ -50,7 +61,7 @@ final class SnapshotManager
     public static function saveSnapshot(string $testName, string $content): void
     {
         if (!is_dir(self::$snapshotDir)) {
-            mkdir(self::$snapshotDir, 0755, true);
+            mkdir(self::$snapshotDir, 0o755, true);
         }
 
         file_put_contents(self::getSnapshotPath($testName), $content);
