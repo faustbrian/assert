@@ -79,16 +79,29 @@ final class Expectation
 
     private ?string $thresholdMode = null; // 'exactly', 'atLeast', 'atMost'
 
+    private bool $evaluated = false;
+
     public function __construct(
         private readonly mixed $value,
     ) {}
+
+    /**
+     * Reset evaluation state and deep clone arrays when cloning.
+     */
+    public function __clone(): void
+    {
+        $this->evaluated = false;
+        $this->orGroups = $this->orGroups; // Deep clone happens automatically for arrays
+    }
 
     /**
      * Evaluate OR groups when expectation chain ends.
      */
     public function __destruct()
     {
-        $this->evaluateOrGroups();
+        if (!$this->evaluated) {
+            $this->evaluateOrGroups();
+        }
     }
 
     /**
@@ -1466,6 +1479,8 @@ final class Expectation
     private function evaluateOrGroups(): void
     {
         if ((!$this->orMode && !$this->xorMode) || $this->orGroups === []) {
+            $this->evaluated = true;
+
             return;
         }
 
@@ -1491,8 +1506,12 @@ final class Expectation
             };
 
             if ($passes) {
+                $this->evaluated = true;
+
                 return; // Success!
             }
+
+            $this->evaluated = true;
 
             throw new InvalidArgumentException(
                 sprintf('Threshold assertion failed: expected %s %d group(s) to pass, but %d passed', $mode, $expected, $successCount),
@@ -1505,8 +1524,12 @@ final class Expectation
         // XOR mode: exactly one group must succeed
         if ($this->xorMode) {
             if ($successCount === 1) {
+                $this->evaluated = true;
+
                 return; // Success!
             }
+
+            $this->evaluated = true;
 
             // Build error message
             $messages = [];
@@ -1536,10 +1559,13 @@ final class Expectation
 
         // OR mode: at least one group must succeed
         if ($successCount > 0) {
+            $this->evaluated = true;
+
             return; // Success!
         }
 
         // All groups failed - throw combined error
+        $this->evaluated = true;
         $messages = [];
 
         foreach ($this->orGroups as $index => $group) {
