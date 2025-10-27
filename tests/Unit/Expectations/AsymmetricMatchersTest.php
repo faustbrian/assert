@@ -122,6 +122,28 @@ describe('Asymmetric Matchers', function (): void {
             ]))->toThrow(InvalidArgumentException::class);
         });
 
+        test('rejects non-array values', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'data' => 'not-an-array',
+            ])->toEqual([
+                'data' => assertExpect()->arrayContaining(['key' => 'value']),
+            ]))->toThrow(InvalidArgumentException::class);
+        });
+
+        test('rejects arrays with mismatched values', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'user' => [
+                    'id' => 1,
+                    'name' => 'Jane',
+                ],
+            ])->toEqual([
+                'user' => assertExpect()->arrayContaining([
+                    'id' => 1,
+                    'name' => 'John',
+                ]),
+            ]))->toThrow(InvalidArgumentException::class);
+        });
+
         test('supports nested matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'data' => [
@@ -134,6 +156,20 @@ describe('Asymmetric Matchers', function (): void {
                     'name' => assertExpect()->stringContaining('John'),
                 ]),
             ]))->not->toThrow(Throwable::class);
+        });
+
+        test('rejects when nested matcher fails', function (): void {
+            expect(fn (): Expectation => assertExpect([
+                'data' => [
+                    'id' => 123,
+                    'name' => 'Jane Smith',
+                ],
+            ])->toEqual([
+                'data' => assertExpect()->arrayContaining([
+                    'id' => assertExpect()->any('integer'),
+                    'name' => assertExpect()->stringContaining('John'),
+                ]),
+            ]))->toThrow(InvalidArgumentException::class);
         });
     });
 

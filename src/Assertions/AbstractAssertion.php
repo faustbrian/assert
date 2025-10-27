@@ -1966,7 +1966,7 @@ abstract class AbstractAssertion
     {
         self::isArray($value, $message, $propertyPath);
         /** @var array $value */
-
+        /** @phpstan-var array<mixed> $value */  // @phpstan-ignore-line missingType.iterableValue
         $diff = array_diff($value, $superset);
 
         if ($diff !== []) {
