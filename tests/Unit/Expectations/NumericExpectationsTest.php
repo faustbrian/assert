@@ -199,4 +199,38 @@ describe('Numeric Expectations', function (): void {
                 ->not->toThrow(Throwable::class);
         });
     });
+
+    describe('Divisibility', function (): void {
+        test('toBeDivisibleBy() accepts divisible numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(10)->toBeDivisibleBy(5))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(100)->toBeDivisibleBy(10))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(15)->toBeDivisibleBy(3))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeDivisibleBy() rejects non-divisible numbers', function (): void {
+            expect(fn (): Expectation => assertExpect(10)->toBeDivisibleBy(3))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeDivisibleBy() handles floats', function (): void {
+            expect(fn (): Expectation => assertExpect(10.5)->toBeDivisibleBy(2.5))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeDivisibleBy() rejects division by zero', function (): void {
+            expect(fn (): Expectation => assertExpect(10)->toBeDivisibleBy(0))
+                ->toThrow(InvalidArgumentException::class);
+        });
+    });
+
+    describe('Range Aliases', function (): void {
+        test('toBeWithinRange() accepts values in range', function (): void {
+            expect(fn (): Expectation => assertExpect(5)->toBeWithinRange(1, 10))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(1)->toBeWithinRange(1, 10))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeWithinRange() rejects values outside range', function (): void {
+            expect(fn (): Expectation => assertExpect(0)->toBeWithinRange(1, 10))
+                ->toThrow(InvalidArgumentException::class);
+        });
+    });
 });

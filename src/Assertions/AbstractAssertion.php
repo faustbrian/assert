@@ -1837,6 +1837,42 @@ abstract class AbstractAssertion
         return true;
     }
 
+    public static function divisibleBy(int|float $value, int|float $divisor, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::numeric($value, $message, $propertyPath);
+
+        if ($divisor == 0) {
+            throw self::createException($divisor, 'Division by zero is not allowed.', ValidationError::InvalidNumeric->value, $propertyPath);
+        }
+
+        if (fmod((float) $value, (float) $divisor) !== 0.0) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected %s to be divisible by %s.'),
+                $value,
+                $divisor,
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidNumeric->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function sameKeys(array $value, array $other, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueKeys = array_keys($value);
+        $otherKeys = array_keys($other);
+
+        sort($valueKeys);
+        sort($otherKeys);
+
+        if ($valueKeys !== $otherKeys) {
+            throw self::createException($value, 'Arrays do not have the same keys.', ValidationError::InvalidArrayKey->value, $propertyPath);
+        }
+
+        return true;
+    }
+
     public static function isResource(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         if (!is_resource($value)) {

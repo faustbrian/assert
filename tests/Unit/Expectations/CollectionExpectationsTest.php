@@ -169,4 +169,31 @@ describe('Collection Expectations', function (): void {
                 ->not->toThrow(Throwable::class);
         });
     });
+
+    describe('Explicit Aliases', function (): void {
+        test('toContainValue() accepts array with value', function (): void {
+            expect(fn (): Expectation => assertExpect([1, 2, 3])->toContainValue(2))->not->toThrow(Throwable::class);
+        });
+
+        test('toContainKey() accepts array with key', function (): void {
+            expect(fn (): Expectation => assertExpect(['a' => 1, 'b' => 2])->toContainKey('a'))->not->toThrow(Throwable::class);
+        });
+    });
+
+    describe('Key Comparison', function (): void {
+        test('toHaveSameKeys() accepts arrays with same keys', function (): void {
+            expect(fn (): Expectation => assertExpect(['a' => 1, 'b' => 2])->toHaveSameKeys(['a' => 99, 'b' => 88]))
+                ->not->toThrow(Throwable::class);
+        });
+
+        test('toHaveSameKeys() rejects arrays with different keys', function (): void {
+            expect(fn (): Expectation => assertExpect(['a' => 1])->toHaveSameKeys(['b' => 1]))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toHaveSameKeys() ignores key order', function (): void {
+            expect(fn (): Expectation => assertExpect(['b' => 2, 'a' => 1])->toHaveSameKeys(['a' => 99, 'b' => 88]))
+                ->not->toThrow(Throwable::class);
+        });
+    });
 });

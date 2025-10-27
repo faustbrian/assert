@@ -112,4 +112,21 @@ describe('Format Expectations', function (): void {
                 ->when(str_contains($value, '@'), fn ($exp) => $exp->toBeEmail()))->not->toThrow(Throwable::class);
         });
     });
+
+    describe('Date Validation', function (): void {
+        test('toBeValidDate() accepts valid dates', function (): void {
+            expect(fn (): Expectation => assertExpect('2025-01-15')->toBeValidDate('Y-m-d'))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('15/01/2025')->toBeValidDate('d/m/Y'))->not->toThrow(Throwable::class);
+        });
+
+        test('toBeValidDate() rejects invalid dates', function (): void {
+            expect(fn (): Expectation => assertExpect('2025-13-99')->toBeValidDate('Y-m-d'))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
+        test('toBeValidDate() rejects wrong format', function (): void {
+            expect(fn (): Expectation => assertExpect('15-01-2025')->toBeValidDate('Y-m-d'))
+                ->toThrow(InvalidArgumentException::class);
+        });
+    });
 });

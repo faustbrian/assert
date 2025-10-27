@@ -47,7 +47,8 @@
             "Cline\\Assert\\": "src"
         },
         "files": [
-            "src/functions.php"
+            "src/functions.php",
+            "src/functions/matchers.php"
         ]
     },
     "autoload-dev": {

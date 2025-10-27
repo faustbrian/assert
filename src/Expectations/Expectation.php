@@ -155,11 +155,81 @@ final class Expectation
 
     /**
      * Assert that value is strictly equal to expected (===).
-     * Alias for toBe().
+     * Alias for toBe(). Supports asymmetric matchers for partial matching.
      */
     public function toEqual(mixed $expected): self
     {
+        // Handle asymmetric matchers for partial equality
+        if ($this->containsAsymmetricMatchers($expected)) {
+            return $this->matchAsymmetric($expected);
+        }
+
         return $this->toBe($expected);
+    }
+
+    /**
+     * Check if a value contains asymmetric matchers.
+     */
+    private function containsAsymmetricMatchers(mixed $value): bool
+    {
+        if ($value instanceof \Cline\Assert\Matchers\AsymmetricMatcher) {
+            return true;
+        }
+
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                if ($this->containsAsymmetricMatchers($item)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Match value against expected structure with asymmetric matchers.
+     */
+    private function matchAsymmetric(mixed $expected): self
+    {
+        if (!$this->matchesAsymmetric($this->value, $expected)) {
+            $valueStr = is_scalar($this->value) ? (string) $this->value : gettype($this->value);
+            throw new InvalidArgumentException(
+                "Expected value to match asymmetric pattern. Got: {$valueStr}",
+                0
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Recursively match values with asymmetric matchers.
+     */
+    private function matchesAsymmetric(mixed $actual, mixed $expected): bool
+    {
+        // Direct matcher check
+        if ($expected instanceof \Cline\Assert\Matchers\AsymmetricMatcher) {
+            return $expected->matches($actual);
+        }
+
+        // Array deep matching
+        if (is_array($expected) && is_array($actual)) {
+            foreach ($expected as $key => $expectedValue) {
+                if (!array_key_exists($key, $actual)) {
+                    return false;
+                }
+
+                if (!$this->matchesAsymmetric($actual[$key], $expectedValue)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Strict equality fallback
+        return $actual === $expected;
     }
 
     /**
@@ -348,6 +418,22 @@ final class Expectation
     public function toBeOdd(): self
     {
         return $this->invoke('odd');
+    }
+
+    /**
+     * Assert that value is divisible by divisor.
+     */
+    public function toBeDivisibleBy(int|float $divisor): self
+    {
+        return $this->invoke('divisibleBy', [$divisor]);
+    }
+
+    /**
+     * Assert that value is a valid date in the specified format.
+     */
+    public function toBeValidDate(string $format): self
+    {
+        return $this->invoke('date', [$format]);
     }
 
     /**
@@ -728,6 +814,21 @@ final class Expectation
         return $this->toBeIn($options);
     }
 
+    public function toContainValue(mixed $value): self
+    {
+        return $this->toContain($value);
+    }
+
+    public function toContainKey(string|int $key): self
+    {
+        return $this->toHaveKey($key);
+    }
+
+    public function toBeWithinRange(int|float $min, int|float $max): self
+    {
+        return $this->toBeBetween($min, $max);
+    }
+
     /**
      * Assert that numeric values are close within precision.
      * Alias for toEqualWithDelta().
@@ -843,6 +944,14 @@ final class Expectation
     public function toHaveSameSize(array|Countable $expected): self
     {
         return $this->invoke('sameSize', [$expected]);
+    }
+
+    /**
+     * Assert that two arrays have the same keys.
+     */
+    public function toHaveSameKeys(array $expected): self
+    {
+        return $this->invoke('sameKeys', [$expected]);
     }
 
     /**
