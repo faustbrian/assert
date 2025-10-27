@@ -19,6 +19,7 @@ use Cline\Assert\Matchers\AsymmetricMatcher;
 use Cline\Assert\Matchers\StringContainingMatcher;
 use Cline\Assert\Schema\SchemaValidator;
 use Cline\Assert\Snapshots\SnapshotManager;
+use Countable;
 use DateTimeInterface;
 use stdClass;
 use Throwable;
@@ -44,8 +45,8 @@ use function is_scalar;
 use function is_string;
 use function iterator_to_array;
 use function json_decode;
-use function method_exists;
-use function ray; // @phpstan-ignore-line function.notFound (optional debug helper checked at runtime)
+use function method_exists; // @phpstan-ignore-line function.notFound (optional debug helper checked at runtime)
+use function ray;
 use function sprintf;
 use function str_contains;
 use function throw_if;
@@ -1152,7 +1153,7 @@ final class Expectation
     /**
      * Assert that two countables have the same size.
      */
-    public function toHaveSameSize(array|\Countable $expected): self
+    public function toHaveSameSize(array|Countable $expected): self
     {
         return $this->invoke('sameSize', [$expected]);
     }
