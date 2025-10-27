@@ -2607,9 +2607,8 @@ abstract class AbstractAssertion
     {
         self::isArray($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
-        /** @phpstan-var array<array-key, mixed> $value */
-        /** @phpstan-var array<array-key, mixed> $expected */
 
+        // @phpstan-ignore-next-line foreach.nonIterable (validated by self::isArray())
         foreach ($expected as $key => $expectedValue) {
             // @phpstan-ignore-next-line argument.type
             if (!array_key_exists($key, $value)) {
@@ -2641,9 +2640,8 @@ abstract class AbstractAssertion
     {
         self::isObject($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
-        /** @phpstan-var object $value */
-        /** @phpstan-var array<array-key, mixed> $expected */
 
+        // @phpstan-ignore-next-line foreach.nonIterable (validated by self::isArray())
         foreach ($expected as $property => $expectedValue) {
             if (!property_exists($value, $property)) {
                 $message = sprintf(

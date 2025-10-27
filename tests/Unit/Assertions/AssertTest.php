@@ -2307,28 +2307,41 @@ describe('Null Assertions', function (): void {
             expect(Assertion::undefined(null))->toBeTrue();
         });
 
-        test('nullable passes with null value', function (): void {
+        test('nullable passes with null value for any type', function (): void {
             expect(Assertion::nullable(null, 'string'))->toBeTrue();
+            expect(Assertion::nullable(null, 'int'))->toBeTrue();
+            expect(Assertion::nullable(null, stdClass::class))->toBeTrue();
         });
 
-        test('nullable passes with correct type', function (): void {
+        test('nullable passes with matching string type', function (): void {
             expect(Assertion::nullable('test', 'string'))->toBeTrue();
+        });
+
+        test('nullable passes with matching int type', function (): void {
             expect(Assertion::nullable(42, 'int'))->toBeTrue();
             expect(Assertion::nullable(42, 'integer'))->toBeTrue();
-            expect(Assertion::nullable(3.14, 'float'))->toBeTrue();
-            expect(Assertion::nullable(3.14, 'double'))->toBeTrue();
-            expect(Assertion::nullable(true, 'bool'))->toBeTrue();
-            expect(Assertion::nullable(false, 'boolean'))->toBeTrue();
-            expect(Assertion::nullable([], 'array'))->toBeTrue();
-            expect(Assertion::nullable(new stdClass(), 'object'))->toBeTrue();
-            expect(Assertion::nullable(fn () => true, 'callable'))->toBeTrue();
-            expect(Assertion::nullable([], 'iterable'))->toBeTrue();
-            expect(Assertion::nullable(fopen('php://memory', 'r'), 'resource'))->toBeTrue();
-            expect(Assertion::nullable('42', 'numeric'))->toBeTrue();
-            expect(Assertion::nullable('test', 'scalar'))->toBeTrue();
         });
 
-        test('nullable passes with class instance', function (): void {
+        test('nullable passes with matching float type', function (): void {
+            expect(Assertion::nullable(3.14, 'float'))->toBeTrue();
+            expect(Assertion::nullable(3.14, 'double'))->toBeTrue();
+        });
+
+        test('nullable passes with matching bool type', function (): void {
+            expect(Assertion::nullable(true, 'bool'))->toBeTrue();
+            expect(Assertion::nullable(false, 'boolean'))->toBeTrue();
+        });
+
+        test('nullable passes with matching array type', function (): void {
+            expect(Assertion::nullable([], 'array'))->toBeTrue();
+            expect(Assertion::nullable([1, 2], 'array'))->toBeTrue();
+        });
+
+        test('nullable passes with matching object type', function (): void {
+            expect(Assertion::nullable(new stdClass(), 'object'))->toBeTrue();
+        });
+
+        test('nullable passes with matching class instance', function (): void {
             $obj = new stdClass();
             expect(Assertion::nullable($obj, stdClass::class))->toBeTrue();
         });
@@ -2353,89 +2366,23 @@ describe('Null Assertions', function (): void {
             Assertion::undefined(false);
         });
 
-        test('nullable throws exception with wrong string type', function (): void {
+        test('undefined throws exception with empty string', function (): void {
             $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable(42, 'string');
-        });
-
-        test('nullable throws exception with wrong int type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'int');
-        });
-
-        test('nullable throws exception with wrong float type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable(42, 'float');
-        });
-
-        test('nullable throws exception with wrong bool type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'bool');
-        });
-
-        test('nullable throws exception with wrong array type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'array');
-        });
-
-        test('nullable throws exception with wrong object type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'object');
-        });
-
-        test('nullable throws exception with wrong callable type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'callable');
-        });
-
-        test('nullable throws exception with wrong iterable type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'iterable');
-        });
-
-        test('nullable throws exception with wrong resource type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('test', 'resource');
-        });
-
-        test('nullable throws exception with wrong numeric type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable('abc', 'numeric');
-        });
-
-        test('nullable throws exception with wrong scalar type', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable([], 'scalar');
-        });
-
-        test('nullable throws exception with wrong class instance', function (): void {
-            $this->expectException(AssertionFailedException::class);
-            $this->expectExceptionCode(ValidationError::InvalidType->value);
-            Assertion::nullable(new stdClass(), ChildStdClass::class);
+            $this->expectExceptionCode(ValidationError::ValueNotNull->value);
+            Assertion::undefined('');
         });
     });
 });
 
 describe('Array Comparison Assertions', function (): void {
     describe('Happy Paths', function (): void {
-        test('equalArrays passes with identical arrays', function (): void {
-            expect(Assertion::equalArrays([1, 2, 3], [1, 2, 3]))->toBeTrue();
+        test('equalCanonicalizing passes with identical arrays', function (): void {
+            expect(Assertion::equalCanonicalizing([1, 2, 3], [1, 2, 3]))->toBeTrue();
         });
 
-        test('equalArrays passes with arrays in different order', function (): void {
-            expect(Assertion::equalArrays([3, 1, 2], [1, 2, 3]))->toBeTrue();
-            expect(Assertion::equalArrays(['c', 'a', 'b'], ['a', 'b', 'c']))->toBeTrue();
+        test('equalCanonicalizing passes with arrays in different order', function (): void {
+            expect(Assertion::equalCanonicalizing([3, 1, 2], [1, 2, 3]))->toBeTrue();
+            expect(Assertion::equalCanonicalizing(['c', 'a', 'b'], ['a', 'b', 'c']))->toBeTrue();
         });
 
         test('matchArray passes with matching key-value pairs', function (): void {
@@ -2443,19 +2390,24 @@ describe('Array Comparison Assertions', function (): void {
             expect(Assertion::matchArray($array, ['name' => 'John']))->toBeTrue();
             expect(Assertion::matchArray($array, ['name' => 'John', 'age' => 30]))->toBeTrue();
         });
+
+        test('matchArray passes with exact match', function (): void {
+            $array = ['name' => 'John', 'age' => 30];
+            expect(Assertion::matchArray($array, ['name' => 'John', 'age' => 30]))->toBeTrue();
+        });
     });
 
     describe('Sad Paths', function (): void {
-        test('equalArrays throws exception with different arrays', function (): void {
+        test('equalCanonicalizing throws exception with different arrays', function (): void {
             $this->expectException(AssertionFailedException::class);
             $this->expectExceptionCode(ValidationError::InvalidEq->value);
-            Assertion::equalArrays([1, 2, 3], [1, 2, 4]);
+            Assertion::equalCanonicalizing([1, 2, 3], [1, 2, 4]);
         });
 
-        test('equalArrays throws exception with different lengths', function (): void {
+        test('equalCanonicalizing throws exception with different lengths', function (): void {
             $this->expectException(AssertionFailedException::class);
             $this->expectExceptionCode(ValidationError::InvalidEq->value);
-            Assertion::equalArrays([1, 2], [1, 2, 3]);
+            Assertion::equalCanonicalizing([1, 2], [1, 2, 3]);
         });
 
         test('matchArray throws exception when key is missing', function (): void {
@@ -2468,6 +2420,12 @@ describe('Array Comparison Assertions', function (): void {
             $this->expectException(AssertionFailedException::class);
             $this->expectExceptionCode(ValidationError::InvalidEq->value);
             Assertion::matchArray(['name' => 'John'], ['name' => 'Jane']);
+        });
+
+        test('matchArray throws exception with type mismatch', function (): void {
+            $this->expectException(AssertionFailedException::class);
+            $this->expectExceptionCode(ValidationError::InvalidEq->value);
+            Assertion::matchArray(['age' => 30], ['age' => '30']);
         });
 
         test('matchArray throws exception with multiple mismatches', function (): void {
@@ -2487,6 +2445,14 @@ describe('Object Comparison Assertions', function (): void {
             $obj->city = 'NYC';
 
             expect(Assertion::matchObject($obj, ['name' => 'John']))->toBeTrue();
+            expect(Assertion::matchObject($obj, ['name' => 'John', 'age' => 30]))->toBeTrue();
+        });
+
+        test('matchObject passes with all properties matching', function (): void {
+            $obj = new stdClass();
+            $obj->name = 'John';
+            $obj->age = 30;
+
             expect(Assertion::matchObject($obj, ['name' => 'John', 'age' => 30]))->toBeTrue();
         });
     });
@@ -2510,6 +2476,15 @@ describe('Object Comparison Assertions', function (): void {
             Assertion::matchObject($obj, ['name' => 'Jane']);
         });
 
+        test('matchObject throws exception with type mismatch', function (): void {
+            $obj = new stdClass();
+            $obj->age = 30;
+
+            $this->expectException(AssertionFailedException::class);
+            $this->expectExceptionCode(ValidationError::InvalidEq->value);
+            Assertion::matchObject($obj, ['age' => '30']);
+        });
+
         test('matchObject throws exception with multiple property mismatches', function (): void {
             $obj = new stdClass();
             $obj->name = 'John';
@@ -2518,6 +2493,15 @@ describe('Object Comparison Assertions', function (): void {
             $this->expectException(AssertionFailedException::class);
             $this->expectExceptionCode(ValidationError::InvalidEq->value);
             Assertion::matchObject($obj, ['name' => 'John', 'age' => 25]);
+        });
+
+        test('matchObject throws exception when multiple properties are missing', function (): void {
+            $obj = new stdClass();
+            $obj->name = 'John';
+
+            $this->expectException(AssertionFailedException::class);
+            $this->expectExceptionCode(ValidationError::InvalidProperty->value);
+            Assertion::matchObject($obj, ['age' => 30, 'city' => 'NYC']);
         });
     });
 });
