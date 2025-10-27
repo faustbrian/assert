@@ -19,7 +19,11 @@ composer require cline/assert
 
 ## Documentation
 
+### Getting Started
 - **[Getting Started](cookbook/getting-started.md)** - Introduction to assertions and basic usage
+- **[Expect API](cookbook/expect-api.md)** - Jest/Pest-style fluent expectations
+
+### Assertion Types
 - **[String Assertions](cookbook/string-assertions.md)** - String validation and checks
 - **[Numeric Assertions](cookbook/numeric-assertions.md)** - Number validation and comparisons
 - **[Array Assertions](cookbook/array-assertions.md)** - Array validation and operations
@@ -30,6 +34,8 @@ composer require cline/assert
 - **[Null and Empty Assertions](cookbook/null-empty-assertions.md)** - Null and empty checks
 - **[File System Assertions](cookbook/filesystem-assertions.md)** - File and directory validation
 - **[Validation Assertions](cookbook/validation-assertions.md)** - Email, URL, and format validation
+
+### Advanced Usage
 - **[Custom Assertions](cookbook/custom-assertions.md)** - Creating custom assertion rules
 - **[Lazy Assertions](cookbook/lazy-assertions.md)** - Batch validation and error collection
 - **[Assertion Chains](cookbook/assertion-chains.md)** - Fluent assertion interface

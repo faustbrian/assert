@@ -10,7 +10,7 @@ composer require cline/assert
 
 ## Basic Usage
 
-The library provides three main ways to perform assertions:
+The library provides four main ways to perform assertions:
 
 ### 1. Static Method Calls
 
@@ -41,7 +41,46 @@ Assert::that($password)
     ->maxLength(100);
 ```
 
-### 3. Lazy Assertions
+### 3. Expect API (Jest/Pest-style)
+
+Use `expect()` for test-friendly, chainable expectations:
+
+```php
+use function Cline\Assert\expect;
+
+// Type checks
+expect($value)->toBeString();
+expect($count)->toBeInt();
+expect($active)->toBeBool();
+
+// Value checks
+expect($result)->toBe(42);
+expect($name)->toEqual('John');
+expect($user)->toBeNull();
+
+// Comparisons
+expect($age)->toBeGreaterThan(18);
+expect($score)->toBeBetween(0, 100);
+
+// Collections
+expect($items)->toHaveCount(3);
+expect($data)->toHaveKey('email');
+expect($tags)->toContain('php');
+
+// Strings
+expect($email)->toStartWith('user@');
+expect($url)->toMatch('/^https?:\/\//');
+
+// Negation
+expect($value)->not->toBeNull();
+expect($list)->not->toBeEmpty();
+
+// Modifiers
+expect([1, 2, 3])->each->toBeInt();
+expect($user)->and($admin)->toHaveProperty('email');
+```
+
+### 4. Lazy Assertions
 
 Collect multiple validation errors before throwing:
 
