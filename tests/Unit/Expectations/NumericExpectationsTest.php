@@ -18,6 +18,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(10)->toBeGreaterThan(5);
             assertExpect(100)->toBeGreaterThan(99);
             assertExpect(0)->toBeGreaterThan(-1);
+
             expect(true)->toBeTrue();
         });
 
@@ -32,6 +33,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(10)->toBeGreaterThanOrEqual(5);
             assertExpect(10)->toBeGreaterThanOrEqual(10);
             assertExpect(0)->toBeGreaterThanOrEqual(0);
+
             expect(true)->toBeTrue();
         });
 
@@ -44,6 +46,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(5)->toBeLessThan(10);
             assertExpect(99)->toBeLessThan(100);
             assertExpect(-1)->toBeLessThan(0);
+
             expect(true)->toBeTrue();
         });
 
@@ -58,6 +61,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(5)->toBeLessThanOrEqual(10);
             assertExpect(10)->toBeLessThanOrEqual(10);
             assertExpect(0)->toBeLessThanOrEqual(0);
+
             expect(true)->toBeTrue();
         });
 
@@ -71,6 +75,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(1)->toBeBetween(1, 10);
             assertExpect(10)->toBeBetween(1, 10);
             assertExpect(0)->toBeBetween(-5, 5);
+
             expect(true)->toBeTrue();
         });
 
@@ -86,18 +91,21 @@ describe('Numeric Expectations', function (): void {
         test('not->toBeGreaterThan() accepts equal or lesser values', function (): void {
             assertExpect(5)->not->toBeGreaterThan(5);
             assertExpect(5)->not->toBeGreaterThan(10);
+
             expect(true)->toBeTrue();
         });
 
         test('not->toBeLessThan() accepts equal or greater values', function (): void {
             assertExpect(10)->not->toBeLessThan(10);
             assertExpect(10)->not->toBeLessThan(5);
+
             expect(true)->toBeTrue();
         });
 
         test('not->toBeBetween() accepts values outside range', function (): void {
             assertExpect(0)->not->toBeBetween(1, 10);
             assertExpect(11)->not->toBeBetween(1, 10);
+
             expect(true)->toBeTrue();
         });
     });

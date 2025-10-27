@@ -21,6 +21,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($obj)->toHaveProperty('name');
             assertExpect($obj)->toHaveProperty('email');
+
             expect(true)->toBeTrue();
         });
 
@@ -28,11 +29,13 @@ describe('Object Expectations', function (): void {
             $user = new class()
             {
                 public string $name = 'John';
+
                 private string $email = 'john@example.com';
             };
 
             assertExpect($user)->toHaveProperty('name');
             assertExpect($user)->toHaveProperty('email');
+
             expect(true)->toBeTrue();
         });
 
@@ -54,6 +57,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($obj)->toHaveMethod('save');
             assertExpect($obj)->toHaveMethod('delete');
+
             expect(true)->toBeTrue();
         });
 
@@ -72,6 +76,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($iterator)->toBeInstanceOf(ArrayIterator::class);
             assertExpect($iterator)->toBeInstanceOf(Traversable::class);
+
             expect(true)->toBeTrue();
         });
     });
@@ -97,7 +102,7 @@ describe('Object Expectations', function (): void {
 
         test('not->toBeInstanceOf() accepts different classes', function (): void {
             assertExpect(
-                new stdClass()
+                new stdClass(),
             )->not->toBeInstanceOf(ArrayIterator::class);
             expect(true)->toBeTrue();
         });
@@ -144,11 +149,13 @@ describe('Object Expectations', function (): void {
             $obj = new class()
             {
                 public string $public = 'visible';
+
                 private string $private = 'hidden';
             };
 
             assertExpect($obj)->toHaveProperty('public');
             assertExpect($obj)->toHaveProperty('private');
+
             expect(true)->toBeTrue();
         });
 

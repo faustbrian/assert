@@ -18,6 +18,7 @@ describe('Collection Expectations', function (): void {
             assertExpect([1, 2, 3])->toHaveCount(3);
             assertExpect([])->toHaveCount(0);
             assertExpect(['a' => 1, 'b' => 2])->toHaveCount(2);
+
             expect(true)->toBeTrue();
         });
 
@@ -30,6 +31,7 @@ describe('Collection Expectations', function (): void {
             assertExpect(['name' => 'John'])->toHaveKey('name');
             assertExpect([1, 2, 3])->toHaveKey(0);
             assertExpect(['a' => 1, 'b' => 2])->toHaveKey('b');
+
             expect(true)->toBeTrue();
         });
 
@@ -42,6 +44,7 @@ describe('Collection Expectations', function (): void {
             assertExpect([1, 2, 3])->toContain(2);
             assertExpect(['a', 'b', 'c'])->toContain('b');
             assertExpect([true, false])->toContain(true);
+
             expect(true)->toBeTrue();
         });
 
@@ -52,7 +55,7 @@ describe('Collection Expectations', function (): void {
 
         test('toHaveCount() works with countable objects', function (): void {
             assertExpect(
-                new ArrayObject([1, 2, 3])
+                new ArrayObject([1, 2, 3]),
             )->toHaveCount(3);
             expect(true)->toBeTrue();
         });
@@ -62,6 +65,7 @@ describe('Collection Expectations', function (): void {
         test('not->toHaveCount() accepts arrays with different count', function (): void {
             assertExpect([1, 2, 3])->not->toHaveCount(2);
             assertExpect([])->not->toHaveCount(1);
+
             expect(true)->toBeTrue();
         });
 

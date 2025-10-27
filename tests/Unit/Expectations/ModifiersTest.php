@@ -21,6 +21,7 @@ describe('Expectation Modifiers', function (): void {
         test('each() as property applies next assertion to all items', function (): void {
             assertExpect([1, 2, 3])->each->toBeInt();
             assertExpect(['a', 'b', 'c'])->each->toBeString();
+
             expect(true)->toBeTrue();
         });
 
@@ -48,9 +49,8 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('each() requires traversable value', function (): void {
-            assertExpect(fn() =>
-                assertExpect(42)->each->toBeInt()
-            )->toThrow(AssertionFailedException::class);
+            assertExpect(fn () => assertExpect(42)->each->toBeInt())
+                ->toThrow(AssertionFailedException::class);
         });
     });
 

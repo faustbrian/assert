@@ -18,6 +18,7 @@ describe('Format Expectations', function (): void {
             assertExpect('test@example.com')->toBeEmail();
             assertExpect('user+tag@domain.co.uk')->toBeEmail();
             assertExpect('name@subdomain.domain.com')->toBeEmail();
+
             expect(true)->toBeTrue();
         });
 
@@ -39,6 +40,7 @@ describe('Format Expectations', function (): void {
             assertExpect('https://example.com')->toBeUrl();
             assertExpect('http://localhost:8080')->toBeUrl();
             assertExpect('https://sub.domain.com/path?query=value')->toBeUrl();
+
             expect(true)->toBeTrue();
         });
 
@@ -59,6 +61,7 @@ describe('Format Expectations', function (): void {
         test('toBeUuid() accepts valid UUIDs', function (): void {
             assertExpect('550e8400-e29b-41d4-a716-446655440000')->toBeUuid();
             assertExpect('6ba7b810-9dad-11d1-80b4-00c04fd430c8')->toBeUuid();
+
             expect(true)->toBeTrue();
         });
 
@@ -81,6 +84,7 @@ describe('Format Expectations', function (): void {
             assertExpect('[1,2,3]')->toBeJson();
             assertExpect('null')->toBeJson();
             assertExpect('"string"')->toBeJson();
+
             expect(true)->toBeTrue();
         });
 

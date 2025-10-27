@@ -38,12 +38,14 @@ describe('Core Expectations', function (): void {
             assertExpect('hello')->toBe('hello');
             assertExpect(true)->toBe(true);
             assertExpect(null)->toBe(null);
+
             expect(true)->toBeTrue();
         });
 
         test('toEqual() is alias for toBe()', function (): void {
             assertExpect(42)->toEqual(42);
             assertExpect('test')->toEqual('test');
+
             expect(true)->toBeTrue();
         });
 
@@ -68,6 +70,7 @@ describe('Core Expectations', function (): void {
             assertExpect(true)->toBeTruthy();
             assertExpect([1])->toBeTruthy();
             assertExpect((object) [])->toBeTruthy();
+
             expect(true)->toBeTrue();
         });
 
@@ -77,6 +80,7 @@ describe('Core Expectations', function (): void {
             assertExpect(false)->toBeFalsy();
             assertExpect(null)->toBeFalsy();
             assertExpect([])->toBeFalsy();
+
             expect(true)->toBeTrue();
         });
 
@@ -84,6 +88,7 @@ describe('Core Expectations', function (): void {
             assertExpect('')->toBeEmpty();
             assertExpect([])->toBeEmpty();
             assertExpect(0)->toBeEmpty();
+
             expect(true)->toBeTrue();
         });
     });
@@ -129,12 +134,14 @@ describe('Core Expectations', function (): void {
         test('toBeTruthy() uses loose comparison', function (): void {
             assertExpect('1')->toBeTruthy();
             assertExpect(1)->toBeTruthy();
+
             expect(true)->toBeTrue();
         });
 
         test('toBeFalsy() uses loose comparison', function (): void {
             assertExpect('0')->toBeFalsy();
             assertExpect(0)->toBeFalsy();
+
             expect(true)->toBeTrue();
         });
     });

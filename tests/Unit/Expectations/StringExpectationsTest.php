@@ -18,6 +18,7 @@ describe('String Expectations', function (): void {
             assertExpect('hello world')->toStartWith('hello');
             assertExpect('test')->toStartWith('te');
             assertExpect('PHP')->toStartWith('P');
+
             expect(true)->toBeTrue();
         });
 
@@ -30,6 +31,7 @@ describe('String Expectations', function (): void {
             assertExpect('hello world')->toEndWith('world');
             assertExpect('test')->toEndWith('st');
             assertExpect('PHP')->toEndWith('P');
+
             expect(true)->toBeTrue();
         });
 
@@ -42,6 +44,7 @@ describe('String Expectations', function (): void {
             assertExpect('test@example.com')->toMatch('/^.+@.+\..+$/');
             assertExpect('hello123')->toMatch('/^[a-z]+\d+$/');
             assertExpect('PHP')->toMatch('/^[A-Z]+$/');
+
             expect(true)->toBeTrue();
         });
 
@@ -54,6 +57,7 @@ describe('String Expectations', function (): void {
             assertExpect('hello')->toHaveLength(5);
             assertExpect('')->toHaveLength(0);
             assertExpect('PHP')->toHaveLength(3);
+
             expect(true)->toBeTrue();
         });
 
@@ -66,6 +70,7 @@ describe('String Expectations', function (): void {
             assertExpect('hello world')->toContain('world');
             assertExpect('hello world')->toContain('hello');
             assertExpect('hello world')->toContain('o w');
+
             expect(true)->toBeTrue();
         });
 
@@ -79,12 +84,14 @@ describe('String Expectations', function (): void {
         test('not->toStartWith() accepts strings without prefix', function (): void {
             assertExpect('hello world')->not->toStartWith('world');
             assertExpect('test')->not->toStartWith('foo');
+
             expect(true)->toBeTrue();
         });
 
         test('not->toEndWith() accepts strings without suffix', function (): void {
             assertExpect('hello world')->not->toEndWith('hello');
             assertExpect('test')->not->toEndWith('foo');
+
             expect(true)->toBeTrue();
         });
 

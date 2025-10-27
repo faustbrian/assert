@@ -183,7 +183,7 @@ final class Expectation
     public function toBeTruthy(): self
     {
         if ($this->negate) {
-            throw_if((bool) $this->value === true, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
+            throw_if((bool) $this->value, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
 
             $this->negate = false;
 
@@ -208,7 +208,7 @@ final class Expectation
             return $this;
         }
 
-        throw_if((bool) $this->value === true, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
+        throw_if((bool) $this->value, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
 
         return $this;
     }

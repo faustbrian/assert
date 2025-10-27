@@ -17,6 +17,7 @@ describe('Negation Modifier (->not)', function (): void {
         test('not->toBe() rejects equal values', function (): void {
             assertExpect(42)->not->toBe(43);
             assertExpect('hello')->not->toBe('world');
+
             expect(true)->toBeTrue();
         });
 
@@ -25,6 +26,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('test')->not->toBeNull();
             assertExpect(0)->not->toBeNull();
             assertExpect(false)->not->toBeNull();
+
             expect(true)->toBeTrue();
         });
 
@@ -32,6 +34,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect(false)->not->toBeTrue();
             assertExpect(0)->not->toBeTrue();
             assertExpect('test')->not->toBeTrue();
+
             expect(true)->toBeTrue();
         });
 
@@ -39,6 +42,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect(true)->not->toBeFalse();
             assertExpect(1)->not->toBeFalse();
             assertExpect('test')->not->toBeFalse();
+
             expect(true)->toBeTrue();
         });
 
@@ -47,6 +51,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('')->not->toBeTruthy();
             assertExpect(false)->not->toBeTruthy();
             assertExpect(null)->not->toBeTruthy();
+
             expect(true)->toBeTrue();
         });
 
@@ -55,6 +60,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('yes')->not->toBeFalsy();
             assertExpect(true)->not->toBeFalsy();
             assertExpect([1])->not->toBeFalsy();
+
             expect(true)->toBeTrue();
         });
 
@@ -62,6 +68,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('hello')->not->toBeEmpty();
             assertExpect([1, 2])->not->toBeEmpty();
             assertExpect(42)->not->toBeEmpty();
+
             expect(true)->toBeTrue();
         });
 
@@ -69,6 +76,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect(42)->not->toBeString();
             assertExpect([])->not->toBeString();
             assertExpect(true)->not->toBeString();
+
             expect(true)->toBeTrue();
         });
 
@@ -76,6 +84,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('42')->not->toBeInt();
             assertExpect(3.14)->not->toBeInt();
             assertExpect([])->not->toBeInt();
+
             expect(true)->toBeTrue();
         });
 
@@ -83,6 +92,7 @@ describe('Negation Modifier (->not)', function (): void {
             assertExpect('test')->not->toBeArray();
             assertExpect(42)->not->toBeArray();
             assertExpect(null)->not->toBeArray();
+
             expect(true)->toBeTrue();
         });
     });
