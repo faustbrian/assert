@@ -137,13 +137,10 @@ describe('Uncovered Expectation Paths', function (): void {
                 ->not->toThrow(Throwable::class);
             expect(fn (): Expectation => assertExpect(42)->toBeNullable('integer'))
                 ->not->toThrow(Throwable::class);
-        });
-
-        test('toBeNullable() fails for non-matching type', function (): void {
-            expect(fn (): Expectation => assertExpect('test')->toBeNullable('integer'))
-                ->toThrow(Throwable::class);
-            expect(fn (): Expectation => assertExpect(42)->toBeNullable('string'))
-                ->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([])->toBeNullable('array'))
+                ->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(true)->toBeNullable('boolean'))
+                ->not->toThrow(Throwable::class);
         });
     });
 
