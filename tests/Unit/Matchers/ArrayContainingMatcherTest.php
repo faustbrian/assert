@@ -52,7 +52,9 @@ describe('ArrayContainingMatcher', function (): void {
         expect($matcher->matches(true))->toBeFalse();
         expect($matcher->matches(false))->toBeFalse();
         expect($matcher->matches(null))->toBeFalse();
-        expect($matcher->matches(new stdClass()))->toBeFalse();
+        expect($matcher->matches(
+            new stdClass(),
+        ))->toBeFalse();
     });
 
     test('supports nested asymmetric matchers', function (): void {

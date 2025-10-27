@@ -51,6 +51,7 @@ final readonly class AnyMatcher implements AsymmetricMatcher
             'numeric' => is_numeric($value),
             'scalar' => is_scalar($value),
             'callable' => is_callable($value),
+            // @phpstan-ignore-next-line argument.type
             default => (is_object($value) || is_string($value)) && is_a($value, $this->type),
         };
     }

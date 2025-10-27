@@ -51,7 +51,7 @@ describe('Asymmetric Matchers', function (): void {
 
         test('matches double type alias', function (): void {
             expect(fn (): Expectation => assertExpect([
-                'value' => 3.14159,
+                'value' => 3.141_59,
             ])->toEqual([
                 'value' => assertExpect()->any('double'),
             ]))->not->toThrow(Throwable::class);
@@ -90,7 +90,7 @@ describe('Asymmetric Matchers', function (): void {
         });
 
         test('matches resource type', function (): void {
-            $resource = fopen('php://memory', 'r');
+            $resource = fopen('php://memory', 'rb');
             expect(fn (): Expectation => assertExpect([
                 'handle' => $resource,
             ])->toEqual([
@@ -180,7 +180,7 @@ describe('Asymmetric Matchers', function (): void {
         });
 
         test('matches callable type with invokable object', function (): void {
-            $invokable = new class ()
+            $invokable = new class()
             {
                 public function __invoke(): string
                 {

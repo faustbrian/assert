@@ -37,7 +37,9 @@ describe('StringContainingMatcher', function (): void {
         expect($matcher->matches(null))->toBeFalse();
         expect($matcher->matches([]))->toBeFalse();
         expect($matcher->matches(['foo']))->toBeFalse();
-        expect($matcher->matches(new stdClass()))->toBeFalse();
+        expect($matcher->matches(
+            new stdClass(),
+        ))->toBeFalse();
     });
 
     test('toString returns formatted string representation', function (): void {

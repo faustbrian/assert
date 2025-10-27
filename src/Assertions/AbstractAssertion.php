@@ -1965,7 +1965,6 @@ abstract class AbstractAssertion
     public static function subsetOf(mixed $value, array $superset, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         self::isArray($value, $message, $propertyPath);
-        // @phpstan-ignore-next-line missingType.iterableValue
         /** @phpstan-var array<mixed> $value */  // @phpstan-ignore-line missingType.iterableValue
         $diff = array_diff($value, $superset);
 
@@ -1983,10 +1982,10 @@ abstract class AbstractAssertion
 
     public static function sorted(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
-        // @phpstan-ignore-next-line missingType.iterableValue
         /** @var array $value */
         self::isArray($value, $message, $propertyPath);
 
+        // @phpstan-ignore-next-line missingType.iterableValue
         $sorted = $value;
         sort($sorted);
 
@@ -2338,7 +2337,6 @@ abstract class AbstractAssertion
     public static function today(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         /** @phpstan-var \DateTimeInterface|string $value */
-        // @phpstan-ignore-next-line argument.type
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $today = Date::today();
 
@@ -2357,7 +2355,6 @@ abstract class AbstractAssertion
     public static function yesterday(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         /** @phpstan-var \DateTimeInterface|string $value */
-        // @phpstan-ignore-next-line argument.type
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $yesterday = Date::yesterday();
 
@@ -2376,7 +2373,6 @@ abstract class AbstractAssertion
     public static function tomorrow(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         /** @phpstan-var \DateTimeInterface|string $value */
-        // @phpstan-ignore-next-line argument.type
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
         $tomorrow = Date::tomorrow();
 
@@ -2616,8 +2612,8 @@ abstract class AbstractAssertion
         /** @phpstan-var array<mixed> $value */
         /** @var array<mixed> $expected */
 
-        // @phpstan-ignore-next-line argument.type
         foreach ($expected as $key => $expectedValue) {
+            // @phpstan-ignore-next-line argument.type
             if (!array_key_exists($key, $value)) {
                 $message = sprintf(
                     self::generateMessage($message ?: 'Expected array to have key %2$s. Got: %s'),
@@ -2647,8 +2643,8 @@ abstract class AbstractAssertion
     {
         self::isObject($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
+        /** @var object $value */  // @phpstan-ignore-line varTag.differentVariable
         // @phpstan-ignore-next-line varTag.differentVariable
-        /** @var object $value */
         /** @var array<mixed> $expected */
 
         foreach ($expected as $property => $expectedValue) {
@@ -2682,8 +2678,8 @@ abstract class AbstractAssertion
         self::isCountable($value, $message, $propertyPath);
         self::isCountable($expected, $message, $propertyPath);
         /** @phpstan-var array|\Countable $value */
-        /** @phpstan-var array|\Countable $expected */
-
+        // @phpstan-ignore-next-line missingType.iterableValue
+        /** @phpstan-var array|\Countable $expected */  // @phpstan-ignore-line missingType.iterableValue
         $actualCount = count($value);
         $expectedCount = count($expected);
 

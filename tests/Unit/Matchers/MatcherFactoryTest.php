@@ -103,8 +103,12 @@ describe('MatcherFactory', function (): void {
                 $matcher = MatcherFactory::any('object');
 
                 // Assert
-                expect($matcher->matches(new stdClass()))->toBeTrue();
-                expect($matcher->matches(new DateTime()))->toBeTrue();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeTrue();
+                expect($matcher->matches(
+                    new DateTime(),
+                ))->toBeTrue();
             });
 
             test('creates matcher that matches specific class', function (): void {
@@ -112,7 +116,9 @@ describe('MatcherFactory', function (): void {
                 $matcher = MatcherFactory::any(DateTime::class);
 
                 // Assert
-                expect($matcher->matches(new DateTime()))->toBeTrue();
+                expect($matcher->matches(
+                    new DateTime(),
+                ))->toBeTrue();
             });
 
             test('creates matcher that matches null type', function (): void {
@@ -155,7 +161,7 @@ describe('MatcherFactory', function (): void {
 
             test('creates matcher that matches resource type', function (): void {
                 // Arrange
-                $resource = fopen('php://memory', 'r');
+                $resource = fopen('php://memory', 'rb');
 
                 // Act
                 $matcher = MatcherFactory::any('resource');
@@ -202,7 +208,9 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches('[]'))->toBeFalse();
-                expect($matcher->matches(new ArrayObject([1, 2, 3])))->toBeFalse();
+                expect($matcher->matches(
+                    new ArrayObject([1, 2, 3]),
+                ))->toBeFalse();
             });
 
             test('creates matcher that rejects wrong class type', function (): void {
@@ -210,7 +218,9 @@ describe('MatcherFactory', function (): void {
                 $matcher = MatcherFactory::any(DateTime::class);
 
                 // Assert
-                expect($matcher->matches(new stdClass()))->toBeFalse();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeFalse();
                 expect($matcher->matches('DateTime'))->toBeFalse();
             });
 
@@ -239,7 +249,9 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches([]))->toBeFalse();
-                expect($matcher->matches(new stdClass()))->toBeFalse();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeFalse();
                 expect($matcher->matches(null))->toBeFalse();
             });
 
@@ -249,7 +261,9 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches('not_a_function'))->toBeFalse();
-                expect($matcher->matches(new stdClass()))->toBeFalse();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeFalse();
             });
         });
 
@@ -259,12 +273,14 @@ describe('MatcherFactory', function (): void {
                 $matcher = MatcherFactory::any('DateTime');
 
                 // Assert
-                expect($matcher->matches(new DateTime()))->toBeTrue();
+                expect($matcher->matches(
+                    new DateTime(),
+                ))->toBeTrue();
             });
 
             test('handles empty resource after close', function (): void {
                 // Arrange
-                $resource = fopen('php://memory', 'r');
+                $resource = fopen('php://memory', 'rb');
                 fclose($resource);
 
                 // Act
@@ -279,8 +295,12 @@ describe('MatcherFactory', function (): void {
                 $matcher = MatcherFactory::any(DateTimeInterface::class);
 
                 // Assert
-                expect($matcher->matches(new DateTime()))->toBeTrue();
-                expect($matcher->matches(new DateTimeImmutable()))->toBeTrue();
+                expect($matcher->matches(
+                    new DateTime(),
+                ))->toBeTrue();
+                expect($matcher->matches(
+                    new DateTimeImmutable(),
+                ))->toBeTrue();
             });
         });
     });
@@ -306,7 +326,9 @@ describe('MatcherFactory', function (): void {
                 expect($matcher->matches(true))->toBeTrue();
                 expect($matcher->matches(false))->toBeTrue();
                 expect($matcher->matches([]))->toBeTrue();
-                expect($matcher->matches(new stdClass()))->toBeTrue();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeTrue();
             });
 
             test('provides readable toString output', function (): void {
@@ -407,7 +429,9 @@ describe('MatcherFactory', function (): void {
                 expect($matcher->matches(42))->toBeFalse();
                 expect($matcher->matches(null))->toBeFalse();
                 expect($matcher->matches([]))->toBeFalse();
-                expect($matcher->matches(new stdClass()))->toBeFalse();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeFalse();
             });
         });
 
@@ -542,7 +566,9 @@ describe('MatcherFactory', function (): void {
                 expect($matcher->matches('string'))->toBeFalse();
                 expect($matcher->matches(42))->toBeFalse();
                 expect($matcher->matches(null))->toBeFalse();
-                expect($matcher->matches(new stdClass()))->toBeFalse();
+                expect($matcher->matches(
+                    new stdClass(),
+                ))->toBeFalse();
             });
 
             test('creates matcher that rejects when nested matcher fails', function (): void {

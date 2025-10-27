@@ -55,7 +55,10 @@ final class SnapshotManager
         $path = self::getSnapshotPath($testName);
         throw_unless(file_exists($path), RuntimeException::class, sprintf('Snapshot %s does not exist', $testName));
 
-        return file_get_contents($path);
+        $content = file_get_contents($path);
+        throw_unless($content !== false, RuntimeException::class, sprintf('Failed to read snapshot %s', $testName));
+
+        return $content;
     }
 
     public static function saveSnapshot(string $testName, string $content): void
@@ -74,7 +77,10 @@ final class SnapshotManager
         }
 
         if (is_array($value) || is_object($value)) {
-            return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            $encoded = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            throw_unless($encoded !== false, RuntimeException::class, 'Failed to encode value as JSON');
+
+            return $encoded;
         }
 
         return (string) $value;

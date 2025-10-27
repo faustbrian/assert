@@ -21,7 +21,9 @@ describe('AnythingMatcher', function (): void {
         expect($matcher->matches(false))->toBeTrue();
         expect($matcher->matches([]))->toBeTrue();
         expect($matcher->matches(['foo']))->toBeTrue();
-        expect($matcher->matches(new stdClass()))->toBeTrue();
+        expect($matcher->matches(
+            new stdClass(),
+        ))->toBeTrue();
     });
 
     test('rejects null values', function (): void {
