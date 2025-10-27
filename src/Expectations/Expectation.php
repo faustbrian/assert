@@ -154,6 +154,53 @@ final class Expectation
     }
 
     /**
+     * Assert that arrays are equal, ignoring element order.
+     */
+    public function toEqualCanonicalizing(array $expected): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toEqualCanonicalizing() requires an array value', 0, null, $this->value);
+
+        $actualSorted = $this->value;
+        $expectedSorted = $expected;
+
+        sort($actualSorted);
+        sort($expectedSorted);
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($actualSorted === $expectedSorted, InvalidArgumentException::class, 'Expected arrays not to be equal (ignoring order)', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($actualSorted === $expectedSorted, InvalidArgumentException::class, 'Expected arrays to be equal (ignoring order)', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that numeric values are equal within a delta.
+     */
+    public function toEqualWithDelta(float|int $expected, float $delta): self
+    {
+        throw_unless(is_numeric($this->value), InvalidArgumentException::class, 'toEqualWithDelta() requires a numeric value', 0, null, $this->value);
+
+        $diff = abs($this->value - $expected);
+        $withinDelta = $diff <= $delta;
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($withinDelta, InvalidArgumentException::class, sprintf('Expected value not to equal %s within delta %s', $expected, $delta), 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($withinDelta, InvalidArgumentException::class, sprintf('Expected value to equal %s within delta %s, got difference of %s', $expected, $delta, $diff), 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
      * Assert that value is null.
      */
     public function toBeNull(): self
@@ -294,6 +341,14 @@ final class Expectation
     }
 
     /**
+     * Assert that value contains only digits.
+     */
+    public function toBeDigits(): self
+    {
+        return $this->invoke('digit');
+    }
+
+    /**
      * Assert that value is a scalar.
      */
     public function toBeScalar(): self
@@ -358,6 +413,58 @@ final class Expectation
     }
 
     /**
+     * Assert that value is a file.
+     */
+    public function toBeFile(): self
+    {
+        return $this->invoke('file');
+    }
+
+    /**
+     * Assert that value is a readable file.
+     */
+    public function toBeReadableFile(): self
+    {
+        Assertion::file($this->value);
+        Assertion::readable($this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that value is a writable file.
+     */
+    public function toBeWritableFile(): self
+    {
+        Assertion::file($this->value);
+        Assertion::writeable($this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that value is a readable directory.
+     */
+    public function toBeReadableDirectory(): self
+    {
+        Assertion::directory($this->value);
+        Assertion::readable($this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that value is a writable directory.
+     */
+    public function toBeWritableDirectory(): self
+    {
+        Assertion::directory($this->value);
+        Assertion::writeable($this->value);
+
+        return $this;
+    }
+
+    /**
      * Assert that value is greater than limit.
      */
     public function toBeGreaterThan(mixed $limit): self
@@ -398,6 +505,40 @@ final class Expectation
     }
 
     /**
+     * Assert that value is infinite.
+     */
+    public function toBeInfinite(): self
+    {
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if(is_infinite($this->value), InvalidArgumentException::class, 'Expected value not to be infinite', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless(is_infinite($this->value), InvalidArgumentException::class, 'Expected value to be infinite', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that value is NaN (Not a Number).
+     */
+    public function toBeNan(): self
+    {
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if(is_nan($this->value), InvalidArgumentException::class, 'Expected value not to be NaN', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless(is_nan($this->value), InvalidArgumentException::class, 'Expected value to be NaN', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
      * Assert that string starts with prefix.
      */
     public function toStartWith(string $prefix): self
@@ -411,6 +552,162 @@ final class Expectation
     public function toEndWith(string $suffix): self
     {
         return $this->invoke('endsWith', [$suffix]);
+    }
+
+    /**
+     * Assert that string contains only alphabetic characters.
+     */
+    public function toBeAlpha(): self
+    {
+        if ($this->negate) {
+            $this->negate = false;
+
+            throw_if(ctype_alpha($this->value), InvalidArgumentException::class, 'Expected value not to be alphabetic', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless(ctype_alpha($this->value), InvalidArgumentException::class, 'Expected value to be alphabetic', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string contains only alphanumeric characters.
+     */
+    public function toBeAlphaNumeric(): self
+    {
+        return $this->invoke('alnum');
+    }
+
+    /**
+     * Assert that string is snake_case.
+     */
+    public function toBeSnakeCase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeSnakeCase() requires a string value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+(_[a-z]+)*$/';
+        $isSnakeCase = preg_match($pattern, $this->value) === 1;
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isSnakeCase, InvalidArgumentException::class, 'Expected value not to be snake_case', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isSnakeCase, InvalidArgumentException::class, 'Expected value to be snake_case', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string is kebab-case.
+     */
+    public function toBeKebabCase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeKebabCase() requires a string value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+(-[a-z]+)*$/';
+        $isKebabCase = preg_match($pattern, $this->value) === 1;
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isKebabCase, InvalidArgumentException::class, 'Expected value not to be kebab-case', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isKebabCase, InvalidArgumentException::class, 'Expected value to be kebab-case', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string is camelCase.
+     */
+    public function toBeCamelCase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeCamelCase() requires a string value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+([A-Z][a-z]+)*$/';
+        $isCamelCase = preg_match($pattern, $this->value) === 1;
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isCamelCase, InvalidArgumentException::class, 'Expected value not to be camelCase', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isCamelCase, InvalidArgumentException::class, 'Expected value to be camelCase', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string is StudlyCase.
+     */
+    public function toBeStudlyCase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeStudlyCase() requires a string value', 0, null, $this->value);
+
+        $pattern = '/^[A-Z][a-z]+([A-Z][a-z]+)*$/';
+        $isStudlyCase = preg_match($pattern, $this->value) === 1;
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isStudlyCase, InvalidArgumentException::class, 'Expected value not to be StudlyCase', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isStudlyCase, InvalidArgumentException::class, 'Expected value to be StudlyCase', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string is uppercase.
+     */
+    public function toBeUppercase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeUppercase() requires a string value', 0, null, $this->value);
+
+        $isUppercase = $this->value === strtoupper($this->value);
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isUppercase, InvalidArgumentException::class, 'Expected value not to be uppercase', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isUppercase, InvalidArgumentException::class, 'Expected value to be uppercase', 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that string is lowercase.
+     */
+    public function toBeLowercase(): self
+    {
+        throw_unless(is_string($this->value), InvalidArgumentException::class, 'toBeLowercase() requires a string value', 0, null, $this->value);
+
+        $isLowercase = $this->value === strtolower($this->value);
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($isLowercase, InvalidArgumentException::class, 'Expected value not to be lowercase', 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($isLowercase, InvalidArgumentException::class, 'Expected value to be lowercase', 0, null, $this->value);
+
+        return $this;
     }
 
     /**
@@ -485,6 +782,70 @@ final class Expectation
     }
 
     /**
+     * Assert that array contains value with deep equality check.
+     */
+    public function toContainEqual(mixed $needle): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toContainEqual() requires an array value', 0, null, $this->value);
+
+        foreach ($this->value as $item) {
+            if ($item === $needle || $item == $needle) {
+                if ($this->negate) {
+                    throw new InvalidArgumentException('Expected array not to contain equal value', 0, null, $this->value);
+                }
+
+                return $this;
+            }
+        }
+
+        if ($this->negate) {
+            $this->negate = false;
+
+            return $this;
+        }
+
+        throw new InvalidArgumentException('Expected array to contain equal value', 0, null, $this->value);
+    }
+
+    /**
+     * Assert that value is in the given array.
+     */
+    public function toBeIn(array $haystack): self
+    {
+        return $this->invoke('inArray', [$haystack]);
+    }
+
+    /**
+     * Assert that array is a subset of expected array (ignoring order).
+     */
+    public function toMatchArray(array $expected): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toMatchArray() requires an array value', 0, null, $this->value);
+
+        foreach ($expected as $key => $value) {
+            throw_unless(\array_key_exists($key, $this->value), InvalidArgumentException::class, sprintf('Expected array to have key %s', $key), 0, null, $this->value);
+            throw_unless($this->value[$key] === $value, InvalidArgumentException::class, sprintf('Expected array key %s to equal %s', $key, $value), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that object properties match expected array.
+     */
+    public function toMatchObject(array $expected): self
+    {
+        throw_unless(is_object($this->value), InvalidArgumentException::class, 'toMatchObject() requires an object value', 0, null, $this->value);
+
+        foreach ($expected as $property => $value) {
+            throw_unless(property_exists($this->value, $property), InvalidArgumentException::class, sprintf('Expected object to have property %s', $property), 0, null, $this->value);
+            throw_unless($this->value->{$property} === $value, InvalidArgumentException::class, sprintf('Expected object property %s to equal %s', $property, $value), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Assert that object/class has property.
      */
     public function toHaveProperty(string $property): self
@@ -510,6 +871,28 @@ final class Expectation
         }
 
         Assertion::propertyExists($this->value, $property);
+
+        return $this;
+    }
+
+    /**
+     * Assert that object has multiple properties.
+     */
+    public function toHaveProperties(array $properties): self
+    {
+        Assertion::propertiesExist($this->value, $properties);
+
+        return $this;
+    }
+
+    /**
+     * Assert that array has multiple keys.
+     */
+    public function toHaveKeys(array $keys): self
+    {
+        foreach ($keys as $key) {
+            Assertion::keyExists($this->value, $key);
+        }
 
         return $this;
     }
@@ -583,6 +966,113 @@ final class Expectation
 
         if (!$result) {
             $callback($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Apply different expectations to each element in order (sequence).
+     */
+    public function sequence(callable ...$callbacks): self
+    {
+        Assertion::isTraversable($this->value);
+
+        $values = is_array($this->value) ? $this->value : iterator_to_array($this->value);
+
+        foreach ($callbacks as $index => $callback) {
+            throw_unless(\array_key_exists($index, $values), InvalidArgumentException::class, sprintf('Sequence expects at least %d items but got %d', $index + 1, \count($values)), 0, null, $this->value);
+
+            $expectation = new self($values[$index]);
+            $callback($expectation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Parse JSON string and return new expectation on decoded value.
+     */
+    public function json(): self
+    {
+        Assertion::isJsonString($this->value);
+        $decoded = json_decode($this->value, true);
+
+        return new self($decoded);
+    }
+
+    /**
+     * Match value against multiple patterns.
+     */
+    public function match(array ...$patterns): self
+    {
+        foreach ($patterns as [$matcher, $callback]) {
+            $matched = false;
+
+            if (is_callable($matcher)) {
+                $matched = $matcher($this->value);
+            } else {
+                $matched = $this->value === $matcher;
+            }
+
+            if ($matched) {
+                $callback($this);
+
+                return $this;
+            }
+        }
+
+        throw new InvalidArgumentException('No pattern matched the value', 0, null, $this->value);
+    }
+
+    /**
+     * Dump and die - output value and stop execution.
+     */
+    public function dd(mixed ...$args): never
+    {
+        dump($this->value, ...$args);
+        exit(1);
+    }
+
+    /**
+     * Dump and die only when condition is true.
+     */
+    public function ddWhen(bool|callable $condition, mixed ...$args): self
+    {
+        $result = is_callable($condition) ? $condition($this->value) : $condition;
+
+        if ($result) {
+            $this->dd(...$args);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Dump and die only when condition is false.
+     */
+    public function ddUnless(bool|callable $condition, mixed ...$args): self
+    {
+        $result = is_callable($condition) ? $condition($this->value) : $condition;
+
+        if (!$result) {
+            $this->dd(...$args);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Send value to Ray debugger (if available).
+     */
+    public function ray(?string $label = null): self
+    {
+        if (\function_exists('ray')) {
+            if ($label !== null) {
+                ray($label, $this->value);
+            } else {
+                ray($this->value);
+            }
         }
 
         return $this;

@@ -47,6 +47,24 @@ describe('Collection Expectations', function (): void {
                 ->toThrow(InvalidArgumentException::class);
         });
 
+        test('toHaveLength() works for strings', function (): void {
+            expect(fn (): Expectation => assertExpect('hello')->toHaveLength(5))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('')->toHaveLength(0))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('test')->toHaveLength(4))->not->toThrow(Throwable::class);
+        });
+
+        test('toHaveLength() works for arrays', function (): void {
+            expect(fn (): Expectation => assertExpect([1, 2, 3])->toHaveLength(3))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([])->toHaveLength(0))->not->toThrow(Throwable::class);
+        });
+
+        test('toHaveLength() rejects incorrect length', function (): void {
+            expect(fn (): Expectation => assertExpect('hello')->toHaveLength(3))
+                ->toThrow(InvalidArgumentException::class);
+            expect(fn (): Expectation => assertExpect([1, 2])->toHaveLength(3))
+                ->toThrow(InvalidArgumentException::class);
+        });
+
         test('toHaveCount() works with countable objects', function (): void {
             expect(fn (): Expectation => assertExpect(
                 new ArrayObject([1, 2, 3]),

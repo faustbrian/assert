@@ -94,6 +94,12 @@ describe('Type Expectations', function (): void {
             expect(fn (): Expectation => assertExpect($handle)->toBeResource())->not->toThrow(Throwable::class);
             fclose($handle);
         });
+
+        test('toEqual() accepts equal values', function (): void {
+            expect(fn (): Expectation => assertExpect(42)->toEqual(42))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect('test')->toEqual('test'))->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect([1, 2, 3])->toEqual([1, 2, 3]))->not->toThrow(Throwable::class);
+        });
     });
 
     describe('Sad Paths', function (): void {
