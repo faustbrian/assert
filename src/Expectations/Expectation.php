@@ -23,6 +23,7 @@ use stdClass;
 use Throwable;
 
 use function array_key_exists;
+use function array_keys;
 use function array_map;
 use function call_user_func_array;
 use function count;
@@ -36,6 +37,7 @@ use function in_array;
 use function is_array;
 use function is_callable;
 use function is_countable;
+use function is_iterable;
 use function is_scalar;
 use function is_string;
 use function iterator_to_array;
@@ -1723,14 +1725,7 @@ final class Expectation
      */
     private function handleCollectionMode(string $method, array $args): self
     {
-        if (!is_iterable($this->value)) {
-            throw new InvalidArgumentException(
-                sprintf('Collection mode (%s) requires an iterable value. Got: %s', $this->collectionMode, gettype($this->value)),
-                0,
-                null,
-                $this->value,
-            );
-        }
+        throw_unless(is_iterable($this->value), InvalidArgumentException::class, sprintf('Collection mode (%s) requires an iterable value. Got: %s', $this->collectionMode, gettype($this->value)), 0, null, $this->value);
 
         /** @var callable $callable */
         $callable = [Assertion::class, $method];
@@ -1741,7 +1736,7 @@ final class Expectation
         foreach ($items as $key => $item) {
             try {
                 $callable(...[$item, ...$args]);
-                $matchedCount++;
+                ++$matchedCount;
             } catch (InvalidArgumentException $exception) {
                 $errors[$key] = $exception;
             }
@@ -1754,6 +1749,7 @@ final class Expectation
         if ($mode === 'all') {
             if ($matchedCount !== $totalCount) {
                 $failedKeys = array_keys($errors);
+
                 throw new InvalidArgumentException(
                     sprintf('Expected all items to match. %d/%d items failed at keys: %s', $totalCount - $matchedCount, $totalCount, implode(', ', $failedKeys)),
                     0,
@@ -1762,23 +1758,9 @@ final class Expectation
                 );
             }
         } elseif ($mode === 'any') {
-            if ($matchedCount === 0) {
-                throw new InvalidArgumentException(
-                    sprintf('Expected at least one item to match. All %d items failed', $totalCount),
-                    0,
-                    null,
-                    $this->value,
-                );
-            }
+            throw_if($matchedCount === 0, InvalidArgumentException::class, sprintf('Expected at least one item to match. All %d items failed', $totalCount), 0, null, $this->value);
         } elseif ($mode === 'none') {
-            if ($matchedCount > 0) {
-                throw new InvalidArgumentException(
-                    sprintf('Expected no items to match. %d/%d items matched', $matchedCount, $totalCount),
-                    0,
-                    null,
-                    $this->value,
-                );
-            }
+            throw_if($matchedCount > 0, InvalidArgumentException::class, sprintf('Expected no items to match. %d/%d items matched', $matchedCount, $totalCount), 0, null, $this->value);
         }
 
         return $this;

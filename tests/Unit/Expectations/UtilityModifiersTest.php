@@ -57,7 +57,7 @@ describe('Utility Modifiers', function (): void {
         test('transforms value in chain', function (): void {
             expect(
                 assertExpect([1, 2, 3])
-                    ->pipe(fn ($arr) => count($arr))
+                    ->pipe(count(...))
                     ->toBe(3),
             )->not->toThrow(Throwable::class);
         });
@@ -65,8 +65,8 @@ describe('Utility Modifiers', function (): void {
         test('can chain multiple transformations', function (): void {
             expect(
                 assertExpect('hello')
-                    ->pipe(fn ($str) => strtoupper($str))
-                    ->pipe(fn ($str) => str_split($str))
+                    ->pipe(strtoupper(...))
+                    ->pipe(str_split(...))
                     ->toBeArray()
                     ->toHaveCount(5),
             )->not->toThrow(Throwable::class);
@@ -92,7 +92,7 @@ describe('Utility Modifiers', function (): void {
             expect(
                 assertExpect('guest')
                     ->unless(
-                        fn ($value) => $value === 'admin',
+                        fn ($value): bool => $value === 'admin',
                         function (Expectation $exp) use (&$called): void {
                             $called = true;
                             $exp->toBeString();
@@ -109,7 +109,7 @@ describe('Utility Modifiers', function (): void {
             expect(
                 assertExpect('admin')
                     ->unless(
-                        fn ($value) => $value === 'admin',
+                        fn ($value): bool => $value === 'admin',
                         function (Expectation $exp) use (&$called): void {
                             $called = true;
                         },
@@ -124,7 +124,7 @@ describe('Utility Modifiers', function (): void {
 
             expect(
                 assertExpect('user')
-                    ->unless($isGuest, fn (Expectation $exp) => $exp->toBe('admin')),
+                    ->unless($isGuest, fn (Expectation $exp): Expectation => $exp->toBe('admin')),
             )->not->toThrow(Throwable::class);
         });
     });
@@ -133,8 +133,8 @@ describe('Utility Modifiers', function (): void {
         test('tap with pipe', function (): void {
             expect(
                 assertExpect([1, 2, 3])
-                    ->tap(fn ($v) => expect($v)->toBeArray())
-                    ->pipe(fn ($arr) => array_sum($arr))
+                    ->tap(fn ($v): Pest\Mixins\Expectation => expect($v)->toBeArray())
+                    ->pipe(array_sum(...))
                     ->toBe(6),
             )->not->toThrow(Throwable::class);
         });
@@ -143,8 +143,8 @@ describe('Utility Modifiers', function (): void {
             expect(
                 assertExpect('hello')
                     ->unless(
-                        fn ($str) => str_starts_with($str, 'admin'),
-                        fn (Expectation $exp) => $exp->pipe(fn ($s) => strtoupper($s))->toBe('HELLO'),
+                        fn ($str): bool => str_starts_with($str, 'admin'),
+                        fn (Expectation $exp): Expectation => $exp->pipe(strtoupper(...))->toBe('HELLO'),
                     ),
             )->not->toThrow(Throwable::class);
         });

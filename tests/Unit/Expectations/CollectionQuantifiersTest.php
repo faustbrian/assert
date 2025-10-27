@@ -8,7 +8,6 @@
  */
 
 use Cline\Assert\Exceptions\InvalidArgumentException;
-use Cline\Assert\Expectations\Expectation;
 
 use function Cline\Assert\expect as assertExpect;
 
@@ -28,7 +27,7 @@ describe('Collection Quantifiers', function (): void {
 
         test('fails when some items do not match', function (): void {
             expect(
-                fn () => assertExpect([1, 2, 'three', 4])->all->toBeInt(),
+                assertExpect([1, 2, 'three', 4])->all->toBeInt(...),
             )->toThrow(InvalidArgumentException::class);
         });
 
@@ -41,9 +40,9 @@ describe('Collection Quantifiers', function (): void {
         test('error message shows which items failed', function (): void {
             try {
                 assertExpect([1, 2, 'three', 4, 'five'])->all->toBeInt();
-            } catch (InvalidArgumentException $e) {
-                expect($e->getMessage())->toContain('Expected all items to match');
-                expect($e->getMessage())->toContain('2/5 items failed');
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                expect($invalidArgumentException->getMessage())->toContain('Expected all items to match');
+                expect($invalidArgumentException->getMessage())->toContain('2/5 items failed');
             }
         });
     });
@@ -63,16 +62,16 @@ describe('Collection Quantifiers', function (): void {
 
         test('fails when no items match', function (): void {
             expect(
-                fn () => assertExpect([1, 2, 3])->any->toBeString(),
+                assertExpect([1, 2, 3])->any->toBeString(...),
             )->toThrow(InvalidArgumentException::class);
         });
 
         test('error message shows total count', function (): void {
             try {
                 assertExpect([1, 2, 3])->any->toBeString();
-            } catch (InvalidArgumentException $e) {
-                expect($e->getMessage())->toContain('Expected at least one item to match');
-                expect($e->getMessage())->toContain('All 3 items failed');
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                expect($invalidArgumentException->getMessage())->toContain('Expected at least one item to match');
+                expect($invalidArgumentException->getMessage())->toContain('All 3 items failed');
             }
         });
     });
@@ -86,7 +85,7 @@ describe('Collection Quantifiers', function (): void {
 
         test('fails when any item matches', function (): void {
             expect(
-                fn () => assertExpect([1, 'two', 3])->none->toBeString(),
+                assertExpect([1, 'two', 3])->none->toBeString(...),
             )->toThrow(InvalidArgumentException::class);
         });
 
@@ -99,9 +98,9 @@ describe('Collection Quantifiers', function (): void {
         test('error message shows matched count', function (): void {
             try {
                 assertExpect(['hello', 'world', 123])->none->toBeString();
-            } catch (InvalidArgumentException $e) {
-                expect($e->getMessage())->toContain('Expected no items to match');
-                expect($e->getMessage())->toContain('2/3 items matched');
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                expect($invalidArgumentException->getMessage())->toContain('Expected no items to match');
+                expect($invalidArgumentException->getMessage())->toContain('2/3 items matched');
             }
         });
     });
@@ -135,7 +134,7 @@ describe('Collection Quantifiers', function (): void {
 
         test('throws for non-iterable', function (): void {
             expect(
-                fn () => assertExpect(123)->all->toBeInt(),
+                assertExpect(123)->all->toBeInt(...),
             )->toThrow(InvalidArgumentException::class);
         });
     });
