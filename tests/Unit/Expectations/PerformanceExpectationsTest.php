@@ -8,6 +8,7 @@
  */
 
 use Cline\Assert\Exceptions\InvalidArgumentException;
+use Illuminate\Support\Sleep;
 
 use function Cline\Assert\expect as assertExpect;
 
@@ -23,7 +24,7 @@ describe('Performance Expectations', function (): void {
 
         test('passes with slightly slower operation', function (): void {
             $operation = function (): void {
-                usleep(5000); // 5ms
+                Sleep::usleep(5_000); // 5ms
             };
 
             expect(
@@ -33,7 +34,7 @@ describe('Performance Expectations', function (): void {
 
         test('fails when callable takes too long', function (): void {
             $slowOperation = function (): void {
-                usleep(100_000); // 100ms
+                Sleep::usleep(100_000); // 100ms
             };
 
             expect(
@@ -43,15 +44,15 @@ describe('Performance Expectations', function (): void {
 
         test('error message includes timing information', function (): void {
             $slowOperation = function (): void {
-                usleep(50_000); // 50ms
+                Sleep::usleep(50_000); // 50ms
             };
 
             try {
                 assertExpect($slowOperation)->toCompleteWithin(10);
-            } catch (InvalidArgumentException $exception) {
-                expect($exception->getMessage())->toContain('Expected callable to complete within 10ms');
-                expect($exception->getMessage())->toContain('but took');
-                expect($exception->getMessage())->toMatch('/\d+\.\d+ms/');
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                expect($invalidArgumentException->getMessage())->toContain('Expected callable to complete within 10ms');
+                expect($invalidArgumentException->getMessage())->toContain('but took');
+                expect($invalidArgumentException->getMessage())->toMatch('/\d+\.\d+ms/');
             }
         });
 
@@ -71,7 +72,7 @@ describe('Performance Expectations', function (): void {
 
         test('works with array sort as realistic example', function (): void {
             $operation = function (): void {
-                $array = range(1, 1000);
+                $array = range(1, 1_000);
                 shuffle($array);
                 sort($array);
             };
@@ -83,8 +84,8 @@ describe('Performance Expectations', function (): void {
 
         test('works with string operations', function (): void {
             $operation = function (): void {
-                $string = str_repeat('test', 1000);
-                strtoupper($string);
+                $string = str_repeat('test', 1_000);
+                mb_strtoupper($string);
             };
 
             expect(

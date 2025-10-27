@@ -9,6 +9,7 @@
 
 namespace Cline\Assert\Assertions;
 
+use Illuminate\Support\Facades\Date;
 use ArrayAccess;
 use BadMethodCallException;
 use Cline\Assert\Assertions\AssertionInfrastructure;
@@ -2267,7 +2268,7 @@ abstract class AbstractAssertion
     public static function today(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
-        $today = new DateTime('today');
+        $today = Date::today();
 
         if ($valueDate->format('Y-m-d') !== $today->format('Y-m-d')) {
             $message = sprintf(
@@ -2284,7 +2285,7 @@ abstract class AbstractAssertion
     public static function yesterday(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
-        $yesterday = new DateTime('yesterday');
+        $yesterday = Date::yesterday();
 
         if ($valueDate->format('Y-m-d') !== $yesterday->format('Y-m-d')) {
             $message = sprintf(
@@ -2301,7 +2302,7 @@ abstract class AbstractAssertion
     public static function tomorrow(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
-        $tomorrow = new DateTime('tomorrow');
+        $tomorrow = Date::tomorrow();
 
         if ($valueDate->format('Y-m-d') !== $tomorrow->format('Y-m-d')) {
             $message = sprintf(
