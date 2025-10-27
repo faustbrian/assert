@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-use Cline\Assert\Exceptions\AssertionFailedException;
+use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
 
 use function Cline\Assert\expect as assertExpect;
@@ -15,57 +15,57 @@ use function Cline\Assert\expect as assertExpect;
 describe('Collection Expectations', function (): void {
     describe('Array/Collection Methods', function (): void {
         test('toHaveCount() accepts arrays with exact count', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->toHaveCount(3))->not->toThrow();
-            expect(fn() => assertExpect([])->toHaveCount(0))->not->toThrow();
-            expect(fn() => assertExpect(['a' => 1, 'b' => 2])->toHaveCount(2))->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->toHaveCount(3))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect([])->toHaveCount(0))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect(['a' => 1, 'b' => 2])->toHaveCount(2))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveCount() rejects arrays with different count', function (): void {
             expect(fn () => assertExpect([1, 2, 3])->toHaveCount(2))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('toHaveKey() accepts arrays with existing key', function (): void {
-            expect(fn() => assertExpect(['name' => 'John'])->toHaveKey('name'))->not->toThrow();
-            expect(fn() => assertExpect([1, 2, 3])->toHaveKey(0))->not->toThrow();
-            expect(fn() => assertExpect(['a' => 1, 'b' => 2])->toHaveKey('b'))->not->toThrow();
+            expect(fn() => assertExpect(['name' => 'John'])->toHaveKey('name'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect([1, 2, 3])->toHaveKey(0))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect(['a' => 1, 'b' => 2])->toHaveKey('b'))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveKey() rejects arrays without key', function (): void {
             expect(fn () => assertExpect(['name' => 'John'])->toHaveKey('email'))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('toContain() accepts arrays containing value', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->toContain(2))->not->toThrow();
-            expect(fn() => assertExpect(['a', 'b', 'c'])->toContain('b'))->not->toThrow();
-            expect(fn() => assertExpect([true, false])->toContain(true))->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->toContain(2))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect(['a', 'b', 'c'])->toContain('b'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect([true, false])->toContain(true))->not->toThrow(\Throwable::class);
         });
 
         test('toContain() rejects arrays not containing value', function (): void {
             expect(fn () => assertExpect([1, 2, 3])->toContain(4))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('toHaveCount() works with countable objects', function (): void {
             expect(fn() => assertExpect(
                 new ArrayObject([1, 2, 3]),
-            )->toHaveCount(3))->not->toThrow();
+            )->toHaveCount(3))->not->toThrow(\Throwable::class);
         });
     });
 
     describe('Negation with Collections', function (): void {
         test('not->toHaveCount() accepts arrays with different count', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->not->toHaveCount(2))->not->toThrow();
-            expect(fn() => assertExpect([])->not->toHaveCount(1))->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->not->toHaveCount(2))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect([])->not->toHaveCount(1))->not->toThrow(\Throwable::class);
         });
 
         test('not->toHaveKey() accepts arrays without key', function (): void {
-            expect(fn() => assertExpect(['name' => 'John'])->not->toHaveKey('email'))->not->toThrow();
+            expect(fn() => assertExpect(['name' => 'John'])->not->toHaveKey('email'))->not->toThrow(\Throwable::class);
         });
 
         test('not->toContain() accepts arrays without value', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->not->toContain(4))->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->not->toContain(4))->not->toThrow(\Throwable::class);
         });
     });
 
@@ -75,7 +75,7 @@ describe('Collection Expectations', function (): void {
                 ->toBeArray()
                 ->toHaveCount(2)
                 ->toHaveKey('name')
-                ->toHaveKey('email'))->not->toThrow();
+                ->toHaveKey('email'))->not->toThrow(\Throwable::class);
         });
 
         test('can mix collection and value checks', function (): void {
@@ -83,18 +83,18 @@ describe('Collection Expectations', function (): void {
                 ->toBeArray()
                 ->toHaveCount(3)
                 ->toContain(2)
-                ->not->toContain(4))->not->toThrow();
+                ->not->toContain(4))->not->toThrow(\Throwable::class);
         });
     });
 
     describe('Edge Cases', function (): void {
         test('toHaveLength() works for arrays (alias for toHaveCount)', function (): void {
-            expect(fn() => assertExpect([1, 2, 3])->toHaveLength(3))->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->toHaveLength(3))->not->toThrow(\Throwable::class);
         });
 
         test('toContain() requires string or array', function (): void {
             expect(fn () => assertExpect(42)->toContain('foo'))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
     });
 });

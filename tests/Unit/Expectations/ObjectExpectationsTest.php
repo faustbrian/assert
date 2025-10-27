@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-use Cline\Assert\Exceptions\AssertionFailedException;
+use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
 
 use function Cline\Assert\expect as assertExpect;
@@ -19,8 +19,8 @@ describe('Object Expectations', function (): void {
             $obj->name = 'John';
             $obj->email = 'john@example.com';
 
-            expect(fn() => assertExpect($obj)->toHaveProperty('name'))->not->toThrow();
-            expect(fn() => assertExpect($obj)->toHaveProperty('email'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->toHaveProperty('name'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect($obj)->toHaveProperty('email'))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveProperty() works with class instances', function (): void {
@@ -31,8 +31,8 @@ describe('Object Expectations', function (): void {
                 private string $email = 'john@example.com';
             };
 
-            expect(fn() => assertExpect($user)->toHaveProperty('name'))->not->toThrow();
-            expect(fn() => assertExpect($user)->toHaveProperty('email'))->not->toThrow();
+            expect(fn() => assertExpect($user)->toHaveProperty('name'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect($user)->toHaveProperty('email'))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveProperty() rejects objects without property', function (): void {
@@ -40,7 +40,7 @@ describe('Object Expectations', function (): void {
             $obj->name = 'John';
 
             expect(fn () => assertExpect($obj)->toHaveProperty('email'))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('toHaveMethod() accepts objects with existing method', function (): void {
@@ -51,8 +51,8 @@ describe('Object Expectations', function (): void {
                 public function delete(): void {}
             };
 
-            expect(fn() => assertExpect($obj)->toHaveMethod('save'))->not->toThrow();
-            expect(fn() => assertExpect($obj)->toHaveMethod('delete'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->toHaveMethod('save'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect($obj)->toHaveMethod('delete'))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveMethod() rejects objects without method', function (): void {
@@ -62,14 +62,14 @@ describe('Object Expectations', function (): void {
             };
 
             expect(fn () => assertExpect($obj)->toHaveMethod('delete'))
-                ->toThrow(AssertionFailedException::class);
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('toBeInstanceOf() checks class inheritance', function (): void {
             $iterator = new ArrayIterator([]);
 
-            expect(fn() => assertExpect($iterator)->toBeInstanceOf(ArrayIterator::class))->not->toThrow();
-            expect(fn() => assertExpect($iterator)->toBeInstanceOf(Traversable::class))->not->toThrow();
+            expect(fn() => assertExpect($iterator)->toBeInstanceOf(ArrayIterator::class))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect($iterator)->toBeInstanceOf(Traversable::class))->not->toThrow(\Throwable::class);
         });
     });
 
@@ -78,7 +78,7 @@ describe('Object Expectations', function (): void {
             $obj = new stdClass();
             $obj->name = 'John';
 
-            expect(fn() => assertExpect($obj)->not->toHaveProperty('email'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->not->toHaveProperty('email'))->not->toThrow(\Throwable::class);
         });
 
         test('not->toHaveMethod() accepts objects without method', function (): void {
@@ -87,13 +87,13 @@ describe('Object Expectations', function (): void {
                 public function save(): void {}
             };
 
-            expect(fn() => assertExpect($obj)->not->toHaveMethod('delete'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->not->toHaveMethod('delete'))->not->toThrow(\Throwable::class);
         });
 
         test('not->toBeInstanceOf() accepts different classes', function (): void {
             expect(fn() => assertExpect(
                 new stdClass(),
-            )->not->toBeInstanceOf(ArrayIterator::class))->not->toThrow();
+            )->not->toBeInstanceOf(ArrayIterator::class))->not->toThrow(\Throwable::class);
         });
     });
 
@@ -109,7 +109,7 @@ describe('Object Expectations', function (): void {
             expect(fn() => assertExpect($obj)
                 ->toBeObject()
                 ->toHaveProperty('name')
-                ->toHaveMethod('save'))->not->toThrow();
+                ->toHaveMethod('save'))->not->toThrow(\Throwable::class);
         });
 
         test('can mix object and type checks', function (): void {
@@ -127,7 +127,7 @@ describe('Object Expectations', function (): void {
                 ->toBeObject()
                 ->not->toBeNull()
                 ->toHaveProperty('name')
-                ->toHaveMethod('isActive'))->not->toThrow();
+                ->toHaveMethod('isActive'))->not->toThrow(\Throwable::class);
         });
     });
 
@@ -140,14 +140,14 @@ describe('Object Expectations', function (): void {
                 private string $private = 'hidden';
             };
 
-            expect(fn() => assertExpect($obj)->toHaveProperty('public'))->not->toThrow();
-            expect(fn() => assertExpect($obj)->toHaveProperty('private'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->toHaveProperty('public'))->not->toThrow(\Throwable::class);
+            expect(fn() => assertExpect($obj)->toHaveProperty('private'))->not->toThrow(\Throwable::class);
         });
 
         test('toHaveMethod() detects inherited methods', function (): void {
             $obj = new ArrayIterator([]);
 
-            expect(fn() => assertExpect($obj)->toHaveMethod('count'))->not->toThrow();
+            expect(fn() => assertExpect($obj)->toHaveMethod('count'))->not->toThrow(\Throwable::class);
         });
     });
 });
