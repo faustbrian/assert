@@ -2647,9 +2647,9 @@ abstract class AbstractAssertion
     {
         self::isObject($value, $message, $propertyPath);
         self::isArray($expected, $message, $propertyPath);
+        // @phpstan-ignore-next-line varTag.differentVariable
         /** @var object $value */
         /** @var array<mixed> $expected */
-        // @phpstan-ignore varTag.differentVariable (annotation narrows type for entire function)
 
         foreach ($expected as $property => $expectedValue) {
             if (!property_exists($value, $property)) {
