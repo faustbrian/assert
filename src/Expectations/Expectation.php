@@ -186,7 +186,7 @@ final class Expectation
         $errors = self::$softErrors;
         self::$softErrors = [];
 
-        $messages = array_map(fn ($e) => $e->getMessage(), $errors);
+        $messages = array_map(fn ($e): string => $e->getMessage(), $errors);
 
         throw new InvalidArgumentException(
             sprintf("Soft assertions failed:\n- %s", implode("\n- ", $messages)),
@@ -1155,76 +1155,6 @@ final class Expectation
     }
 
     /**
-     * Evaluate OR/XOR groups - if any group succeeded, return success (OR) or check exactly one (XOR).
-     * Otherwise throw combined errors from all groups.
-     */
-    private function evaluateOrGroups(): void
-    {
-        if ((!$this->orMode && !$this->xorMode) || empty($this->orGroups)) {
-            return;
-        }
-
-        // Count successful groups
-        $successCount = 0;
-        foreach ($this->orGroups as $group) {
-            if ($group['success'] ?? false) {
-                $successCount++;
-            }
-        }
-
-        // XOR mode: exactly one group must succeed
-        if ($this->xorMode) {
-            if ($successCount === 1) {
-                return; // Success!
-            }
-
-            // Build error message
-            $messages = [];
-            if ($successCount === 0) {
-                foreach ($this->orGroups as $index => $group) {
-                    if (!empty($group['errors'])) {
-                        $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
-                    }
-                }
-
-                throw new InvalidArgumentException(
-                    sprintf("All XOR groups failed (expected exactly one to pass):\n%s", implode("\n", $messages)),
-                    0,
-                    null,
-                    $this->value,
-                );
-            }
-
-            throw new InvalidArgumentException(
-                sprintf('XOR assertion failed: expected exactly one group to pass, but %d groups passed', $successCount),
-                0,
-                null,
-                $this->value,
-            );
-        }
-
-        // OR mode: at least one group must succeed
-        if ($successCount > 0) {
-            return; // Success!
-        }
-
-        // All groups failed - throw combined error
-        $messages = [];
-        foreach ($this->orGroups as $index => $group) {
-            if (!empty($group['errors'])) {
-                $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
-            }
-        }
-
-        throw new InvalidArgumentException(
-            sprintf("All OR groups failed:\n%s", implode("\n", $messages)),
-            0,
-            null,
-            $this->value,
-        );
-    }
-
-    /**
      * Conditionally apply expectations.
      */
     public function when(bool|callable $condition, callable $callback): self
@@ -1432,6 +1362,79 @@ final class Expectation
     }
 
     /**
+     * Evaluate OR/XOR groups - if any group succeeded, return success (OR) or check exactly one (XOR).
+     * Otherwise throw combined errors from all groups.
+     */
+    private function evaluateOrGroups(): void
+    {
+        if ((!$this->orMode && !$this->xorMode) || $this->orGroups === []) {
+            return;
+        }
+
+        // Count successful groups
+        $successCount = 0;
+
+        foreach ($this->orGroups as $group) {
+            if ($group['success'] ?? false) {
+                ++$successCount;
+            }
+        }
+
+        // XOR mode: exactly one group must succeed
+        if ($this->xorMode) {
+            if ($successCount === 1) {
+                return; // Success!
+            }
+
+            // Build error message
+            $messages = [];
+
+            if ($successCount === 0) {
+                foreach ($this->orGroups as $index => $group) {
+                    if (!empty($group['errors'])) {
+                        $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
+                    }
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf("All XOR groups failed (expected exactly one to pass):\n%s", implode("\n", $messages)),
+                    0,
+                    null,
+                    $this->value,
+                );
+            }
+
+            throw new InvalidArgumentException(
+                sprintf('XOR assertion failed: expected exactly one group to pass, but %d groups passed', $successCount),
+                0,
+                null,
+                $this->value,
+            );
+        }
+
+        // OR mode: at least one group must succeed
+        if ($successCount > 0) {
+            return; // Success!
+        }
+
+        // All groups failed - throw combined error
+        $messages = [];
+
+        foreach ($this->orGroups as $index => $group) {
+            if (!empty($group['errors'])) {
+                $messages[] = sprintf('Group %d: %s', $index + 1, $group['errors'][0]->getMessage());
+            }
+        }
+
+        throw new InvalidArgumentException(
+            sprintf("All OR groups failed:\n%s", implode("\n", $messages)),
+            0,
+            null,
+            $this->value,
+        );
+    }
+
+    /**
      * Check if a value contains asymmetric matchers.
      */
     private function containsAsymmetricMatchers(mixed $value): bool
@@ -1510,7 +1513,7 @@ final class Expectation
         // OR/XOR mode - collect assertions into groups
         if ($this->orMode || $this->xorMode) {
             // Ensure we have at least one group
-            if (empty($this->orGroups)) {
+            if ($this->orGroups === []) {
                 $this->orGroups[] = ['success' => true, 'errors' => []];
             }
 
