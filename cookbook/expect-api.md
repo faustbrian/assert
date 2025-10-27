@@ -20,6 +20,10 @@ expect(null)->toBe(null);
 
 // Alias for toBe()
 expect($result)->toEqual(42);
+
+// Explicit strict equality (Jest/Vitest compatible)
+expect(42)->toStrictEqual(42);
+expect([1, 2, 3])->toStrictEqual([1, 2, 3]);
 ```
 
 ### Null Checks
@@ -27,6 +31,15 @@ expect($result)->toEqual(42);
 ```php
 expect(null)->toBeNull();
 expect($value)->not->toBeNull();
+
+// Defined/undefined (Jest/Vitest compatible)
+expect('hello')->toBeDefined();
+expect(null)->toBeUndefined();
+
+// Nullable types
+expect(null)->toBeNullable('string');
+expect('hello')->toBeNullable('string');
+expect(42)->toBeNullable('int');
 ```
 
 ### Boolean Checks
