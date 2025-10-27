@@ -15,104 +15,84 @@ use function Cline\Assert\expect as assertExpect;
 describe('Type Expectations', function (): void {
     describe('Happy Paths', function (): void {
         test('toBeString() accepts string values', function (): void {
-            assertExpect('hello')->toBeString();
-            assertExpect('')->toBeString();
-            assertExpect('123')->toBeString();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello')->toBeString())->not->toThrow();
+            expect(fn() => assertExpect('')->toBeString())->not->toThrow();
+            expect(fn() => assertExpect('123')->toBeString())->not->toThrow();
         });
 
         test('toBeInt() accepts integer values', function (): void {
-            assertExpect(42)->toBeInt();
-            assertExpect(0)->toBeInt();
-            assertExpect(-1)->toBeInt();
-            assertExpect(\PHP_INT_MAX)->toBeInt();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(42)->toBeInt())->not->toThrow();
+            expect(fn() => assertExpect(0)->toBeInt())->not->toThrow();
+            expect(fn() => assertExpect(-1)->toBeInt())->not->toThrow();
+            expect(fn() => assertExpect(\PHP_INT_MAX)->toBeInt())->not->toThrow();
         });
 
         test('toBeFloat() accepts float values', function (): void {
-            assertExpect(3.14)->toBeFloat();
-            assertExpect(0.0)->toBeFloat();
-            assertExpect(-2.5)->toBeFloat();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(3.14)->toBeFloat())->not->toThrow();
+            expect(fn() => assertExpect(0.0)->toBeFloat())->not->toThrow();
+            expect(fn() => assertExpect(-2.5)->toBeFloat())->not->toThrow();
         });
 
         test('toBeBool() accepts boolean values', function (): void {
-            assertExpect(true)->toBeBool();
-            assertExpect(false)->toBeBool();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(true)->toBeBool())->not->toThrow();
+            expect(fn() => assertExpect(false)->toBeBool())->not->toThrow();
         });
 
         test('toBeArray() accepts array values', function (): void {
-            assertExpect([])->toBeArray();
-            assertExpect([1, 2, 3])->toBeArray();
-            assertExpect(['key' => 'value'])->toBeArray();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect([])->toBeArray())->not->toThrow();
+            expect(fn() => assertExpect([1, 2, 3])->toBeArray())->not->toThrow();
+            expect(fn() => assertExpect(['key' => 'value'])->toBeArray())->not->toThrow();
         });
 
         test('toBeObject() accepts object values', function (): void {
-            assertExpect(
+            expect(fn() => assertExpect(
                 new stdClass(),
-            )->toBeObject();
-            assertExpect((object) ['a' => 1])->toBeObject();
-
-            expect(true)->toBeTrue();
+            )->toBeObject())->not->toThrow();
+            expect(fn() => assertExpect((object) ['a' => 1])->toBeObject())->not->toThrow();
         });
 
         test('toBeCallable() accepts callable values', function (): void {
-            assertExpect(fn (): true => true)->toBeCallable();
-            assertExpect('strlen')->toBeCallable();
+            expect(fn() => assertExpect(fn (): true => true)->toBeCallable())->not->toThrow();
+            expect(fn() => assertExpect('strlen')->toBeCallable())->not->toThrow();
 
             $obj = new class()
             {
                 public function test(): void {}
             };
-            assertExpect($obj->test(...))->toBeCallable();
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect($obj->test(...))->toBeCallable())->not->toThrow();
         });
 
         test('toBeIterable() accepts iterable values', function (): void {
-            assertExpect([])->toBeIterable();
-            assertExpect(
+            expect(fn() => assertExpect([])->toBeIterable())->not->toThrow();
+            expect(fn() => assertExpect(
                 new ArrayIterator([]),
-            )->toBeIterable();
-            expect(true)->toBeTrue();
+            )->toBeIterable())->not->toThrow();
         });
 
         test('toBeCountable() accepts countable values', function (): void {
-            assertExpect([])->toBeCountable();
-            assertExpect(
+            expect(fn() => assertExpect([])->toBeCountable())->not->toThrow();
+            expect(fn() => assertExpect(
                 new ArrayObject([1, 2]),
-            )->toBeCountable();
-            expect(true)->toBeTrue();
+            )->toBeCountable())->not->toThrow();
         });
 
         test('toBeNumeric() accepts numeric values', function (): void {
-            assertExpect(42)->toBeNumeric();
-            assertExpect('42')->toBeNumeric();
-            assertExpect(3.14)->toBeNumeric();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(42)->toBeNumeric())->not->toThrow();
+            expect(fn() => assertExpect('42')->toBeNumeric())->not->toThrow();
+            expect(fn() => assertExpect(3.14)->toBeNumeric())->not->toThrow();
         });
 
         test('toBeScalar() accepts scalar values', function (): void {
-            assertExpect(42)->toBeScalar();
-            assertExpect('test')->toBeScalar();
-            assertExpect(3.14)->toBeScalar();
-            assertExpect(true)->toBeScalar();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(42)->toBeScalar())->not->toThrow();
+            expect(fn() => assertExpect('test')->toBeScalar())->not->toThrow();
+            expect(fn() => assertExpect(3.14)->toBeScalar())->not->toThrow();
+            expect(fn() => assertExpect(true)->toBeScalar())->not->toThrow();
         });
 
         test('toBeResource() accepts resource values', function (): void {
             $handle = fopen('php://memory', 'rb');
-            assertExpect($handle)->toBeResource();
+            expect(fn() => assertExpect($handle)->toBeResource())->not->toThrow();
             fclose($handle);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -196,48 +176,37 @@ describe('Type Expectations', function (): void {
         });
 
         test('type expectations can be chained', function (): void {
-            assertExpect('test')
+            expect(fn() => assertExpect('test')
                 ->toBeString()
                 ->not->toBeInt()
-                ->not->toBeArray();
-            expect(true)->toBeTrue();
+                ->not->toBeArray())->not->toThrow();
         });
 
         test('toBeNumeric() accepts string numbers', function (): void {
-            assertExpect('42')->toBeNumeric();
-            assertExpect('3.14')->toBeNumeric();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('42')->toBeNumeric())->not->toThrow();
+            expect(fn() => assertExpect('3.14')->toBeNumeric())->not->toThrow();
         });
     });
 
     describe('Negation with Types', function (): void {
         test('not->toBeString() accepts non-strings', function (): void {
-            assertExpect(42)->not->toBeString();
-            assertExpect([])->not->toBeString();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(42)->not->toBeString())->not->toThrow();
+            expect(fn() => assertExpect([])->not->toBeString())->not->toThrow();
         });
 
         test('not->toBeInt() accepts non-integers', function (): void {
-            assertExpect('test')->not->toBeInt();
-            assertExpect(3.14)->not->toBeInt();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('test')->not->toBeInt())->not->toThrow();
+            expect(fn() => assertExpect(3.14)->not->toBeInt())->not->toThrow();
         });
 
         test('not->toBeFloat() accepts non-floats', function (): void {
-            assertExpect(42)->not->toBeFloat();
-            assertExpect('3.14')->not->toBeFloat();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect(42)->not->toBeFloat())->not->toThrow();
+            expect(fn() => assertExpect('3.14')->not->toBeFloat())->not->toThrow();
         });
 
         test('not->toBeArray() accepts non-arrays', function (): void {
-            assertExpect('test')->not->toBeArray();
-            assertExpect(42)->not->toBeArray();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('test')->not->toBeArray())->not->toThrow();
+            expect(fn() => assertExpect(42)->not->toBeArray())->not->toThrow();
         });
     });
 });

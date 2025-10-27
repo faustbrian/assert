@@ -15,11 +15,9 @@ use function Cline\Assert\expect as assertExpect;
 describe('String Expectations', function (): void {
     describe('String Pattern Methods', function (): void {
         test('toStartWith() accepts strings with matching prefix', function (): void {
-            assertExpect('hello world')->toStartWith('hello');
-            assertExpect('test')->toStartWith('te');
-            assertExpect('PHP')->toStartWith('P');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->toStartWith('hello'))->not->toThrow();
+            expect(fn() => assertExpect('test')->toStartWith('te'))->not->toThrow();
+            expect(fn() => assertExpect('PHP')->toStartWith('P'))->not->toThrow();
         });
 
         test('toStartWith() rejects strings without matching prefix', function (): void {
@@ -28,11 +26,9 @@ describe('String Expectations', function (): void {
         });
 
         test('toEndWith() accepts strings with matching suffix', function (): void {
-            assertExpect('hello world')->toEndWith('world');
-            assertExpect('test')->toEndWith('st');
-            assertExpect('PHP')->toEndWith('P');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->toEndWith('world'))->not->toThrow();
+            expect(fn() => assertExpect('test')->toEndWith('st'))->not->toThrow();
+            expect(fn() => assertExpect('PHP')->toEndWith('P'))->not->toThrow();
         });
 
         test('toEndWith() rejects strings without matching suffix', function (): void {
@@ -41,11 +37,9 @@ describe('String Expectations', function (): void {
         });
 
         test('toMatch() accepts strings matching regex', function (): void {
-            assertExpect('test@example.com')->toMatch('/^.+@.+\..+$/');
-            assertExpect('hello123')->toMatch('/^[a-z]+\d+$/');
-            assertExpect('PHP')->toMatch('/^[A-Z]+$/');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('test@example.com')->toMatch('/^.+@.+\..+$/'))->not->toThrow();
+            expect(fn() => assertExpect('hello123')->toMatch('/^[a-z]+\d+$/'))->not->toThrow();
+            expect(fn() => assertExpect('PHP')->toMatch('/^[A-Z]+$/'))->not->toThrow();
         });
 
         test('toMatch() rejects strings not matching regex', function (): void {
@@ -54,11 +48,9 @@ describe('String Expectations', function (): void {
         });
 
         test('toHaveLength() accepts strings with exact length', function (): void {
-            assertExpect('hello')->toHaveLength(5);
-            assertExpect('')->toHaveLength(0);
-            assertExpect('PHP')->toHaveLength(3);
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello')->toHaveLength(5))->not->toThrow();
+            expect(fn() => assertExpect('')->toHaveLength(0))->not->toThrow();
+            expect(fn() => assertExpect('PHP')->toHaveLength(3))->not->toThrow();
         });
 
         test('toHaveLength() rejects strings with different length', function (): void {
@@ -67,11 +59,9 @@ describe('String Expectations', function (): void {
         });
 
         test('toContain() accepts strings containing substring', function (): void {
-            assertExpect('hello world')->toContain('world');
-            assertExpect('hello world')->toContain('hello');
-            assertExpect('hello world')->toContain('o w');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->toContain('world'))->not->toThrow();
+            expect(fn() => assertExpect('hello world')->toContain('hello'))->not->toThrow();
+            expect(fn() => assertExpect('hello world')->toContain('o w'))->not->toThrow();
         });
 
         test('toContain() rejects strings not containing substring', function (): void {
@@ -82,47 +72,39 @@ describe('String Expectations', function (): void {
 
     describe('Negation with String Methods', function (): void {
         test('not->toStartWith() accepts strings without prefix', function (): void {
-            assertExpect('hello world')->not->toStartWith('world');
-            assertExpect('test')->not->toStartWith('foo');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->not->toStartWith('world'))->not->toThrow();
+            expect(fn() => assertExpect('test')->not->toStartWith('foo'))->not->toThrow();
         });
 
         test('not->toEndWith() accepts strings without suffix', function (): void {
-            assertExpect('hello world')->not->toEndWith('hello');
-            assertExpect('test')->not->toEndWith('foo');
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->not->toEndWith('hello'))->not->toThrow();
+            expect(fn() => assertExpect('test')->not->toEndWith('foo'))->not->toThrow();
         });
 
         test('not->toMatch() accepts strings not matching regex', function (): void {
-            assertExpect('invalid-email')->not->toMatch('/^.+@.+\..+$/');
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('invalid-email')->not->toMatch('/^.+@.+\..+$/'))->not->toThrow();
         });
 
         test('not->toContain() accepts strings without substring', function (): void {
-            assertExpect('hello world')->not->toContain('foo');
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('hello world')->not->toContain('foo'))->not->toThrow();
         });
     });
 
     describe('Chaining String Methods', function (): void {
         test('can chain multiple string assertions', function (): void {
-            assertExpect('hello world')
+            expect(fn() => assertExpect('hello world')
                 ->toBeString()
                 ->toStartWith('hello')
                 ->toEndWith('world')
                 ->toContain('o w')
-                ->toHaveLength(11);
-            expect(true)->toBeTrue();
+                ->toHaveLength(11))->not->toThrow();
         });
 
         test('can mix string and pattern checks', function (): void {
-            assertExpect('test@example.com')
+            expect(fn() => assertExpect('test@example.com')
                 ->toBeString()
                 ->toContain('@')
-                ->toMatch('/^.+@.+\..+$/');
-            expect(true)->toBeTrue();
+                ->toMatch('/^.+@.+\..+$/'))->not->toThrow();
         });
     });
 });

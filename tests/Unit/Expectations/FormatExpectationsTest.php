@@ -15,11 +15,9 @@ use function Cline\Assert\expect as assertExpect;
 describe('Format Expectations', function (): void {
     describe('Email Format', function (): void {
         test('toBeEmail() accepts valid email addresses', function (): void {
-            assertExpect('test@example.com')->toBeEmail();
-            assertExpect('user+tag@domain.co.uk')->toBeEmail();
-            assertExpect('name@subdomain.domain.com')->toBeEmail();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('test@example.com')->toBeEmail())->not->toThrow();
+            expect(fn() => assertExpect('user+tag@domain.co.uk')->toBeEmail())->not->toThrow();
+            expect(fn() => assertExpect('name@subdomain.domain.com')->toBeEmail())->not->toThrow();
         });
 
         test('toBeEmail() rejects invalid email addresses', function (): void {
@@ -30,18 +28,15 @@ describe('Format Expectations', function (): void {
         });
 
         test('not->toBeEmail() accepts non-email strings', function (): void {
-            assertExpect('not-an-email')->not->toBeEmail();
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('not-an-email')->not->toBeEmail())->not->toThrow();
         });
     });
 
     describe('URL Format', function (): void {
         test('toBeUrl() accepts valid URLs', function (): void {
-            assertExpect('https://example.com')->toBeUrl();
-            assertExpect('http://localhost:8080')->toBeUrl();
-            assertExpect('https://sub.domain.com/path?query=value')->toBeUrl();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('https://example.com')->toBeUrl())->not->toThrow();
+            expect(fn() => assertExpect('http://localhost:8080')->toBeUrl())->not->toThrow();
+            expect(fn() => assertExpect('https://sub.domain.com/path?query=value')->toBeUrl())->not->toThrow();
         });
 
         test('toBeUrl() rejects invalid URLs', function (): void {
@@ -52,17 +47,14 @@ describe('Format Expectations', function (): void {
         });
 
         test('not->toBeUrl() accepts non-URL strings', function (): void {
-            assertExpect('not a url')->not->toBeUrl();
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('not a url')->not->toBeUrl())->not->toThrow();
         });
     });
 
     describe('UUID Format', function (): void {
         test('toBeUuid() accepts valid UUIDs', function (): void {
-            assertExpect('550e8400-e29b-41d4-a716-446655440000')->toBeUuid();
-            assertExpect('6ba7b810-9dad-11d1-80b4-00c04fd430c8')->toBeUuid();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('550e8400-e29b-41d4-a716-446655440000')->toBeUuid())->not->toThrow();
+            expect(fn() => assertExpect('6ba7b810-9dad-11d1-80b4-00c04fd430c8')->toBeUuid())->not->toThrow();
         });
 
         test('toBeUuid() rejects invalid UUIDs', function (): void {
@@ -73,19 +65,16 @@ describe('Format Expectations', function (): void {
         });
 
         test('not->toBeUuid() accepts non-UUID strings', function (): void {
-            assertExpect('not-a-uuid')->not->toBeUuid();
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('not-a-uuid')->not->toBeUuid())->not->toThrow();
         });
     });
 
     describe('JSON Format', function (): void {
         test('toBeJson() accepts valid JSON strings', function (): void {
-            assertExpect('{"name":"John"}')->toBeJson();
-            assertExpect('[1,2,3]')->toBeJson();
-            assertExpect('null')->toBeJson();
-            assertExpect('"string"')->toBeJson();
-
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('{"name":"John"}')->toBeJson())->not->toThrow();
+            expect(fn() => assertExpect('[1,2,3]')->toBeJson())->not->toThrow();
+            expect(fn() => assertExpect('null')->toBeJson())->not->toThrow();
+            expect(fn() => assertExpect('"string"')->toBeJson())->not->toThrow();
         });
 
         test('toBeJson() rejects invalid JSON', function (): void {
@@ -96,35 +85,31 @@ describe('Format Expectations', function (): void {
         });
 
         test('not->toBeJson() accepts non-JSON strings', function (): void {
-            assertExpect('not json')->not->toBeJson();
-            expect(true)->toBeTrue();
+            expect(fn() => assertExpect('not json')->not->toBeJson())->not->toThrow();
         });
     });
 
     describe('Chaining Format Checks', function (): void {
         test('can chain format with type checks', function (): void {
-            assertExpect('test@example.com')
+            expect(fn() => assertExpect('test@example.com')
                 ->toBeString()
                 ->toBeEmail()
-                ->toContain('@');
-            expect(true)->toBeTrue();
+                ->toContain('@'))->not->toThrow();
         });
 
         test('can use format checks with collections', function (): void {
-            assertExpect([
+            expect(fn() => assertExpect([
                 'test@example.com',
                 'user@domain.com',
-            ])->each->toBeEmail();
-            expect(true)->toBeTrue();
+            ])->each->toBeEmail())->not->toThrow();
         });
 
         test('can mix format and conditional checks', function (): void {
             $value = 'test@example.com';
 
-            assertExpect($value)
+            expect(fn() => assertExpect($value)
                 ->toBeString()
-                ->when(str_contains($value, '@'), fn ($exp) => $exp->toBeEmail());
-            expect(true)->toBeTrue();
+                ->when(str_contains($value, '@'), fn ($exp) => $exp->toBeEmail()))->not->toThrow();
         });
     });
 });
