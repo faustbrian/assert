@@ -79,7 +79,7 @@ describe('Negation Modifier (->not)', function (): void {
 
     describe('Sad Paths', function (): void {
         test('not->toBe() fails when values are equal', function (): void {
-            assertExpect(fn () => assertExpect(42)->not->toBe(42))
+            expect(fn () => assertExpect(42)->not->toBe(42))
                 ->toThrow(InvalidArgumentException::class);
         });
 

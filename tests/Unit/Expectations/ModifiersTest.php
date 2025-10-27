@@ -40,13 +40,12 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('each() fails if any item fails assertion', function (): void {
-            assertExpect(
-                assertExpect([1, 'two', 3])->each->toBeInt(...),
-            )->toThrow(InvalidArgumentException::class);
+            expect(fn () => (assertExpect([1, 'two', 3])->each->toBeInt(...))())
+                ->toThrow(InvalidArgumentException::class);
         });
 
         test('each() requires traversable value', function (): void {
-            assertExpect(assertExpect(42)->each->toBeInt(...))
+            expect(fn () => assertExpect(42)->each->toBeInt(...))
                 ->toThrow(InvalidArgumentException::class);
         });
     });

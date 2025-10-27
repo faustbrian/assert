@@ -26,7 +26,7 @@ describe('Expectation Foundation', function (): void {
     });
 
     test('throws exception for non-existent property', function (): void {
-        assertExpect(fn () => assertExpect(42)->nonExistent)
+        expect(fn () => assertExpect(42)->nonExistent)
             ->toThrow(BadMethodCallException::class);
     });
 });
