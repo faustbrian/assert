@@ -133,7 +133,7 @@ describe('Utility Modifiers', function (): void {
         test('tap with pipe', function (): void {
             expect(
                 assertExpect([1, 2, 3])
-                    ->tap(fn ($v): Pest\Mixins\Expectation => expect($v)->toBeArray())
+                    ->tap(fn ($v) => expect($v)->toBeArray())
                     ->pipe(array_sum(...))
                     ->toBe(6),
             )->not->toThrow(Throwable::class);
