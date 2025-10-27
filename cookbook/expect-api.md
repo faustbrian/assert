@@ -97,6 +97,15 @@ expect(5)->toBeLessThanOrEqual(5);
 // Range checks
 expect(5)->toBeBetween(1, 10);
 expect(1)->toBeBetween(1, 10); // Inclusive
+
+// Edge cases
+expect(INF)->toBeInfinite();
+expect(-INF)->toBeInfinite();
+expect(NAN)->toBeNan();
+
+// Equality with tolerance
+expect(3.14159)->toEqualWithDelta(3.14, 0.01);
+expect(100)->toEqualWithDelta(99, 1.0);
 ```
 
 ## String Expectations
@@ -114,6 +123,19 @@ expect('hello123')->toMatch('/^[a-z]+\d+$/');
 // Length checks
 expect('hello')->toHaveLength(5);
 expect('')->toHaveLength(0);
+
+// Character types
+expect('abc')->toBeAlpha();
+expect('abc123')->toBeAlphaNumeric();
+expect('123')->toBeDigits();
+
+// Case styles
+expect('hello_world')->toBeSnakeCase();
+expect('hello-world')->toBeKebabCase();
+expect('helloWorld')->toBeCamelCase();
+expect('HelloWorld')->toBeStudlyCase();
+expect('HELLO')->toBeUppercase();
+expect('hello')->toBeLowercase();
 ```
 
 ## Collection Expectations
@@ -122,14 +144,36 @@ expect('')->toHaveLength(0);
 // Count checks
 expect([1, 2, 3])->toHaveCount(3);
 expect([])->toHaveCount(0);
+expect([1, 2])->toHaveSameSize([3, 4]);
 
 // Key existence
 expect(['name' => 'John'])->toHaveKey('name');
 expect(['a' => 1, 'b' => 2])->toHaveKey('b');
+expect(['name' => 'John', 'email' => 'j@ex.com'])->toHaveKeys(['name', 'email']);
 
 // Value membership
 expect([1, 2, 3])->toContain(2);
 expect(['a', 'b', 'c'])->toContain('b');
+expect(2)->toBeIn([1, 2, 3]);
+
+// Deep equality
+expect([['a' => 1], ['b' => 2]])->toContainEqual(['a' => 1]);
+
+// Type checking
+$objects = [new stdClass(), new stdClass()];
+expect($objects)->toContainOnlyInstancesOf(stdClass::class);
+
+// Array matching
+expect(['a' => 1, 'b' => 2, 'c' => 3])->toMatchArray(['a' => 1, 'c' => 3]);
+
+// Array equality (ignoring order)
+expect([3, 2, 1])->toEqualCanonicalizing([1, 2, 3]);
+
+// Key case validation
+expect(['first_name' => 'John', 'last_name' => 'Doe'])->toHaveSnakeCaseKeys();
+expect(['first-name' => 'John', 'last-name' => 'Doe'])->toHaveKebabCaseKeys();
+expect(['firstName' => 'John', 'lastName' => 'Doe'])->toHaveCamelCaseKeys();
+expect(['FirstName' => 'John', 'LastName' => 'Doe'])->toHaveStudlyCaseKeys();
 ```
 
 ## Object Expectations
@@ -138,6 +182,7 @@ expect(['a', 'b', 'c'])->toContain('b');
 // Property checks
 expect($user)->toHaveProperty('name');
 expect($user)->toHaveProperty('email');
+expect($user)->toHaveProperties(['name', 'email', 'role']);
 
 // Method checks
 expect($user)->toHaveMethod('save');
@@ -146,6 +191,10 @@ expect($user)->toHaveMethod('delete');
 // Instance checks
 expect($iterator)->toBeInstanceOf(ArrayIterator::class);
 expect($iterator)->toBeInstanceOf(Traversable::class);
+
+// Object matching
+$obj = (object) ['name' => 'John', 'age' => 30, 'city' => 'NYC'];
+expect($obj)->toMatchObject(['name' => 'John', 'age' => 30]);
 ```
 
 ## Format Validations
@@ -167,6 +216,19 @@ expect('{"key": "value"}')->toBeJson();
 expect('[1,2,3]')->toBeJson();
 ```
 
+## File System Expectations
+
+```php
+// File checks
+expect('/path/to/file.txt')->toBeFile();
+expect('/path/to/file.txt')->toBeReadableFile();
+expect('/path/to/file.txt')->toBeWritableFile();
+
+// Directory checks
+expect('/path/to/directory')->toBeReadableDirectory();
+expect('/path/to/directory')->toBeWritableDirectory();
+```
+
 ## Exception Expectations
 
 ```php
@@ -177,8 +239,12 @@ expect(fn() => throw new RuntimeException())->toThrow();
 expect(fn() => throw new InvalidArgumentException())
     ->toThrow(InvalidArgumentException::class);
 
+// Expect exception with message
+expect(fn() => throw new Exception('Custom error'))
+    ->toThrow(Exception::class, 'Custom error');
+
 // Verify no exception thrown
-expect(fn() => $user->save())->not->toThrow(RuntimeException::class);
+expect(fn() => $user->save())->not->toThrow();
 ```
 
 ## Negation Modifier
@@ -281,6 +347,92 @@ expect($data)->unless(
 );
 ```
 
+## Advanced Modifiers
+
+### Sequence Modifier
+
+Apply different expectations to each element in order:
+
+```php
+expect([1, 'test', 3.14])->sequence(
+    fn($e) => $e->toBeInt(),
+    fn($e) => $e->toBeString(),
+    fn($e) => $e->toBeFloat()
+);
+
+// Validates that first item is int, second is string, third is float
+```
+
+### JSON Modifier
+
+Parse JSON and continue chaining on the decoded value:
+
+```php
+expect('{"name":"John","age":30}')
+    ->json()
+    ->toHaveKey('name')
+    ->toHaveKey('age');
+
+expect('{"count":5}')
+    ->json()
+    ->toHaveKey('count');
+```
+
+### Match Modifier
+
+Pattern match against multiple conditions:
+
+```php
+// Exact match
+expect('active')->match(
+    ['pending', fn($e) => $e->toBeString()],
+    ['active', fn($e) => $e->toBeString()]
+);
+
+// Callable matcher
+expect(42)->match(
+    [fn($v) => $v < 10, fn($e) => $e->toBeInt()],
+    [fn($v) => $v > 10, fn($e) => $e->toBeInt()]
+);
+```
+
+## Debugging Helpers
+
+### dd() - Dump and Die
+
+```php
+expect($data)->dd(); // Dumps value and exits
+
+expect($user)->dd($extra, $data); // Dumps multiple values
+```
+
+### ddWhen() - Conditional Dump
+
+```php
+// Dump only when condition is true
+expect($data)->ddWhen($isDebug);
+
+expect($value)->ddWhen(fn($v) => $v > 100);
+```
+
+### ddUnless() - Inverse Conditional Dump
+
+```php
+// Dump unless condition is true
+expect($data)->ddUnless($isProduction);
+
+expect($value)->ddUnless(fn($v) => $v < 10);
+```
+
+### ray() - Send to Ray Debugger
+
+```php
+// Send to Ray (if installed)
+expect($data)->ray();
+
+expect($value)->ray('Debug label');
+```
+
 ## Chaining Examples
 
 ### Complex Validations
@@ -369,6 +521,70 @@ $expectation = expect($value)
 // $expectation is instance of Expectation
 ```
 
+## Complete Feature List
+
+### Core Expectations (43)
+
+**Equality & Boolean:**
+- `toBe()`, `toEqual()`, `toBeNull()`, `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
+
+**Types:**
+- `toBeString()`, `toBeInt()`, `toBeFloat()`, `toBeBool()`, `toBeArray()`, `toBeObject()`
+- `toBeCallable()`, `toBeIterable()`, `toBeCountable()`, `toBeNumeric()`, `toBeScalar()`, `toBeResource()`
+
+**Numeric:**
+- `toBeGreaterThan()`, `toBeGreaterThanOrEqual()`, `toBeLessThan()`, `toBeLessThanOrEqual()`
+- `toBeBetween()`, `toBeInfinite()`, `toBeNan()`, `toEqualWithDelta()`
+
+**String:**
+- `toStartWith()`, `toEndWith()`, `toMatch()`, `toHaveLength()`
+- `toBeAlpha()`, `toBeAlphaNumeric()`, `toBeDigits()`
+- `toBeSnakeCase()`, `toBeKebabCase()`, `toBeCamelCase()`, `toBeStudlyCase()`
+- `toBeUppercase()`, `toBeLowercase()`
+
+**Collections:**
+- `toContain()`, `toHaveCount()`, `toHaveKey()`, `toHaveKeys()`, `toHaveLength()`
+- `toBeIn()`, `toContainEqual()`, `toContainOnlyInstancesOf()`, `toHaveSameSize()`
+- `toMatchArray()`, `toEqualCanonicalizing()`
+- `toHaveSnakeCaseKeys()`, `toHaveKebabCaseKeys()`, `toHaveCamelCaseKeys()`, `toHaveStudlyCaseKeys()`
+
+**Objects:**
+- `toBeInstanceOf()`, `toHaveProperty()`, `toHaveProperties()`, `toHaveMethod()`, `toMatchObject()`
+
+**Files:**
+- `toBeFile()`, `toBeReadableFile()`, `toBeWritableFile()`
+- `toBeReadableDirectory()`, `toBeWritableDirectory()`
+
+**Formats:**
+- `toBeEmail()`, `toBeUrl()`, `toBeUuid()`, `toBeJson()`
+
+**Exceptions:**
+- `toThrow()`
+
+### Modifiers (12)
+
+**Core:**
+- `->not` - Negation
+- `->and()` - Chaining
+
+**Collections:**
+- `->each()` - Iterate elements
+- `->sequence()` - Ordered expectations
+
+**Data:**
+- `->json()` - Parse and continue
+
+**Control Flow:**
+- `->when()` - Conditional execution
+- `->unless()` - Inverse conditional
+- `->match()` - Pattern matching
+
+**Debugging:**
+- `->dd()` - Dump and die
+- `->ddWhen()` - Conditional dump
+- `->ddUnless()` - Inverse conditional dump
+- `->ray()` - Ray debugger
+
 ## Comparison with Assert API
 
 | Expect API | Assert API |
@@ -378,6 +594,8 @@ $expectation = expect($value)
 | `expect($x)->toBeGreaterThan(5)` | `Assert::that($x)->greaterThan(5)` |
 | `expect($x)->not->toBeNull()` | `Assert::that($x)->notNull()` |
 | `expect([1,2])->each->toBeInt()` | Manual loop required |
+| `expect([3,2,1])->toEqualCanonicalizing([1,2,3])` | Manual sorting required |
+| `expect('{"a":1}')->json()->toHaveKey('a')` | Manual json_decode required |
 
 ## Next Steps
 
