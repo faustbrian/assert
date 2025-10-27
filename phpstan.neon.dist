@@ -20,3 +20,5 @@ parameters:
         - '#Call to an undefined static method#'
         - '#Method .* has parameter \$[a-zA-Z0-9]+ with no value type specified in iterable type array#'
         - '#Parameter \#[0-9]+ \$pattern of function preg_match expects string, mixed given#'
+        # Optional debugging helper
+        - '#Used function ray not found#'

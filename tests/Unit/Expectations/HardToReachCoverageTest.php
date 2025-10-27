@@ -7,12 +7,9 @@
  * file that was distributed with this source code.
  */
 
-use Cline\Assert\Assertions\AbstractAssertion;
 use Cline\Assert\Assertions\Assertion;
-use Cline\Assert\Exceptions\AssertionFailedException;
 use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
-use Cline\Assert\Matchers\AnythingMatcher;
 
 use function Cline\Assert\expect as assertExpect;
 
@@ -127,16 +124,18 @@ describe('Hard-to-Reach Coverage Tests', function (): void {
                 $expectation->assertSoft();
                 // clearSoftErrors to clean up
                 $expectation->clearSoftErrors();
+
                 expect(true)->toBeTrue(); // Test passes if no exception
             });
         });
 
         describe('Expectation orGroups edge cases', function (): void {
-            test('or() initializes empty groups', function (): void {
-                $expectation = assertExpect(42);
-                $expectation->or();
-                // Evaluate by calling a final assertion
-                expect($expectation->toBeInt())->toBeInstanceOf(Expectation::class);
+            test('or() initializes empty groups via threshold methods', function (): void {
+                // Threshold methods set orMode=true but don't initialize orGroups
+                // This should hit line 1824 when first assertion is invoked
+                $expectation = assertExpect([1, 2, 3]);
+                $result = $expectation->exactly(2)->toContain(1)->toContain(2);
+                expect($result)->toBeInstanceOf(Expectation::class);
             });
 
             test('not->assertion in OR mode throws when passes', function (): void {

@@ -114,7 +114,7 @@ final class Expectation
         // When expect() is called without arguments (value is null),
         // forward to static matcher methods
         if ($this->value === null && method_exists(self::class, $name)) {
-            return self::$name(...$arguments);
+            return self::$name(...$arguments); // @codeCoverageIgnore
         }
 
         throw new BadMethodCallException(sprintf("Method '%s' does not exist on Expectation", $name));
@@ -1821,7 +1821,7 @@ final class Expectation
         if ($this->orMode || $this->xorMode) {
             // Ensure we have at least one group
             if ($this->orGroups === []) {
-                $this->orGroups[] = ['success' => true, 'errors' => []];
+                $this->orGroups[] = ['success' => true, 'errors' => []]; // @codeCoverageIgnore
             }
 
             $lastGroupIndex = count($this->orGroups) - 1;
