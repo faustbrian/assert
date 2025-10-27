@@ -834,6 +834,23 @@ final class Expectation
     }
 
     /**
+     * Assert that value matches the given schema.
+     */
+    public function toMatchSchema(array $schema): self
+    {
+        $errors = \Cline\Assert\Schema\SchemaValidator::validate($this->value, $schema);
+
+        if (!empty($errors)) {
+            throw new InvalidArgumentException(
+                sprintf("Schema validation failed:\n- %s", implode("\n- ", $errors)),
+                0
+            );
+        }
+
+        return $this;
+    }
+
+    /**
      * Assert that object/class has property.
      */
     public function toHaveProperty(string $property): self
@@ -1152,6 +1169,47 @@ final class Expectation
             } else {
                 ray($this->value);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that value matches a stored snapshot.
+     */
+    public function toMatchSnapshot(string $testName): self
+    {
+        $formatted = \Cline\Assert\Snapshots\SnapshotManager::formatValue($this->value);
+
+        if (!\Cline\Assert\Snapshots\SnapshotManager::hasSnapshot($testName)) {
+            \Cline\Assert\Snapshots\SnapshotManager::saveSnapshot($testName, $formatted);
+            return $this;
+        }
+
+        $snapshot = \Cline\Assert\Snapshots\SnapshotManager::getSnapshot($testName);
+
+        if ($formatted !== $snapshot) {
+            throw new InvalidArgumentException(
+                sprintf("Snapshot \"%s\" does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $testName, $snapshot, $formatted),
+                0
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that value matches an inline snapshot.
+     */
+    public function toMatchInlineSnapshot(string $expected): self
+    {
+        $formatted = \Cline\Assert\Snapshots\SnapshotManager::formatValue($this->value);
+
+        if ($formatted !== $expected) {
+            throw new InvalidArgumentException(
+                sprintf("Inline snapshot does not match:\n\nExpected:\n%s\n\nReceived:\n%s", $expected, $formatted),
+                0
+            );
         }
 
         return $this;

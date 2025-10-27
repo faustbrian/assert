@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cline\Assert\functions;
+namespace Cline\Assert;
 
 use Cline\Assert\Matchers\AnyMatcher;
 use Cline\Assert\Matchers\AnythingMatcher;
