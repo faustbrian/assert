@@ -178,37 +178,37 @@ final class Expectation
     }
 
     /**
-     * Assert that value is truthy (loose == true).
+     * Assert that value is truthy (evaluates to true in boolean context).
      */
     public function toBeTruthy(): self
     {
         if ($this->negate) {
-            throw_if($this->value === true, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
+            throw_if((bool) $this->value === true, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
 
             $this->negate = false;
 
             return $this;
         }
 
-        throw_if($this->value !== true, InvalidArgumentException::class, 'Expected value to be truthy, but got falsy value', 0, null, $this->value);
+        throw_if((bool) $this->value === false, InvalidArgumentException::class, 'Expected value to be truthy, but got falsy value', 0, null, $this->value);
 
         return $this;
     }
 
     /**
-     * Assert that value is falsy (loose == false).
+     * Assert that value is falsy (evaluates to false in boolean context).
      */
     public function toBeFalsy(): self
     {
         if ($this->negate) {
-            throw_if($this->value === false, InvalidArgumentException::class, 'Expected value to be truthy, but got falsy value', 0, null, $this->value);
+            throw_if((bool) $this->value === false, InvalidArgumentException::class, 'Expected value to be truthy, but got falsy value', 0, null, $this->value);
 
             $this->negate = false;
 
             return $this;
         }
 
-        throw_if($this->value !== false, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
+        throw_if((bool) $this->value === true, InvalidArgumentException::class, 'Expected value to be falsy, but got truthy value', 0, null, $this->value);
 
         return $this;
     }
