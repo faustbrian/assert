@@ -1,135 +1,11 @@
 <?php declare(strict_types=1);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-use Illuminate\Support\Facades\Date;
+/**
+ * Copyright (C) Brian Faust
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 use Carbon\CarbonImmutable;
 use Cline\Assert\Matchers\AnyMatcher;
@@ -137,6 +13,7 @@ use Cline\Assert\Matchers\AnythingMatcher;
 use Cline\Assert\Matchers\ArrayContainingMatcher;
 use Cline\Assert\Matchers\MatcherFactory;
 use Cline\Assert\Matchers\StringContainingMatcher;
+use Illuminate\Support\Facades\Date;
 
 describe('MatcherFactory', function (): void {
     describe('any()', function (): void {
