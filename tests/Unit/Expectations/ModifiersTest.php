@@ -45,7 +45,7 @@ describe('Expectation Modifiers', function (): void {
         });
 
         test('each() requires traversable value', function (): void {
-            expect(fn () => assertExpect(42)->each->toBeInt(...))
+            expect(fn (): Closure => assertExpect(42)->each->toBeInt(...))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
@@ -78,7 +78,7 @@ describe('Expectation Modifiers', function (): void {
             $first = assertExpect(42)->toBeInt();
             $second = $first->and('hello');
 
-            expect(fn () => ($first->toBeString(...))())
+            expect(fn (): Expectation => ($first->toBeString(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
     });
