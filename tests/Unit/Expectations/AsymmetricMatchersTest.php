@@ -11,11 +11,11 @@ use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
 use Illuminate\Support\Facades\Date;
 
-use function Cline\Assert\any;
-use function Cline\Assert\anything;
-use function Cline\Assert\arrayContaining;
 use function Cline\Assert\expect as assertExpect;
-use function Cline\Assert\stringContaining;
+use function Cline\Assert\functions\any;
+use function Cline\Assert\functions\anything;
+use function Cline\Assert\functions\arrayContaining;
+use function Cline\Assert\functions\stringContaining;
 
 describe('Asymmetric Matchers', function (): void {
     describe('any() matcher', function (): void {

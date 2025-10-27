@@ -573,10 +573,10 @@ Match partial patterns without requiring exact equality:
 
 ```php
 use function Cline\Assert\expect;
-use function Cline\Assert\any;
-use function Cline\Assert\anything;
-use function Cline\Assert\stringContaining;
-use function Cline\Assert\arrayContaining;
+use function Cline\Assert\functions\any;
+use function Cline\Assert\functions\anything;
+use function Cline\Assert\functions\stringContaining;
+use function Cline\Assert\functions\arrayContaining;
 
 // any() - Match any value of specific type
 expect(['name' => 'John', 'age' => 30])->toEqual([
