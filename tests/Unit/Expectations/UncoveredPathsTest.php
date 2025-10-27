@@ -9,6 +9,10 @@
 
 use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
+use Cline\Assert\Matchers\AnyMatcher;
+use Cline\Assert\Matchers\AnythingMatcher;
+use Cline\Assert\Matchers\ArrayContainingMatcher;
+use Cline\Assert\Matchers\StringContainingMatcher;
 
 use function Cline\Assert\expect as assertExpect;
 
@@ -31,22 +35,22 @@ describe('Uncovered Expectation Paths', function (): void {
     describe('__call method forwarding', function (): void {
         test('__call forwards to static methods when value is null', function (): void {
             $result = assertExpect(null)->any('string');
-            expect($result)->toBeInstanceOf(Cline\Assert\Matchers\AnyMatcher::class);
+            expect($result)->toBeInstanceOf(AnyMatcher::class);
         });
 
         test('__call forwards anything matcher when value is null', function (): void {
             $result = assertExpect(null)->anything();
-            expect($result)->toBeInstanceOf(Cline\Assert\Matchers\AnythingMatcher::class);
+            expect($result)->toBeInstanceOf(AnythingMatcher::class);
         });
 
         test('__call forwards stringContaining when value is null', function (): void {
             $result = assertExpect(null)->stringContaining('test');
-            expect($result)->toBeInstanceOf(Cline\Assert\Matchers\StringContainingMatcher::class);
+            expect($result)->toBeInstanceOf(StringContainingMatcher::class);
         });
 
         test('__call forwards arrayContaining when value is null', function (): void {
             $result = assertExpect(null)->arrayContaining(['key' => 'value']);
-            expect($result)->toBeInstanceOf(Cline\Assert\Matchers\ArrayContainingMatcher::class);
+            expect($result)->toBeInstanceOf(ArrayContainingMatcher::class);
         });
 
         test('__call throws BadMethodCallException for undefined methods', function (): void {

@@ -259,6 +259,7 @@ final class Expectation
 
         // If callback provided, invoke it for each item
         if ($callback !== null) {
+            // @phpstan-ignore-next-line foreach.nonIterable (validated by isTraversable)
             foreach ($this->value as $key => $item) {
                 $expectation = new self($item);
                 $callback($expectation, $key);

@@ -2289,7 +2289,10 @@ describe('Equality Assertions', function (): void {
         test('strictEquals throws exception with different objects', function (): void {
             $this->expectException(AssertionFailedException::class);
             $this->expectExceptionCode(ValidationError::InvalidSame->value);
-            Assertion::strictEquals(new stdClass(), new stdClass());
+            Assertion::strictEquals(
+                new stdClass(),
+                new stdClass(),
+            );
         });
     });
 });
@@ -2338,7 +2341,10 @@ describe('Null Assertions', function (): void {
         });
 
         test('nullable passes with matching object type', function (): void {
-            expect(Assertion::nullable(new stdClass(), 'object'))->toBeTrue();
+            expect(Assertion::nullable(
+                new stdClass(),
+                'object',
+            ))->toBeTrue();
         });
 
         test('nullable passes with matching class instance', function (): void {
