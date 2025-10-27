@@ -45,8 +45,7 @@ use function is_scalar;
 use function is_string;
 use function iterator_to_array;
 use function json_decode;
-use function method_exists; // @phpstan-ignore-line function.notFound (optional debug helper checked at runtime)
-use function ray;
+use function method_exists;
 use function sprintf;
 use function str_contains;
 use function throw_if;
@@ -1450,6 +1449,8 @@ final class Expectation
 
     /**
      * Dump value and continue chain (debugging helper).
+     *
+     * @codeCoverageIgnore
      */
     public function dump(mixed ...$args): self
     {
@@ -1460,6 +1461,8 @@ final class Expectation
 
     /**
      * Dump and die - output value and stop execution.
+     *
+     * @codeCoverageIgnore
      */
     public function dd(mixed ...$args): never
     {
@@ -1470,6 +1473,8 @@ final class Expectation
 
     /**
      * Dump and die only when condition is true.
+     *
+     * @codeCoverageIgnore
      */
     public function ddWhen(bool|callable $condition, mixed ...$args): self
     {
@@ -1484,6 +1489,8 @@ final class Expectation
 
     /**
      * Dump and die only when condition is false.
+     *
+     * @codeCoverageIgnore
      */
     public function ddUnless(bool|callable $condition, mixed ...$args): self
     {
@@ -1498,6 +1505,8 @@ final class Expectation
 
     /**
      * Send value to Ray debugger (if available).
+     *
+     * @codeCoverageIgnore
      */
     public function ray(?string $label = null): self
     {
