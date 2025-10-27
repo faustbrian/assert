@@ -14,6 +14,7 @@ namespace Cline\Assert\Exceptions;
  */
 enum ValidationError: int
 {
+    case InvalidType = 250;
     case InvalidInteger = 10;
     case InvalidFloat = 9;
     case InvalidDigit = 11;

@@ -331,6 +331,11 @@ expect(fn() => throw new InvalidArgumentException())
 expect(fn() => throw new Exception('Custom error'))
     ->toThrow(Exception::class, 'Custom error');
 
+// Jest/Vitest compatible alias
+expect(fn() => throw new RuntimeException())->toThrowError();
+expect(fn() => throw new InvalidArgumentException())
+    ->toThrowError(InvalidArgumentException::class, 'Invalid');
+
 // Verify no exception thrown
 expect(fn() => $user->save())->not->toThrow();
 ```
@@ -1181,10 +1186,11 @@ $expectation = expect($value)
 
 ## Complete Feature List
 
-### Core Expectations (70+)
+### Core Expectations (75+)
 
 **Equality & Boolean:**
-- `toBe()`, `toEqual()`, `toBeNull()`, `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
+- `toBe()`, `toEqual()`, `toStrictEqual()`, `toBeNull()`, `toBeDefined()`, `toBeUndefined()`, `toBeNullable()`
+- `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
 
 **Types:**
 - `toBeString()`, `toBeInt()`, `toBeFloat()`, `toBeBool()`, `toBeArray()`, `toBeObject()`
@@ -1231,7 +1237,7 @@ $expectation = expect($value)
 - `toBeEmail()`, `toBeUrl()`, `toBeUuid()`, `toBeJson()`
 
 **Exceptions:**
-- `toThrow()`
+- `toThrow()`, `toThrowError()` - Exception validation with class/message matching
 
 **Snapshots:**
 - `toMatchSnapshot()` - File-based snapshot testing
@@ -1269,6 +1275,39 @@ $expectation = expect($value)
 - `expect()->anything()` - Match any non-null value
 - `expect()->stringContaining()` - Match strings with substring
 - `expect()->arrayContaining()` - Match arrays with subset of keys
+
+## Future Considerations
+
+### poll() - Polling/Retry Pattern
+
+While not implemented (PHP isn't async like JavaScript), a `poll()` modifier could be useful for eventual consistency scenarios:
+
+```php
+// Hypothetical usage for polling external state
+expect(fn() => $cache->get('key'))
+    ->poll(timeout: 5000, interval: 100)
+    ->toBe('expected-value');
+```
+
+**Use cases:**
+- Polling external APIs or services
+- Waiting for cache/database eventual consistency
+- Testing distributed systems
+- Retry-until-success patterns
+
+**Current workarounds:**
+```php
+// Manual polling with loop
+$attempts = 0;
+$maxAttempts = 50;
+while ($attempts++ < $maxAttempts) {
+    if ($cache->get('key') === 'expected-value') {
+        break;
+    }
+    usleep(100_000); // 100ms
+}
+expect($cache->get('key'))->toBe('expected-value');
+```
 
 ## Comparison with Assert API
 
