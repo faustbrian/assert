@@ -54,9 +54,7 @@ describe('Additional Coverage for Expectation', function (): void {
             {
                 public function evaluate($value): void
                 {
-                    if ($value !== 42) {
-                        throw new Exception('Value must be 42');
-                    }
+                    throw_if($value !== 42, Exception::class, 'Value must be 42');
                 }
             };
 
@@ -67,7 +65,7 @@ describe('Additional Coverage for Expectation', function (): void {
         test('toMatchConstraint() fails when constraint evaluation throws', function (): void {
             $constraint = new class()
             {
-                public function evaluate($value): void
+                public function evaluate($value): never
                 {
                     throw new Exception('Always fails');
                 }
@@ -82,7 +80,7 @@ describe('Additional Coverage for Expectation', function (): void {
         test('toMatchConstraint() with negation passes when constraint fails', function (): void {
             $constraint = new class()
             {
-                public function evaluate($value): void
+                public function evaluate($value): never
                 {
                     throw new Exception('Fails');
                 }
@@ -148,24 +146,19 @@ describe('Additional Coverage for Expectation', function (): void {
             $reflection = new ReflectionClass($exp);
 
             $thresholdModeProp = $reflection->getProperty('thresholdMode');
-            $thresholdModeProp->setAccessible(true);
             $thresholdModeProp->setValue($exp, 'invalidMode');
 
             $thresholdCountProp = $reflection->getProperty('thresholdCount');
-            $thresholdCountProp->setAccessible(true);
             $thresholdCountProp->setValue($exp, 1);
 
             $orModeProp = $reflection->getProperty('orMode');
-            $orModeProp->setAccessible(true);
             $orModeProp->setValue($exp, true);
 
             $orGroupsProp = $reflection->getProperty('orGroups');
-            $orGroupsProp->setAccessible(true);
             $orGroupsProp->setValue($exp, [['success' => true, 'errors' => []]]);
 
             // Force evaluation
             $evaluateMethod = $reflection->getMethod('evaluateOrGroups');
-            $evaluateMethod->setAccessible(true);
 
             expect(fn () => $evaluateMethod->invoke($exp))
                 ->toThrow(InvalidArgumentException::class);

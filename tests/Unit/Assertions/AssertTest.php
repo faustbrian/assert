@@ -2274,6 +2274,7 @@ describe('Equality Assertions', function (): void {
         test('strictEquals passes with identical values', function (): void {
             expect(Assertion::strictEquals(42, 42))->toBeTrue();
             expect(Assertion::strictEquals('test', 'test'))->toBeTrue();
+
             $obj = new stdClass();
             expect(Assertion::strictEquals($obj, $obj))->toBeTrue();
         });

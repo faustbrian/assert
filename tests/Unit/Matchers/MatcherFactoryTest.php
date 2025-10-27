@@ -1,12 +1,102 @@
 <?php declare(strict_types=1);
 
-/**
- * Copyright (C) Brian Faust
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use Illuminate\Support\Facades\Date;
+
+use Carbon\CarbonImmutable;
 use Cline\Assert\Matchers\AnyMatcher;
 use Cline\Assert\Matchers\AnythingMatcher;
 use Cline\Assert\Matchers\ArrayContainingMatcher;
@@ -107,7 +197,7 @@ describe('MatcherFactory', function (): void {
                     new stdClass(),
                 ))->toBeTrue();
                 expect($matcher->matches(
-                    new DateTime(),
+                    Date::now(),
                 ))->toBeTrue();
             });
 
@@ -117,7 +207,7 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches(
-                    new DateTime(),
+                    Date::now(),
                 ))->toBeTrue();
             });
 
@@ -274,7 +364,7 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches(
-                    new DateTime(),
+                    Date::now(),
                 ))->toBeTrue();
             });
 
@@ -296,10 +386,10 @@ describe('MatcherFactory', function (): void {
 
                 // Assert
                 expect($matcher->matches(
-                    new DateTime(),
+                    Date::now(),
                 ))->toBeTrue();
                 expect($matcher->matches(
-                    new DateTimeImmutable(),
+                    CarbonImmutable::now(),
                 ))->toBeTrue();
             });
         });
