@@ -1897,6 +1897,62 @@ abstract class AbstractAssertion
         return true;
     }
 
+    public static function subsetOf(mixed $value, array $superset, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+
+        $diff = array_diff($value, $superset);
+
+        if ($diff !== []) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected array to be subset of superset. Extra elements: %s'),
+                static::stringify($diff),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidSubset->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function sorted(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+
+        $sorted = $value;
+        sort($sorted);
+
+        if ($value !== $sorted) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected array to be sorted in ascending order. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidArray->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function sortedDesc(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        self::isArray($value, $message, $propertyPath);
+
+        $sorted = $value;
+        rsort($sorted);
+
+        if ($value !== $sorted) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected array to be sorted in descending order. Got: %s'),
+                static::stringify($value),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidArray->value, $propertyPath);
+        }
+
+        return true;
+    }
+
     public static function isObject(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
     {
         if (!is_object($value)) {
@@ -2167,6 +2223,93 @@ abstract class AbstractAssertion
             );
 
             throw self::createException($value, $message, ValidationError::InvalidDate->value, $propertyPath, ['format' => $format]);
+        }
+
+        return true;
+    }
+
+    public static function before(mixed $value, \DateTimeInterface|string $date, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
+        $compareDate = $date instanceof \DateTimeInterface ? $date : new DateTime($date);
+
+        if ($valueDate >= $compareDate) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected date to be before %2$s. Got: %s'),
+                $valueDate->format('Y-m-d H:i:s'),
+                $compareDate->format('Y-m-d H:i:s'),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRange->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function after(mixed $value, \DateTimeInterface|string $date, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
+        $compareDate = $date instanceof \DateTimeInterface ? $date : new DateTime($date);
+
+        if ($valueDate <= $compareDate) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected date to be after %2$s. Got: %s'),
+                $valueDate->format('Y-m-d H:i:s'),
+                $compareDate->format('Y-m-d H:i:s'),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRange->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function today(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
+        $today = new DateTime('today');
+
+        if ($valueDate->format('Y-m-d') !== $today->format('Y-m-d')) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected date to be today. Got: %s'),
+                $valueDate->format('Y-m-d'),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRange->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function yesterday(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
+        $yesterday = new DateTime('yesterday');
+
+        if ($valueDate->format('Y-m-d') !== $yesterday->format('Y-m-d')) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected date to be yesterday. Got: %s'),
+                $valueDate->format('Y-m-d'),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRange->value, $propertyPath);
+        }
+
+        return true;
+    }
+
+    public static function tomorrow(mixed $value, callable|string|null $message = null, ?string $propertyPath = null): bool
+    {
+        $valueDate = $value instanceof \DateTimeInterface ? $value : new DateTime($value);
+        $tomorrow = new DateTime('tomorrow');
+
+        if ($valueDate->format('Y-m-d') !== $tomorrow->format('Y-m-d')) {
+            $message = sprintf(
+                self::generateMessage($message ?: 'Expected date to be tomorrow. Got: %s'),
+                $valueDate->format('Y-m-d'),
+            );
+
+            throw self::createException($value, $message, ValidationError::InvalidRange->value, $propertyPath);
         }
 
         return true;

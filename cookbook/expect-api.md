@@ -201,6 +201,54 @@ expect(['first_name' => 'John', 'last_name' => 'Doe'])->toHaveSnakeCaseKeys();
 expect(['first-name' => 'John', 'last-name' => 'Doe'])->toHaveKebabCaseKeys();
 expect(['firstName' => 'John', 'lastName' => 'Doe'])->toHaveCamelCaseKeys();
 expect(['FirstName' => 'John', 'LastName' => 'Doe'])->toHaveStudlyCaseKeys();
+
+// Array relationships
+expect([1, 2])->toBeSubsetOf([1, 2, 3, 4, 5]);
+expect([1, 2, 3])->toHaveUniqueValues();
+
+// Array sorting
+expect([1, 2, 3, 4, 5])->toBeSorted();
+expect([5, 4, 3, 2, 1])->toBeSortedDesc();
+```
+
+## Date/Time Expectations
+
+```php
+// Date comparisons
+expect('2024-01-01')->toBeBefore('2024-12-31');
+expect('2024-12-31')->toBeAfter('2024-01-01');
+expect('2024-06-15')->toBeBetween('2024-01-01', '2024-12-31');
+
+// Date matching
+expect(date('Y-m-d'))->toBeToday();
+expect(date('Y-m-d', strtotime('yesterday')))->toBeYesterday();
+expect(date('Y-m-d', strtotime('tomorrow')))->toBeTomorrow();
+
+// DateTime objects
+$early = new DateTime('2024-01-01');
+$late = new DateTime('2024-12-31');
+expect($early)->toBeBefore($late);
+expect($late)->toBeAfter($early);
+```
+
+## Performance Expectations
+
+```php
+// Performance testing
+$fastOperation = fn () => 1 + 1;
+expect($fastOperation)->toCompleteWithin(100); // milliseconds
+
+// Real-world performance checks
+$sortOperation = function () {
+    $array = range(1, 1000);
+    shuffle($array);
+    sort($array);
+};
+expect($sortOperation)->toCompleteWithin(100);
+
+// The callable is executed and timed
+// Throws if execution exceeds the specified milliseconds
+// Return values are ignored
 ```
 
 ## Object Expectations
@@ -1120,7 +1168,7 @@ $expectation = expect($value)
 
 ## Complete Feature List
 
-### Core Expectations (60+)
+### Core Expectations (70+)
 
 **Equality & Boolean:**
 - `toBe()`, `toEqual()`, `toBeNull()`, `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
@@ -1135,6 +1183,9 @@ $expectation = expect($value)
 - `toBePositive()`, `toBeNegative()`, `toBeEven()`, `toBeOdd()`, `toBeDivisibleBy()`
 - `toBeValidDate()`
 
+**Date/Time:**
+- `toBeBefore()`, `toBeAfter()`, `toBeToday()`, `toBeYesterday()`, `toBeTomorrow()`
+
 **String:**
 - `toStartWith()`, `toEndWith()`, `toMatch()`, `toHaveLength()`
 - `toBeAlpha()`, `toBeAlphaNumeric()`, `toBeDigits()`
@@ -1147,6 +1198,10 @@ $expectation = expect($value)
 - `toContainAllKeys()`, `toContainAllValues()`
 - `toMatchArray()`, `toEqualCanonicalizing()`
 - `toHaveSnakeCaseKeys()`, `toHaveKebabCaseKeys()`, `toHaveCamelCaseKeys()`, `toHaveStudlyCaseKeys()`
+- `toBeSubsetOf()`, `toHaveUniqueValues()`, `toBeSorted()`, `toBeSortedDesc()`
+
+**Performance:**
+- `toCompleteWithin()` - Execution time validation (milliseconds)
 
 **Custom:**
 - `toSatisfy()` - Custom predicate validation

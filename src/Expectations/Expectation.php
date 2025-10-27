@@ -545,7 +545,7 @@ final class Expectation
     /**
      * Assert that date is before another date.
      */
-    public function toBeBefore(DateTimeInterface|string $date): self
+    public function toBeBefore(\DateTimeInterface|string $date): self
     {
         return $this->invoke('before', [$date]);
     }
@@ -553,7 +553,7 @@ final class Expectation
     /**
      * Assert that date is after another date.
      */
-    public function toBeAfter(DateTimeInterface|string $date): self
+    public function toBeAfter(\DateTimeInterface|string $date): self
     {
         return $this->invoke('after', [$date]);
     }

@@ -61,6 +61,7 @@ enum ValidationError: int
     case InvalidMap = 232;
     case InvalidCountBetween = 233;
     case InvalidArrayKey = 234;
+    case InvalidSubset = 246;
     case InvalidInstanceOf = 28;
     case InvalidSubclassOf = 29;
     case InvalidClass = 105;
