@@ -18,7 +18,7 @@ describe('Modifier Methods', function (): void {
             expect(fn (): Expectation => assertExpect([1, 'test', 3.14])->sequence(
                 fn ($e) => $e->toBeInt(),
                 fn ($e) => $e->toBeString(),
-                fn ($e) => $e->toBeFloat()
+                fn ($e) => $e->toBeFloat(),
             ))->not->toThrow(Throwable::class);
         });
 
@@ -26,7 +26,7 @@ describe('Modifier Methods', function (): void {
             expect(fn (): Expectation => assertExpect([1, 2])->sequence(
                 fn ($e) => $e->toBeInt(),
                 fn ($e) => $e->toBeInt(),
-                fn ($e) => $e->toBeInt()
+                fn ($e) => $e->toBeInt(),
             ))->toThrow(InvalidArgumentException::class);
         });
 
@@ -34,7 +34,7 @@ describe('Modifier Methods', function (): void {
             expect(fn (): Expectation => assertExpect([1, 2, 3])->sequence(
                 fn ($e) => $e->toBeInt(),
                 fn ($e) => $e->toBeString(),
-                fn ($e) => $e->toBeInt()
+                fn ($e) => $e->toBeInt(),
             ))->toThrow(InvalidArgumentException::class);
         });
     });
@@ -64,21 +64,21 @@ describe('Modifier Methods', function (): void {
         test('matches value with exact match', function (): void {
             expect(fn (): Expectation => assertExpect('active')->match(
                 ['pending', fn ($e) => $e->toBeString()],
-                ['active', fn ($e) => $e->toBeString()]
+                ['active', fn ($e) => $e->toBeString()],
             ))->not->toThrow(Throwable::class);
         });
 
         test('matches value with callable matcher', function (): void {
             expect(fn (): Expectation => assertExpect(42)->match(
-                [fn ($v) => $v < 10, fn ($e) => $e->toBeInt()],
-                [fn ($v) => $v > 10, fn ($e) => $e->toBeInt()]
+                [fn ($v): bool => $v < 10, fn ($e) => $e->toBeInt()],
+                [fn ($v): bool => $v > 10, fn ($e) => $e->toBeInt()],
             ))->not->toThrow(Throwable::class);
         });
 
         test('rejects when no pattern matches', function (): void {
             expect(fn (): Expectation => assertExpect('unknown')->match(
                 ['pending', fn ($e) => $e->toBeString()],
-                ['active', fn ($e) => $e->toBeString()]
+                ['active', fn ($e) => $e->toBeString()],
             ))->toThrow(InvalidArgumentException::class);
         });
     });

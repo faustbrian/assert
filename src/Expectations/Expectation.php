@@ -15,13 +15,22 @@ use Cline\Assert\Exceptions\InvalidArgumentException;
 use stdClass;
 use Throwable;
 
+use function array_key_exists;
 use function call_user_func_array;
+use function count;
+use function ctype_alpha;
+use function dump;
 use function func_num_args;
+use function function_exists;
 use function in_array;
 use function is_array;
 use function is_callable;
 use function is_countable;
 use function is_string;
+use function iterator_to_array;
+use function json_decode;
+use function method_exists;
+use function ray;
 use function sprintf;
 use function str_contains;
 use function throw_if;
@@ -501,12 +510,12 @@ final class Expectation
         if ($this->negate) {
             $this->negate = false;
 
-            throw_if(ctype_alpha($this->value), InvalidArgumentException::class, 'Expected value not to be alphabetic', 0, null, $this->value);
+            throw_if(ctype_alpha((string) $this->value), InvalidArgumentException::class, 'Expected value not to be alphabetic', 0, null, $this->value);
 
             return $this;
         }
 
-        throw_unless(ctype_alpha($this->value), InvalidArgumentException::class, 'Expected value to be alphabetic', 0, null, $this->value);
+        throw_unless(ctype_alpha((string) $this->value), InvalidArgumentException::class, 'Expected value to be alphabetic', 0, null, $this->value);
 
         return $this;
     }
@@ -780,14 +789,14 @@ final class Expectation
 
         try {
             $constraint->evaluate($this->value);
-        } catch (\Throwable $e) {
+        } catch (Throwable $throwable) {
             if ($this->negate) {
                 $this->negate = false;
 
                 return $this;
             }
 
-            throw new InvalidArgumentException('Constraint evaluation failed: ' . $e->getMessage(), 0, $e, $this->value);
+            throw new InvalidArgumentException('Constraint evaluation failed: '.$throwable->getMessage(), 0, $throwable, $this->value);
         }
 
         if ($this->negate) {
@@ -883,7 +892,7 @@ final class Expectation
         $values = is_array($this->value) ? $this->value : iterator_to_array($this->value);
 
         foreach ($callbacks as $index => $callback) {
-            throw_unless(\array_key_exists($index, $values), InvalidArgumentException::class, sprintf('Sequence expects at least %d items but got %d', $index + 1, \count($values)), 0, null, $this->value);
+            throw_unless(array_key_exists($index, $values), InvalidArgumentException::class, sprintf('Sequence expects at least %d items but got %d', $index + 1, count($values)), 0, null, $this->value);
 
             $expectation = new self($values[$index]);
             $callback($expectation);
@@ -898,7 +907,7 @@ final class Expectation
     public function json(): self
     {
         Assertion::isJsonString($this->value);
-        $decoded = json_decode($this->value, true);
+        $decoded = json_decode((string) $this->value, true);
 
         return new self($decoded);
     }
@@ -909,13 +918,7 @@ final class Expectation
     public function match(array ...$patterns): self
     {
         foreach ($patterns as [$matcher, $callback]) {
-            $matched = false;
-
-            if (is_callable($matcher)) {
-                $matched = $matcher($this->value);
-            } else {
-                $matched = $this->value === $matcher;
-            }
+            $matched = is_callable($matcher) ? $matcher($this->value) : $this->value === $matcher;
 
             if ($matched) {
                 $callback($this);
@@ -933,6 +936,7 @@ final class Expectation
     public function dd(mixed ...$args): never
     {
         dump($this->value, ...$args);
+
         exit(1);
     }
 
@@ -969,7 +973,7 @@ final class Expectation
      */
     public function ray(?string $label = null): self
     {
-        if (\function_exists('ray')) {
+        if (function_exists('ray')) {
             if ($label !== null) {
                 ray($label, $this->value);
             } else {

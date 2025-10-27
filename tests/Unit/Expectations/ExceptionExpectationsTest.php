@@ -59,14 +59,14 @@ describe('Exception Expectations', function (): void {
 
     describe('Negation with toThrow()', function (): void {
         test('not->toThrow() accepts callable that does not throw', function (): void {
-            expect(fn (): Expectation => assertExpect(fn (): int => 42)->not->toThrow())
+            expect(assertExpect(fn (): int => 42)->not->toThrow(...))
                 ->not->toThrow(Throwable::class);
         });
 
         test('not->toThrow() rejects callable that throws', function (): void {
-            expect(fn (): Expectation => assertExpect(function (): void {
+            expect(assertExpect(function (): void {
                 throw new Exception('test');
-            })->not->toThrow())
+            })->not->toThrow(...))
                 ->toThrow(InvalidArgumentException::class);
         });
     });

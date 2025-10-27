@@ -22,7 +22,7 @@ describe('Advanced Expectations', function (): void {
         });
 
         test('toEqualWithDelta() accepts values within delta', function (): void {
-            expect(fn (): Expectation => assertExpect(3.14159)->toEqualWithDelta(3.14, 0.01))
+            expect(fn (): Expectation => assertExpect(3.141_59)->toEqualWithDelta(3.14, 0.01))
                 ->not->toThrow(Throwable::class);
             expect(fn (): Expectation => assertExpect(100)->toEqualWithDelta(99, 1.0))
                 ->not->toThrow(Throwable::class);
@@ -36,8 +36,8 @@ describe('Advanced Expectations', function (): void {
 
     describe('Numeric Edge Cases', function (): void {
         test('toBeInfinite() accepts INF', function (): void {
-            expect(fn (): Expectation => assertExpect(INF)->toBeInfinite())->not->toThrow(Throwable::class);
-            expect(fn (): Expectation => assertExpect(-INF)->toBeInfinite())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(\INF)->toBeInfinite())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(-\INF)->toBeInfinite())->not->toThrow(Throwable::class);
         });
 
         test('toBeInfinite() rejects finite numbers', function (): void {
@@ -46,7 +46,7 @@ describe('Advanced Expectations', function (): void {
         });
 
         test('toBeNan() accepts NAN', function (): void {
-            expect(fn (): Expectation => assertExpect(NAN)->toBeNan())->not->toThrow(Throwable::class);
+            expect(fn (): Expectation => assertExpect(\NAN)->toBeNan())->not->toThrow(Throwable::class);
         });
 
         test('toBeNan() rejects non-NaN values', function (): void {
