@@ -898,6 +898,132 @@ final class Expectation
     }
 
     /**
+     * Assert that all array keys are snake_case.
+     */
+    public function toHaveSnakeCaseKeys(): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toHaveSnakeCaseKeys() requires an array value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+(_[a-z]+)*$/';
+        foreach (array_keys($this->value) as $key) {
+            throw_unless(is_string($key) && preg_match($pattern, $key) === 1, InvalidArgumentException::class, sprintf('Expected all keys to be snake_case, but found: %s', $key), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that all array keys are kebab-case.
+     */
+    public function toHaveKebabCaseKeys(): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toHaveKebabCaseKeys() requires an array value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+(-[a-z]+)*$/';
+        foreach (array_keys($this->value) as $key) {
+            throw_unless(is_string($key) && preg_match($pattern, $key) === 1, InvalidArgumentException::class, sprintf('Expected all keys to be kebab-case, but found: %s', $key), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that all array keys are camelCase.
+     */
+    public function toHaveCamelCaseKeys(): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toHaveCamelCaseKeys() requires an array value', 0, null, $this->value);
+
+        $pattern = '/^[a-z]+([A-Z][a-z]+)*$/';
+        foreach (array_keys($this->value) as $key) {
+            throw_unless(is_string($key) && preg_match($pattern, $key) === 1, InvalidArgumentException::class, sprintf('Expected all keys to be camelCase, but found: %s', $key), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that all array keys are StudlyCase.
+     */
+    public function toHaveStudlyCaseKeys(): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toHaveStudlyCaseKeys() requires an array value', 0, null, $this->value);
+
+        $pattern = '/^[A-Z][a-z]+([A-Z][a-z]+)*$/';
+        foreach (array_keys($this->value) as $key) {
+            throw_unless(is_string($key) && preg_match($pattern, $key) === 1, InvalidArgumentException::class, sprintf('Expected all keys to be StudlyCase, but found: %s', $key), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that two countables have the same size.
+     */
+    public function toHaveSameSize(array|Countable $expected): self
+    {
+        throw_unless(is_countable($this->value), InvalidArgumentException::class, 'toHaveSameSize() requires a countable value', 0, null, $this->value);
+        throw_unless(is_countable($expected), InvalidArgumentException::class, 'toHaveSameSize() requires a countable expected value', 0, null, $expected);
+
+        $actualCount = count($this->value);
+        $expectedCount = count($expected);
+
+        if ($this->negate) {
+            $this->negate = false;
+            throw_if($actualCount === $expectedCount, InvalidArgumentException::class, sprintf('Expected counts not to be equal, but both are %d', $actualCount), 0, null, $this->value);
+
+            return $this;
+        }
+
+        throw_unless($actualCount === $expectedCount, InvalidArgumentException::class, sprintf('Expected count %d but got %d', $expectedCount, $actualCount), 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that array contains only instances of a given class.
+     */
+    public function toContainOnlyInstancesOf(string $className): self
+    {
+        throw_unless(is_array($this->value), InvalidArgumentException::class, 'toContainOnlyInstancesOf() requires an array value', 0, null, $this->value);
+
+        foreach ($this->value as $item) {
+            throw_unless($item instanceof $className, InvalidArgumentException::class, sprintf('Expected all items to be instances of %s', $className), 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that value matches a PHPUnit constraint.
+     */
+    public function toMatchConstraint(object $constraint): self
+    {
+        // For now, basic implementation - can be enhanced with PHPUnit constraint support
+        throw_unless(method_exists($constraint, 'evaluate'), InvalidArgumentException::class, 'Constraint must have an evaluate method', 0, null, $constraint);
+
+        try {
+            $constraint->evaluate($this->value);
+        } catch (\Throwable $e) {
+            if ($this->negate) {
+                $this->negate = false;
+
+                return $this;
+            }
+
+            throw new InvalidArgumentException('Constraint evaluation failed: ' . $e->getMessage(), 0, $e, $this->value);
+        }
+
+        if ($this->negate) {
+            $this->negate = false;
+
+            throw new InvalidArgumentException('Expected constraint to fail but it passed', 0, null, $this->value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Assert that object has method.
      */
     public function toHaveMethod(string $method): self
