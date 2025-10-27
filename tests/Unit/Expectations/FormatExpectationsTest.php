@@ -21,9 +21,9 @@ describe('Format Expectations', function (): void {
         });
 
         test('toBeEmail() rejects invalid email addresses', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('not-an-email')->toBeEmail())
+            expect(fn () => assertExpect('not-an-email')->toBeEmail())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('missing@domain')->toBeEmail())
+            expect(fn () => assertExpect('missing@domain')->toBeEmail())
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -40,9 +40,9 @@ describe('Format Expectations', function (): void {
         });
 
         test('toBeUrl() rejects invalid URLs', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('not a url')->toBeUrl())
+            expect(fn () => assertExpect('not a url')->toBeUrl())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('example.com')->toBeUrl())
+            expect(fn () => assertExpect('example.com')->toBeUrl())
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -58,9 +58,9 @@ describe('Format Expectations', function (): void {
         });
 
         test('toBeUuid() rejects invalid UUIDs', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('not-a-uuid')->toBeUuid())
+            expect(fn () => assertExpect('not-a-uuid')->toBeUuid())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('550e8400-e29b-41d4')->toBeUuid())
+            expect(fn () => assertExpect('550e8400-e29b-41d4')->toBeUuid())
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -78,9 +78,9 @@ describe('Format Expectations', function (): void {
         });
 
         test('toBeJson() rejects invalid JSON', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('not json')->toBeJson())
+            expect(fn () => assertExpect('not json')->toBeJson())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('{invalid}')->toBeJson())
+            expect(fn () => assertExpect('{invalid}')->toBeJson())
                 ->toThrow(AssertionFailedException::class);
         });
 

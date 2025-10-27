@@ -21,7 +21,7 @@ describe('String Expectations', function (): void {
         });
 
         test('toStartWith() rejects strings without matching prefix', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('hello world')->toStartWith('world'))
+            expect(fn () => assertExpect('hello world')->toStartWith('world'))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -32,7 +32,7 @@ describe('String Expectations', function (): void {
         });
 
         test('toEndWith() rejects strings without matching suffix', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('hello world')->toEndWith('hello'))
+            expect(fn () => assertExpect('hello world')->toEndWith('hello'))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -43,7 +43,7 @@ describe('String Expectations', function (): void {
         });
 
         test('toMatch() rejects strings not matching regex', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('invalid-email')->toMatch('/^.+@.+\..+$/'))
+            expect(fn () => assertExpect('invalid-email')->toMatch('/^.+@.+\..+$/'))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -54,7 +54,7 @@ describe('String Expectations', function (): void {
         });
 
         test('toHaveLength() rejects strings with different length', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('hello')->toHaveLength(4))
+            expect(fn () => assertExpect('hello')->toHaveLength(4))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -65,7 +65,7 @@ describe('String Expectations', function (): void {
         });
 
         test('toContain() rejects strings not containing substring', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('hello world')->toContain('foo'))
+            expect(fn () => assertExpect('hello world')->toContain('foo'))
                 ->toThrow(AssertionFailedException::class);
         });
     });

@@ -39,7 +39,7 @@ describe('Object Expectations', function (): void {
             $obj = new stdClass();
             $obj->name = 'John';
 
-            assertExpect(fn (): Expectation => assertExpect($obj)->toHaveProperty('email'))
+            expect(fn () => assertExpect($obj)->toHaveProperty('email'))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -61,7 +61,7 @@ describe('Object Expectations', function (): void {
                 public function save(): void {}
             };
 
-            assertExpect(fn (): Expectation => assertExpect($obj)->toHaveMethod('delete'))
+            expect(fn () => assertExpect($obj)->toHaveMethod('delete'))
                 ->toThrow(AssertionFailedException::class);
         });
 

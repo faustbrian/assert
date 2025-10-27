@@ -82,39 +82,39 @@ describe('Core Expectations', function (): void {
 
     describe('Sad Paths', function (): void {
         test('toBe() rejects non-equal values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBe(43))
+            expect(fn () => assertExpect(42)->toBe(43))
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeNull() rejects non-null values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBeNull())
+            expect(fn () => assertExpect(42)->toBeNull())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeTrue() rejects non-true values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(false)->toBeTrue())
+            expect(fn () => assertExpect(false)->toBeTrue())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeFalse() rejects non-false values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(true)->toBeFalse())
+            expect(fn () => assertExpect(true)->toBeFalse())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeTruthy() rejects falsy values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(0)->toBeTruthy())
+            expect(fn () => assertExpect(0)->toBeTruthy())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeFalsy() rejects truthy values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(1)->toBeFalsy())
+            expect(fn () => assertExpect(1)->toBeFalsy())
                 ->toThrow(AssertionFailedException::class);
         });
     });
 
     describe('Edge Cases', function (): void {
         test('toBe() uses strict equality', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('1')->toBe(1))
+            expect(fn () => assertExpect('1')->toBe(1))
                 ->toThrow(AssertionFailedException::class);
         });
 

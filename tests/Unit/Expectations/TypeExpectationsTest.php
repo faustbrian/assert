@@ -98,59 +98,59 @@ describe('Type Expectations', function (): void {
 
     describe('Sad Paths', function (): void {
         test('toBeString() rejects non-string values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBeString())
+            expect(fn () => assertExpect(42)->toBeString())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeInt() rejects non-integer values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(3.14)->toBeInt())
+            expect(fn () => assertExpect(3.14)->toBeInt())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('42')->toBeInt())
+            expect(fn () => assertExpect('42')->toBeInt())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeFloat() rejects non-float values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBeFloat())
+            expect(fn () => assertExpect(42)->toBeFloat())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeBool() rejects non-boolean values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(1)->toBeBool())
+            expect(fn () => assertExpect(1)->toBeBool())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('true')->toBeBool())
+            expect(fn () => assertExpect('true')->toBeBool())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeArray() rejects non-array values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('test')->toBeArray())
+            expect(fn () => assertExpect('test')->toBeArray())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect(
+            expect(fn () => assertExpect(
                 new ArrayObject([]),
             )->toBeArray())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeObject() rejects non-object values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect([])->toBeObject())
+            expect(fn () => assertExpect([])->toBeObject())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeCallable() rejects non-callable values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBeCallable())
+            expect(fn () => assertExpect(42)->toBeCallable())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect('nonExistentFunction')->toBeCallable())
+            expect(fn () => assertExpect('nonExistentFunction')->toBeCallable())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeNumeric() rejects non-numeric values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('abc')->toBeNumeric())
+            expect(fn () => assertExpect('abc')->toBeNumeric())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeScalar() rejects non-scalar values', function (): void {
-            assertExpect(fn (): Expectation => assertExpect([])->toBeScalar())
+            expect(fn () => assertExpect([])->toBeScalar())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect(
+            expect(fn () => assertExpect(
                 new stdClass(),
             )->toBeScalar())
                 ->toThrow(AssertionFailedException::class);
@@ -159,19 +159,19 @@ describe('Type Expectations', function (): void {
 
     describe('Edge Cases', function (): void {
         test('toBeInt() strict check', function (): void {
-            assertExpect(fn (): Expectation => assertExpect('42')->toBeInt())
+            expect(fn () => assertExpect('42')->toBeInt())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeFloat() strict check', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toBeFloat())
+            expect(fn () => assertExpect(42)->toBeFloat())
                 ->toThrow(AssertionFailedException::class);
         });
 
         test('toBeBool() strict check', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(0)->toBeBool())
+            expect(fn () => assertExpect(0)->toBeBool())
                 ->toThrow(AssertionFailedException::class);
-            assertExpect(fn (): Expectation => assertExpect(1)->toBeBool())
+            expect(fn () => assertExpect(1)->toBeBool())
                 ->toThrow(AssertionFailedException::class);
         });
 

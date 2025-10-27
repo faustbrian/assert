@@ -21,7 +21,7 @@ describe('Collection Expectations', function (): void {
         });
 
         test('toHaveCount() rejects arrays with different count', function (): void {
-            assertExpect(fn (): Expectation => assertExpect([1, 2, 3])->toHaveCount(2))
+            expect(fn () => assertExpect([1, 2, 3])->toHaveCount(2))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -32,7 +32,7 @@ describe('Collection Expectations', function (): void {
         });
 
         test('toHaveKey() rejects arrays without key', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(['name' => 'John'])->toHaveKey('email'))
+            expect(fn () => assertExpect(['name' => 'John'])->toHaveKey('email'))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -43,7 +43,7 @@ describe('Collection Expectations', function (): void {
         });
 
         test('toContain() rejects arrays not containing value', function (): void {
-            assertExpect(fn (): Expectation => assertExpect([1, 2, 3])->toContain(4))
+            expect(fn () => assertExpect([1, 2, 3])->toContain(4))
                 ->toThrow(AssertionFailedException::class);
         });
 
@@ -93,7 +93,7 @@ describe('Collection Expectations', function (): void {
         });
 
         test('toContain() requires string or array', function (): void {
-            assertExpect(fn (): Expectation => assertExpect(42)->toContain('foo'))
+            expect(fn () => assertExpect(42)->toContain('foo'))
                 ->toThrow(AssertionFailedException::class);
         });
     });
