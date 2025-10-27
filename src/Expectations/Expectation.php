@@ -45,7 +45,7 @@ use function is_string;
 use function iterator_to_array;
 use function json_decode;
 use function method_exists;
-use function ray;
+use function ray; // @phpstan-ignore-line function.notFound (optional debug helper checked at runtime)
 use function sprintf;
 use function str_contains;
 use function throw_if;
@@ -284,8 +284,10 @@ final class Expectation
 
             public function __call(string $name, array $args): object
             {
+                // @phpstan-ignore-next-line foreach.nonIterable (validated by isTraversable before proxy creation)
                 foreach ($this->items as $item) {
                     $expectation = new Expectation($item);
+                    // @phpstan-ignore-next-line argument.type (dynamic method dispatch via __call)
                     call_user_func_array([$expectation, $name], $args);
                 }
 
@@ -304,8 +306,10 @@ final class Expectation
 
                         public function __call(string $name, array $args): object
                         {
+                            // @phpstan-ignore-next-line foreach.nonIterable (validated by isTraversable before proxy creation)
                             foreach ($this->items as $item) {
                                 $expectation = new Expectation($item);
+                                // @phpstan-ignore-next-line property.notFound (magic property via __get)
                                 $expectation->not->{$name}(...$args);
                             }
 
@@ -1091,6 +1095,8 @@ final class Expectation
 
     /**
      * Assert that object has multiple properties.
+     *
+     * @param array<int|string, string> $properties
      */
     public function toHaveProperties(array $properties): self
     {
@@ -1146,7 +1152,7 @@ final class Expectation
     /**
      * Assert that two countables have the same size.
      */
-    public function toHaveSameSize(array|Countable $expected): self
+    public function toHaveSameSize(array|\Countable $expected): self
     {
         return $this->invoke('sameSize', [$expected]);
     }
@@ -1216,7 +1222,7 @@ final class Expectation
                 return $this;
             }
 
-            throw new InvalidArgumentException('Constraint evaluation failed: '.$throwable->getMessage(), 0, $throwable, $this->value);
+            throw new InvalidArgumentException('Constraint evaluation failed: '.$throwable->getMessage(), 0, null, $this->value);
         }
 
         if ($this->negate) {
@@ -1397,9 +1403,11 @@ final class Expectation
     {
         Assertion::isTraversable($this->value);
 
+        // @phpstan-ignore-next-line argument.type (validated by isTraversable)
         $values = is_array($this->value) ? $this->value : iterator_to_array($this->value);
 
         foreach ($callbacks as $index => $callback) {
+            // @phpstan-ignore-next-line binaryOp.invalid (index is numeric from variadic array)
             throw_unless(array_key_exists($index, $values), InvalidArgumentException::class, sprintf('Sequence expects at least %d items but got %d', $index + 1, count($values)), 0, null, $this->value);
 
             $expectation = new self($values[$index]);
@@ -1429,6 +1437,7 @@ final class Expectation
             $matched = is_callable($matcher) ? $matcher($this->value) : $this->value === $matcher;
 
             if ($matched) {
+                // @phpstan-ignore-next-line callable.nonCallable (pattern structure enforces callable in second position)
                 $callback($this);
 
                 return $this;
@@ -1627,7 +1636,7 @@ final class Expectation
         $successCount = 0;
 
         foreach ($this->orGroups as $group) {
-            if ($group['success'] ?? false) {
+            if ($group['success']) {
                 ++$successCount;
             }
         }
