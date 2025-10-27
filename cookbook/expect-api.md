@@ -752,19 +752,19 @@ expect($value)
 ```php
 // API response validation: success OR error format
 expect($response)
-    ->or()
+    ->or
     ->toHaveKey('data')
     ->toHaveKey('status')
-    ->or()
+    ->or
     ->toHaveKey('error')
     ->toHaveKey('message');
 
 // Union type validation
 expect($identifier)
-    ->or()
+    ->or
     ->toBeInt()
     ->toBePositive()
-    ->or()
+    ->or
     ->toBeString()
     ->toMatch('/^[A-Z]{3}\d{3}$/');
 ```
@@ -775,9 +775,9 @@ When all groups fail, you get a combined error message showing why each group fa
 
 ```php
 expect('invalid')
-    ->or()
+    ->or
     ->toBeInt()
-    ->or()
+    ->or
     ->toBeNull();
 
 // Throws: All OR groups failed:
@@ -796,18 +796,25 @@ use function Cline\Assert\expect;
 
 // Value must be EITHER string OR integer OR null (but not multiple)
 expect($value)
+    ->xor
+    ->toBeString()
+    ->xor
+    ->toBeInt()
+    ->xor
+    ->toBeNull();
+
+// With method style (both styles work the same)
+expect($value)
     ->xor()
     ->toBeString()
     ->xor()
-    ->toBeInt()
-    ->xor()
-    ->toBeNull();
+    ->toBeInt();
 
 // Value must match exactly one type
 expect($input)
-    ->xor()
+    ->xor
     ->toBeInt()
-    ->xor()
+    ->xor
     ->toBeFloat();
 ```
 
@@ -818,19 +825,19 @@ Each group can contain multiple assertions. **All** assertions within the succes
 ```php
 // String with length 10 XOR positive integer (but not both)
 expect($input)
-    ->xor()
+    ->xor
     ->toBeString()
     ->toHaveLength(10)
-    ->xor()
+    ->xor
     ->toBeInt()
     ->toBePositive();
 
 // Valid email XOR valid phone (must be one, not both)
 expect($contact)
-    ->xor()
+    ->xor
     ->toBeString()
     ->toBeEmail()
-    ->xor()
+    ->xor
     ->toBeString()
     ->toMatch('/^\+?[1-9]\d{1,14}$/');
 ```
@@ -842,10 +849,10 @@ The `not` modifier works within XOR groups:
 ```php
 // Must be non-empty string XOR positive integer (exclusive)
 expect($value)
-    ->xor()
+    ->xor
     ->toBeString()
     ->not->toBeEmpty()
-    ->xor()
+    ->xor
     ->toBeInt()
     ->toBePositive();
 ```
@@ -855,19 +862,19 @@ expect($value)
 ```php
 // Config value: boolean XOR string XOR number (exactly one type)
 expect($configValue)
-    ->xor()
+    ->xor
     ->toBeBoolean()
-    ->xor()
+    ->xor
     ->toBeString()
-    ->xor()
+    ->xor
     ->toBeNumeric();
 
 // Response format: success XOR error (cannot be both)
 expect($response)
-    ->xor()
+    ->xor
     ->toHaveKey('data')
     ->toHaveKey('status')
-    ->xor()
+    ->xor
     ->toHaveKey('error')
     ->toHaveKey('message');
 ```
@@ -878,9 +885,9 @@ expect($response)
 
 ```php
 expect(123)
-    ->xor()
+    ->xor
     ->toBeString()
-    ->xor()
+    ->xor
     ->toBeNull();
 
 // Throws: All XOR groups failed (expected exactly one to pass):
@@ -892,9 +899,9 @@ expect(123)
 
 ```php
 expect('hello')
-    ->xor()
+    ->xor
     ->toBeString()
-    ->xor()
+    ->xor
     ->toHaveLength(5);
 
 // Throws: XOR assertion failed: expected exactly one group to pass, but 2 groups passed
@@ -908,17 +915,17 @@ expect('hello')
 ```php
 // OR: passes if value is string OR numeric (can be both)
 expect('123')
-    ->or()
+    ->or
     ->toBeString()   // ✓ passes
-    ->or()
+    ->or
     ->toBeNumeric(); // ✓ also passes
 // Result: SUCCESS (at least one passed)
 
 // XOR: fails if value matches both conditions
 expect('123')
-    ->xor()
+    ->xor
     ->toBeString()   // ✓ passes
-    ->xor()
+    ->xor
     ->toBeNumeric(); // ✓ also passes
 // Result: FAILURE (expected exactly one, got 2)
 ```

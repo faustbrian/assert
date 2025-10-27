@@ -102,6 +102,7 @@ final class Expectation
      *
      * Supports:
      * - ->not: Negate the next expectation
+     * - ->and: Continue chaining on same value (alternative to ->and())
      * - ->or: Start new OR group (alternative to ->or())
      * - ->xor: Start new XOR group (alternative to ->xor())
      * - ->each: Apply expectation to each element in collection
@@ -113,6 +114,10 @@ final class Expectation
             $clone->negate = true;
 
             return $clone;
+        }
+
+        if ($name === 'and') {
+            return $this->and();
         }
 
         if ($name === 'or') {
