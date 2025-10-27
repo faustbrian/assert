@@ -559,14 +559,6 @@ final class Expectation
     }
 
     /**
-     * Assert that date is between two dates (inclusive).
-     */
-    public function toBeBetween(DateTimeInterface|string $start, DateTimeInterface|string $end): self
-    {
-        return $this->invoke('between', [$start, $end]);
-    }
-
-    /**
      * Assert that date is today.
      */
     public function toBeToday(): self
