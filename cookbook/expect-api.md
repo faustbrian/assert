@@ -97,6 +97,7 @@ expect(5)->toBeLessThanOrEqual(5);
 // Range checks
 expect(5)->toBeBetween(1, 10);
 expect(1)->toBeBetween(1, 10); // Inclusive
+expect(5)->toBeWithinRange(1, 10); // Alias for toBeBetween
 
 // Edge cases
 expect(INF)->toBeInfinite();
@@ -116,6 +117,12 @@ expect(42)->toBePositive();
 expect(-10)->toBeNegative();
 expect(4)->toBeEven();
 expect(7)->toBeOdd();
+expect(10)->toBeDivisibleBy(5);
+expect(15)->toBeDivisibleBy(3);
+
+// Date validation
+expect('2024-01-15')->toBeValidDate('Y-m-d');
+expect('01/15/2024')->toBeValidDate('m/d/Y');
 ```
 
 ## String Expectations
@@ -168,8 +175,13 @@ expect([1, 2, 3, 4, 5])->toContainAllValues([1, 3, 5]);
 // Value membership
 expect([1, 2, 3])->toContain(2);
 expect(['a', 'b', 'c'])->toContain('b');
+expect([1, 2, 3])->toContainValue(2); // Alias for toContain
+expect(['a' => 1, 'b' => 2])->toContainKey('a'); // Alias for toHaveKey
 expect(2)->toBeIn([1, 2, 3]);
 expect('active')->toBeOneOf(['pending', 'active', 'completed']); // Alias for toBeIn
+
+// Array key comparison
+expect(['a' => 1, 'b' => 2])->toHaveSameKeys(['a' => 99, 'b' => 88]); // Keys match, values differ
 
 // Deep equality
 expect([['a' => 1], ['b' => 2]])->toContainEqual(['a' => 1]);
@@ -470,6 +482,265 @@ expect($user)->toSatisfy(function($u) {
 expect($array)->toSatisfy(fn($a) => count($a) > 0 && isset($a['required_key']));
 ```
 
+### toMatchSchema() - Schema Validation
+
+Validate data against JSON schema-style definitions:
+
+```php
+use function Cline\Assert\expect;
+
+// Simple type validation
+expect('hello')->toMatchSchema(['type' => 'string']);
+expect(123)->toMatchSchema(['type' => 'integer']);
+
+// Object schemas
+$user = ['name' => 'John', 'age' => 30];
+expect($user)->toMatchSchema([
+    'type' => 'object',
+    'properties' => [
+        'name' => ['type' => 'string'],
+        'age' => ['type' => 'integer'],
+    ],
+]);
+
+// Required properties
+expect($user)->toMatchSchema([
+    'type' => 'object',
+    'properties' => [
+        'name' => ['type' => 'string'],
+        'email' => ['type' => 'string'],
+    ],
+    'required' => ['name', 'email'], // Will fail if email is missing
+]);
+
+// Numeric constraints
+expect(5)->toMatchSchema([
+    'type' => 'integer',
+    'minimum' => 0,
+    'maximum' => 10,
+]);
+
+// String constraints
+expect('hello@example.com')->toMatchSchema([
+    'type' => 'string',
+    'pattern' => '/^.+@.+\..+$/',
+    'minLength' => 5,
+    'maxLength' => 100,
+]);
+
+// Enum validation
+expect('active')->toMatchSchema([
+    'type' => 'string',
+    'enum' => ['pending', 'active', 'completed'],
+]);
+
+// Array items
+expect([1, 2, 3])->toMatchSchema([
+    'type' => 'array',
+    'items' => ['type' => 'integer'],
+]);
+
+// Nested objects
+$data = [
+    'user' => [
+        'profile' => [
+            'age' => 30,
+        ],
+    ],
+];
+
+expect($data)->toMatchSchema([
+    'type' => 'object',
+    'properties' => [
+        'user' => [
+            'type' => 'object',
+            'properties' => [
+                'profile' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'age' => ['type' => 'integer', 'minimum' => 0],
+                    ],
+                ],
+            ],
+        ],
+    ],
+]);
+```
+
+## Asymmetric Matchers
+
+Match partial patterns without requiring exact equality:
+
+```php
+use function Cline\Assert\expect;
+use function Cline\Assert\any;
+use function Cline\Assert\anything;
+use function Cline\Assert\stringContaining;
+use function Cline\Assert\arrayContaining;
+
+// any() - Match any value of specific type
+expect(['name' => 'John', 'age' => 30])->toEqual([
+    'name' => any('string'),
+    'age' => any('int'),
+]);
+
+// Support for class names
+expect(['user' => new stdClass()])->toEqual([
+    'user' => any(stdClass::class),
+]);
+
+// anything() - Match any non-null value
+expect(['id' => 123, 'data' => 'test'])->toEqual([
+    'id' => anything(),
+    'data' => anything(),
+]);
+
+// stringContaining() - Match strings with substring
+expect(['message' => 'Error: Invalid input'])->toEqual([
+    'message' => stringContaining('Error'),
+]);
+
+// arrayContaining() - Match arrays with subset of keys
+expect(['a' => 1, 'b' => 2, 'c' => 3])->toEqual(
+    arrayContaining(['a' => 1, 'c' => 3])
+);
+
+// Nested matchers
+expect([
+    'user' => [
+        'name' => 'John',
+        'email' => 'john@example.com',
+        'age' => 30,
+    ],
+])->toEqual([
+    'user' => arrayContaining([
+        'email' => stringContaining('@'),
+        'age' => any('int'),
+    ]),
+]);
+
+// Complex patterns
+$response = [
+    'status' => 'success',
+    'data' => [
+        'id' => 123,
+        'title' => 'Test Post',
+        'author' => 'John Doe',
+    ],
+];
+
+expect($response)->toEqual([
+    'status' => any('string'),
+    'data' => arrayContaining([
+        'id' => anything(),
+        'title' => stringContaining('Test'),
+    ]),
+]);
+```
+
+## Soft Assertions
+
+Collect multiple assertion failures before throwing:
+
+```php
+use function Cline\Assert\expect;
+use Cline\Assert\Expectations\Expectation;
+
+// Regular assertions throw immediately
+expect(5)->toBeGreaterThan(10); // Throws here
+
+// Soft assertions collect errors
+expect(5)->soft->toBeGreaterThan(10); // Stored
+expect('hello')->soft->toBeInt(); // Stored
+expect([])->soft->toHaveCount(5); // Stored
+
+// Check all at once
+Expectation::assertSoft(); // Throws with all 3 errors
+
+// Practical example
+$user = [
+    'name' => 123,      // Should be string
+    'age' => -5,        // Should be positive
+    'email' => 'bad',   // Should be email
+];
+
+expect($user['name'])->soft->toBeString();
+expect($user['age'])->soft->toBePositive();
+expect($user['email'])->soft->toBeEmail();
+
+// Throws with all validation failures
+Expectation::assertSoft();
+
+// Soft assertions with schema validation
+expect($data)->soft->toMatchSchema($schema1);
+expect($data2)->soft->toMatchSchema($schema2);
+Expectation::assertSoft();
+```
+
+## Snapshot Testing
+
+Store and compare snapshots for regression testing:
+
+```php
+use function Cline\Assert\expect;
+use Cline\Assert\Snapshots\SnapshotManager;
+
+// Configure snapshot directory (optional)
+SnapshotManager::setSnapshotDirectory('__snapshots__');
+
+// toMatchSnapshot() - File-based snapshots
+$data = ['name' => 'John', 'age' => 30];
+
+// First run: creates snapshot file
+expect($data)->toMatchSnapshot('user-data');
+
+// Subsequent runs: compares against stored snapshot
+expect($data)->toMatchSnapshot('user-data'); // Passes
+
+// Modified data fails
+$modified = ['name' => 'Jane', 'age' => 25];
+expect($modified)->toMatchSnapshot('user-data'); // Throws with diff
+
+// toMatchInlineSnapshot() - Inline snapshots
+$data = ['name' => 'John'];
+$expected = <<<'JSON'
+{
+    "name": "John"
+}
+JSON;
+
+expect($data)->toMatchInlineSnapshot($expected); // Passes
+
+// Different data fails
+$modified = ['name' => 'Jane'];
+expect($modified)->toMatchInlineSnapshot($expected); // Throws with diff
+
+// Snapshot formatting
+// - Strings: stored as-is
+// - Arrays/Objects: formatted as pretty JSON
+// - Scalars: converted to strings
+
+expect('plain text')->toMatchSnapshot('text-snapshot');
+expect(['nested' => ['data' => 123]])->toMatchSnapshot('json-snapshot');
+expect(42)->toMatchSnapshot('number-snapshot');
+
+// Use cases
+test('API response structure', function() {
+    $response = api()->get('/users/1');
+    expect($response->json())->toMatchSnapshot('user-response');
+});
+
+test('rendered component', function() {
+    $html = render(UserProfile::class, ['user' => $user]);
+    expect($html)->toMatchSnapshot('user-profile-html');
+});
+
+test('serialized data', function() {
+    $export = exportUserData($user);
+    expect($export)->toMatchSnapshot('user-export');
+});
+```
+
 ## Chaining Examples
 
 ### Complex Validations
@@ -560,7 +831,7 @@ $expectation = expect($value)
 
 ## Complete Feature List
 
-### Core Expectations (53)
+### Core Expectations (60+)
 
 **Equality & Boolean:**
 - `toBe()`, `toEqual()`, `toBeNull()`, `toBeTrue()`, `toBeFalse()`, `toBeTruthy()`, `toBeFalsy()`, `toBeEmpty()`
@@ -571,8 +842,9 @@ $expectation = expect($value)
 
 **Numeric:**
 - `toBeGreaterThan()`, `toBeGreaterThanOrEqual()`, `toBeLessThan()`, `toBeLessThanOrEqual()`
-- `toBeBetween()`, `toBeInfinite()`, `toBeNan()`, `toEqualWithDelta()`, `toBeCloseTo()`
-- `toBePositive()`, `toBeNegative()`, `toBeEven()`, `toBeOdd()`
+- `toBeBetween()`, `toBeWithinRange()`, `toBeInfinite()`, `toBeNan()`, `toEqualWithDelta()`, `toBeCloseTo()`
+- `toBePositive()`, `toBeNegative()`, `toBeEven()`, `toBeOdd()`, `toBeDivisibleBy()`
+- `toBeValidDate()`
 
 **String:**
 - `toStartWith()`, `toEndWith()`, `toMatch()`, `toHaveLength()`
@@ -581,14 +853,15 @@ $expectation = expect($value)
 - `toBeUppercase()`, `toBeLowercase()`
 
 **Collections:**
-- `toContain()`, `toHaveCount()`, `toHaveKey()`, `toHaveKeys()`, `toHaveLength()`
-- `toBeIn()`, `toBeOneOf()`, `toContainEqual()`, `toContainOnlyInstancesOf()`, `toHaveSameSize()`
+- `toContain()`, `toContainValue()`, `toHaveCount()`, `toHaveKey()`, `toContainKey()`, `toHaveKeys()`, `toHaveLength()`
+- `toBeIn()`, `toBeOneOf()`, `toContainEqual()`, `toContainOnlyInstancesOf()`, `toHaveSameSize()`, `toHaveSameKeys()`
 - `toContainAllKeys()`, `toContainAllValues()`
 - `toMatchArray()`, `toEqualCanonicalizing()`
 - `toHaveSnakeCaseKeys()`, `toHaveKebabCaseKeys()`, `toHaveCamelCaseKeys()`, `toHaveStudlyCaseKeys()`
 
 **Custom:**
 - `toSatisfy()` - Custom predicate validation
+- `toMatchSchema()` - JSON schema validation
 
 **Objects:**
 - `toBeInstanceOf()`, `toHaveProperty()`, `toHaveProperties()`, `toHaveMethod()`, `toMatchObject()`
@@ -603,10 +876,15 @@ $expectation = expect($value)
 **Exceptions:**
 - `toThrow()`
 
-### Modifiers (12)
+**Snapshots:**
+- `toMatchSnapshot()` - File-based snapshot testing
+- `toMatchInlineSnapshot()` - Inline snapshot comparison
+
+### Modifiers (13)
 
 **Core:**
 - `->not` - Negation
+- `->soft` - Soft assertions (collect errors)
 - `->and()` - Chaining
 
 **Collections:**
@@ -626,6 +904,14 @@ $expectation = expect($value)
 - `->ddWhen()` - Conditional dump
 - `->ddUnless()` - Inverse conditional dump
 - `->ray()` - Ray debugger
+
+### Asymmetric Matchers (4)
+
+**Matchers:**
+- `any()` - Match any value of specific type
+- `anything()` - Match any non-null value
+- `stringContaining()` - Match strings with substring
+- `arrayContaining()` - Match arrays with subset of keys
 
 ## Comparison with Assert API
 
