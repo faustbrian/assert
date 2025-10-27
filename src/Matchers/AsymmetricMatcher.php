@@ -14,6 +14,8 @@ namespace Cline\Assert\Matchers;
  *
  * Asymmetric matchers allow flexible assertions without requiring exact equality.
  * Inspired by Jest/Vitest expect.any(), expect.stringContaining(), etc.
+ *
+ * @author Brian Faust <brian@cline.sh>
  */
 interface AsymmetricMatcher
 {

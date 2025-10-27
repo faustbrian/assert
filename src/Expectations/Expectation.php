@@ -12,20 +12,25 @@ namespace Cline\Assert\Expectations;
 use BadMethodCallException;
 use Cline\Assert\Assertions\Assertion;
 use Cline\Assert\Exceptions\InvalidArgumentException;
+use Cline\Assert\Matchers\AsymmetricMatcher;
 use stdClass;
 use Throwable;
 
 use function array_key_exists;
+use function array_map;
 use function call_user_func_array;
 use function count;
 use function ctype_alpha;
 use function dump;
 use function func_num_args;
 use function function_exists;
+use function gettype;
+use function implode;
 use function in_array;
 use function is_array;
 use function is_callable;
 use function is_countable;
+use function is_scalar;
 use function is_string;
 use function iterator_to_array;
 use function json_decode;
@@ -46,7 +51,11 @@ use function throw_unless;
  */
 final class Expectation
 {
+    private static array $softErrors = [];
+
     private bool $negate = false;
+
+    private bool $soft = false;
 
     public function __construct(
         private readonly mixed $value,
@@ -72,7 +81,42 @@ final class Expectation
             return $this->each();
         }
 
+        if ($name === 'soft') {
+            $clone = clone $this;
+            $clone->soft = true;
+
+            return $clone;
+        }
+
         throw new BadMethodCallException(sprintf("Property '%s' does not exist on Expectation", $name));
+    }
+
+    /**
+     * Assert all soft assertions passed and clear collected errors.
+     */
+    public static function assertSoft(): void
+    {
+        if (self::$softErrors === []) {
+            return;
+        }
+
+        $errors = self::$softErrors;
+        self::$softErrors = [];
+
+        $messages = array_map(fn ($e) => $e->getMessage(), $errors);
+
+        throw new InvalidArgumentException(
+            sprintf("Soft assertions failed:\n- %s", implode("\n- ", $messages)),
+            0,
+        );
+    }
+
+    /**
+     * Clear soft assertion errors without throwing.
+     */
+    public static function clearSoftErrors(): void
+    {
+        self::$softErrors = [];
     }
 
     /**
@@ -165,71 +209,6 @@ final class Expectation
         }
 
         return $this->toBe($expected);
-    }
-
-    /**
-     * Check if a value contains asymmetric matchers.
-     */
-    private function containsAsymmetricMatchers(mixed $value): bool
-    {
-        if ($value instanceof \Cline\Assert\Matchers\AsymmetricMatcher) {
-            return true;
-        }
-
-        if (is_array($value)) {
-            foreach ($value as $item) {
-                if ($this->containsAsymmetricMatchers($item)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Match value against expected structure with asymmetric matchers.
-     */
-    private function matchAsymmetric(mixed $expected): self
-    {
-        if (!$this->matchesAsymmetric($this->value, $expected)) {
-            $valueStr = is_scalar($this->value) ? (string) $this->value : gettype($this->value);
-            throw new InvalidArgumentException(
-                "Expected value to match asymmetric pattern. Got: {$valueStr}",
-                0
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * Recursively match values with asymmetric matchers.
-     */
-    private function matchesAsymmetric(mixed $actual, mixed $expected): bool
-    {
-        // Direct matcher check
-        if ($expected instanceof \Cline\Assert\Matchers\AsymmetricMatcher) {
-            return $expected->matches($actual);
-        }
-
-        // Array deep matching
-        if (is_array($expected) && is_array($actual)) {
-            foreach ($expected as $key => $expectedValue) {
-                if (!array_key_exists($key, $actual)) {
-                    return false;
-                }
-
-                if (!$this->matchesAsymmetric($actual[$key], $expectedValue)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        // Strict equality fallback
-        return $actual === $expected;
     }
 
     /**
@@ -879,6 +858,17 @@ final class Expectation
             }
         }
 
+        // Soft assertion mode
+        if ($this->soft) {
+            try {
+                Assertion::propertyExists($this->value, $property);
+            } catch (InvalidArgumentException $exception) {
+                self::$softErrors[] = $exception;
+            }
+
+            return $this;
+        }
+
         Assertion::propertyExists($this->value, $property);
 
         return $this;
@@ -1213,6 +1203,72 @@ final class Expectation
     }
 
     /**
+     * Check if a value contains asymmetric matchers.
+     */
+    private function containsAsymmetricMatchers(mixed $value): bool
+    {
+        if ($value instanceof AsymmetricMatcher) {
+            return true;
+        }
+
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                if ($this->containsAsymmetricMatchers($item)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Match value against expected structure with asymmetric matchers.
+     */
+    private function matchAsymmetric(mixed $expected): self
+    {
+        if (!$this->matchesAsymmetric($this->value, $expected)) {
+            $valueStr = is_scalar($this->value) ? (string) $this->value : gettype($this->value);
+
+            throw new InvalidArgumentException(
+                'Expected value to match asymmetric pattern. Got: '.$valueStr,
+                0,
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Recursively match values with asymmetric matchers.
+     */
+    private function matchesAsymmetric(mixed $actual, mixed $expected): bool
+    {
+        // Direct matcher check
+        if ($expected instanceof AsymmetricMatcher) {
+            return $expected->matches($actual);
+        }
+
+        // Array deep matching
+        if (is_array($expected) && is_array($actual)) {
+            foreach ($expected as $key => $expectedValue) {
+                if (!array_key_exists($key, $actual)) {
+                    return false;
+                }
+
+                if (!$this->matchesAsymmetric($actual[$key], $expectedValue)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Strict equality fallback
+        return $actual === $expected;
+    }
+
+    /**
      * Invoke an assertion method, handling negation.
      *
      * @param array<mixed> $args
@@ -1240,6 +1296,17 @@ final class Expectation
                 // Assertion failed as expected, return success
                 return $this;
             }
+        }
+
+        // Soft assertion mode - collect errors instead of throwing
+        if ($this->soft) {
+            try {
+                $callable(...[$this->value, ...$args]);
+            } catch (InvalidArgumentException $exception) {
+                self::$softErrors[] = $exception;
+            }
+
+            return $this;
         }
 
         $callable(...[$this->value, ...$args]);

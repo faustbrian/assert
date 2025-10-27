@@ -13,6 +13,10 @@ namespace Cline\Assert\Matchers;
  * Matches any value except null.
  *
  * Usage: expect()->anything()
+ *
+ * @author Brian Faust <brian@cline.sh>
+ *
+ * @psalm-immutable
  */
 final readonly class AnythingMatcher implements AsymmetricMatcher
 {

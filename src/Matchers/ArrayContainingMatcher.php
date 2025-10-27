@@ -9,12 +9,18 @@
 
 namespace Cline\Assert\Matchers;
 
+use function array_key_exists;
+use function is_array;
 use function json_encode;
 
 /**
  * Matches arrays containing all specified key-value pairs.
  *
  * Usage: expect()->arrayContaining(['key' => 'value'])
+ *
+ * @author Brian Faust <brian@cline.sh>
+ *
+ * @psalm-immutable
  */
 final readonly class ArrayContainingMatcher implements AsymmetricMatcher
 {

@@ -9,6 +9,7 @@
 
 use Cline\Assert\Exceptions\InvalidArgumentException;
 use Cline\Assert\Expectations\Expectation;
+use Illuminate\Support\Facades\Date;
 
 use function Cline\Assert\any;
 use function Cline\Assert\anything;
@@ -38,7 +39,7 @@ describe('Asymmetric Matchers', function (): void {
 
         test('matches class instances', function (): void {
             expect(fn (): Expectation => assertExpect([
-                'date' => new DateTime(),
+                'date' => Date::now(),
             ])->toEqual([
                 'date' => any(DateTime::class),
             ]))->not->toThrow(Throwable::class);
@@ -147,7 +148,7 @@ describe('Asymmetric Matchers', function (): void {
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'data' => ['key' => 'value'],
-                'timestamp' => 1234567890,
+                'timestamp' => 1_234_567_890,
             ])->toEqual([
                 'id' => any('integer'),
                 'name' => stringContaining('John'),

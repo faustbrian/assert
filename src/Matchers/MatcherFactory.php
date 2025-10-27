@@ -13,6 +13,8 @@ namespace Cline\Assert\Matchers;
  * Factory for creating asymmetric matchers.
  *
  * Provides Jest/Vitest-style matcher creation functions.
+ *
+ * @author Brian Faust <brian@cline.sh>
  */
 final class MatcherFactory
 {

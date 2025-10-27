@@ -9,12 +9,18 @@
 
 namespace Cline\Assert\Matchers;
 
+use function is_string;
+use function sprintf;
 use function str_contains;
 
 /**
  * Matches strings containing a specific substring.
  *
  * Usage: expect()->stringContaining('foo')
+ *
+ * @author Brian Faust <brian@cline.sh>
+ *
+ * @psalm-immutable
  */
 final readonly class StringContainingMatcher implements AsymmetricMatcher
 {
@@ -33,6 +39,6 @@ final readonly class StringContainingMatcher implements AsymmetricMatcher
 
     public function toString(): string
     {
-        return "stringContaining('{$this->substring}')";
+        return sprintf("stringContaining('%s')", $this->substring);
     }
 }

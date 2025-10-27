@@ -1841,9 +1841,7 @@ abstract class AbstractAssertion
     {
         self::numeric($value, $message, $propertyPath);
 
-        if ($divisor == 0) {
-            throw self::createException($divisor, 'Division by zero is not allowed.', ValidationError::InvalidNumeric->value, $propertyPath);
-        }
+        throw_if($divisor == 0, self::createException($divisor, 'Division by zero is not allowed.', ValidationError::InvalidNumeric->value, $propertyPath));
 
         if (fmod((float) $value, (float) $divisor) !== 0.0) {
             $message = sprintf(
@@ -1866,9 +1864,7 @@ abstract class AbstractAssertion
         sort($valueKeys);
         sort($otherKeys);
 
-        if ($valueKeys !== $otherKeys) {
-            throw self::createException($value, 'Arrays do not have the same keys.', ValidationError::InvalidArrayKey->value, $propertyPath);
-        }
+        throw_if($valueKeys !== $otherKeys, self::createException($value, 'Arrays do not have the same keys.', ValidationError::InvalidArrayKey->value, $propertyPath));
 
         return true;
     }

@@ -9,10 +9,27 @@
 
 namespace Cline\Assert\Matchers;
 
+use function is_a;
+use function is_array;
+use function is_bool;
+use function is_callable;
+use function is_float;
+use function is_int;
+use function is_numeric;
+use function is_object;
+use function is_resource;
+use function is_scalar;
+use function is_string;
+use function sprintf;
+
 /**
  * Matches any value of a specific type.
  *
  * Usage: expect()->any('string'), expect()->any('integer')
+ *
+ * @author Brian Faust <brian@cline.sh>
+ *
+ * @psalm-immutable
  */
 final readonly class AnyMatcher implements AsymmetricMatcher
 {
@@ -40,6 +57,6 @@ final readonly class AnyMatcher implements AsymmetricMatcher
 
     public function toString(): string
     {
-        return "any({$this->type})";
+        return sprintf('any(%s)', $this->type);
     }
 }
