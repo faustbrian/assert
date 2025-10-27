@@ -12,7 +12,11 @@ namespace Cline\Assert\Expectations;
 use BadMethodCallException;
 use Cline\Assert\Assertions\Assertion;
 use Cline\Assert\Exceptions\InvalidArgumentException;
+use Cline\Assert\Matchers\AnyMatcher;
+use Cline\Assert\Matchers\AnythingMatcher;
+use Cline\Assert\Matchers\ArrayContainingMatcher;
 use Cline\Assert\Matchers\AsymmetricMatcher;
+use Cline\Assert\Matchers\StringContainingMatcher;
 use Cline\Assert\Schema\SchemaValidator;
 use Cline\Assert\Snapshots\SnapshotManager;
 use stdClass;
@@ -62,6 +66,52 @@ final class Expectation
     public function __construct(
         private readonly mixed $value,
     ) {}
+
+    /**
+     * Create an asymmetric matcher for any value of specific type.
+     */
+    public static function any(string $type): AnyMatcher
+    {
+        return new AnyMatcher($type);
+    }
+
+    /**
+     * Create an asymmetric matcher for any non-null value.
+     */
+    public static function anything(): AnythingMatcher
+    {
+        return new AnythingMatcher();
+    }
+
+    /**
+     * Create an asymmetric matcher for strings containing substring.
+     */
+    public static function stringContaining(string $substring): StringContainingMatcher
+    {
+        return new StringContainingMatcher($substring);
+    }
+
+    /**
+     * Create an asymmetric matcher for arrays containing subset.
+     */
+    public static function arrayContaining(array $subset): ArrayContainingMatcher
+    {
+        return new ArrayContainingMatcher($subset);
+    }
+
+    /**
+     * Forward undefined method calls to static matcher methods when value is null.
+     */
+    public function __call(string $name, array $arguments): mixed
+    {
+        // When expect() is called without arguments (value is null),
+        // forward to static matcher methods
+        if ($this->value === null && method_exists(self::class, $name)) {
+            return self::$name(...$arguments);
+        }
+
+        throw new BadMethodCallException(sprintf("Method '%s' does not exist on Expectation", $name));
+    }
 
     /**
      * Magic property accessor for modifiers.

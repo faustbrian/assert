@@ -569,40 +569,36 @@ expect($data)->toMatchSchema([
 
 ## Asymmetric Matchers
 
-Match partial patterns without requiring exact equality:
+Match partial patterns without requiring exact equality. Use `expect()` without arguments to access matcher methods:
 
 ```php
 use function Cline\Assert\expect;
-use function Cline\Assert\functions\any;
-use function Cline\Assert\functions\anything;
-use function Cline\Assert\functions\stringContaining;
-use function Cline\Assert\functions\arrayContaining;
 
-// any() - Match any value of specific type
+// expect()->any() - Match any value of specific type
 expect(['name' => 'John', 'age' => 30])->toEqual([
-    'name' => any('string'),
-    'age' => any('int'),
+    'name' => expect()->any('string'),
+    'age' => expect()->any('int'),
 ]);
 
 // Support for class names
 expect(['user' => new stdClass()])->toEqual([
-    'user' => any(stdClass::class),
+    'user' => expect()->any(stdClass::class),
 ]);
 
-// anything() - Match any non-null value
+// expect()->anything() - Match any non-null value
 expect(['id' => 123, 'data' => 'test'])->toEqual([
-    'id' => anything(),
-    'data' => anything(),
+    'id' => expect()->anything(),
+    'data' => expect()->anything(),
 ]);
 
-// stringContaining() - Match strings with substring
+// expect()->stringContaining() - Match strings with substring
 expect(['message' => 'Error: Invalid input'])->toEqual([
-    'message' => stringContaining('Error'),
+    'message' => expect()->stringContaining('Error'),
 ]);
 
-// arrayContaining() - Match arrays with subset of keys
+// expect()->arrayContaining() - Match arrays with subset of keys
 expect(['a' => 1, 'b' => 2, 'c' => 3])->toEqual(
-    arrayContaining(['a' => 1, 'c' => 3])
+    expect()->arrayContaining(['a' => 1, 'c' => 3])
 );
 
 // Nested matchers
@@ -613,9 +609,9 @@ expect([
         'age' => 30,
     ],
 ])->toEqual([
-    'user' => arrayContaining([
-        'email' => stringContaining('@'),
-        'age' => any('int'),
+    'user' => expect()->arrayContaining([
+        'email' => expect()->stringContaining('@'),
+        'age' => expect()->any('int'),
     ]),
 ]);
 
@@ -630,10 +626,10 @@ $response = [
 ];
 
 expect($response)->toEqual([
-    'status' => any('string'),
-    'data' => arrayContaining([
-        'id' => anything(),
-        'title' => stringContaining('Test'),
+    'status' => expect()->any('string'),
+    'data' => expect()->arrayContaining([
+        'id' => expect()->anything(),
+        'title' => expect()->stringContaining('Test'),
     ]),
 ]);
 ```
@@ -907,11 +903,11 @@ $expectation = expect($value)
 
 ### Asymmetric Matchers (4)
 
-**Matchers:**
-- `any()` - Match any value of specific type
-- `anything()` - Match any non-null value
-- `stringContaining()` - Match strings with substring
-- `arrayContaining()` - Match arrays with subset of keys
+**Matcher Methods (via `expect()`):**
+- `expect()->any()` - Match any value of specific type
+- `expect()->anything()` - Match any non-null value
+- `expect()->stringContaining()` - Match strings with substring
+- `expect()->arrayContaining()` - Match arrays with subset of keys
 
 ## Comparison with Assert API
 

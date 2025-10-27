@@ -71,16 +71,20 @@ function lazy(): LazyAssertion
 /**
  * Start a Pest-style expectation chain.
  *
- * Returns an Expectation instance that provides Jest/Pest-compatible
+ * Returns an Expectation instance that provides Jest/Vitest-compatible
  * toXxx() methods for fluent assertions.
  *
- * @example
+ * When called without arguments, returns static accessor for asymmetric matchers:
+ *   expect()->any('string')
+ *   expect()->anything()
+ *   expect()->stringContaining('test')
  *
- *  expect($value)->toBeString();
- *  expect($value)->not->toBeNull();
- *  expect($items)->toHaveCount(3);
+ * When called with a value, creates an Expectation instance:
+ *   expect($value)->toBeString();
+ *   expect($value)->not->toBeNull();
+ *   expect($items)->toHaveCount(3);
  */
-function expect(mixed $value): Expectation
+function expect(mixed $value = null): Expectation
 {
     return new Expectation($value);
 }
