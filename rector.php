@@ -7,8 +7,13 @@
  * file that was distributed with this source code.
  */
 
+use Rector\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstClassCallableRector;
+use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
+use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
 
@@ -16,6 +21,13 @@ return RectorConfig::configure()
     ->withPaths([__DIR__.'/src', __DIR__.'/tests'])
     ->withSkip([
         RemoveUnreachableStatementRector::class => [__DIR__.'/tests'],
+        // Skip first-class callable conversions in tests - they cause issues with expect()->toThrow() timing in parallel
+        FirstClassCallableRector::class => [__DIR__.'/tests'],
+        FunctionLikeToFirstClassCallableRector::class => [__DIR__.'/tests'],
+        ClosureFromCallableToFirstClassCallableRector::class => [__DIR__.'/tests'],
+        FunctionFirstClassCallableRector::class => [__DIR__.'/tests'],
+        // Skip adding return types to arrow functions in test callbacks - causes type mismatches with Pest expectations
+        AddArrowFunctionReturnTypeRector::class => [__DIR__.'/tests'],
     ])
     ->withPhpSets(php84: true)
     ->withParallel(maxNumberOfProcess: 8)
