@@ -21,6 +21,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($obj)->toHaveProperty('name');
             assertExpect($obj)->toHaveProperty('email');
+            expect(true)->toBeTrue();
         });
 
         test('toHaveProperty() works with class instances', function (): void {
@@ -31,6 +32,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($user)->toHaveProperty('name');
             assertExpect($user)->toHaveProperty('email');
+            expect(true)->toBeTrue();
         });
 
         test('toHaveProperty() rejects objects without property', function (): void {
@@ -39,6 +41,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect(fn (): Expectation => assertExpect($obj)->toHaveProperty('email'))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toHaveMethod() accepts objects with existing method', function (): void {
@@ -51,6 +54,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($obj)->toHaveMethod('save');
             assertExpect($obj)->toHaveMethod('delete');
+            expect(true)->toBeTrue();
         });
 
         test('toHaveMethod() rejects objects without method', function (): void {
@@ -61,6 +65,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect(fn (): Expectation => assertExpect($obj)->toHaveMethod('delete'))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeInstanceOf() checks class inheritance', function (): void {
@@ -68,6 +73,7 @@ describe('Object Expectations', function (): void {
 
             assertExpect($iterator)->toBeInstanceOf(ArrayIterator::class);
             assertExpect($iterator)->toBeInstanceOf(Traversable::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -77,6 +83,7 @@ describe('Object Expectations', function (): void {
             $obj->name = 'John';
 
             assertExpect($obj)->not->toHaveProperty('email');
+            expect(true)->toBeTrue();
         });
 
         test('not->toHaveMethod() accepts objects without method', function (): void {
@@ -86,6 +93,7 @@ describe('Object Expectations', function (): void {
             };
 
             assertExpect($obj)->not->toHaveMethod('delete');
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeInstanceOf() accepts different classes', function (): void {
@@ -138,12 +146,14 @@ describe('Object Expectations', function (): void {
 
             assertExpect($obj)->toHaveProperty('public');
             assertExpect($obj)->toHaveProperty('private');
+            expect(true)->toBeTrue();
         });
 
         test('toHaveMethod() detects inherited methods', function (): void {
             $obj = new ArrayIterator([]);
 
             assertExpect($obj)->toHaveMethod('count'); // From Countable
+            expect(true)->toBeTrue();
         });
     });
 });

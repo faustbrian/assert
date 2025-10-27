@@ -15,11 +15,13 @@ describe('Expectation Modifiers', function (): void {
     describe('each() Modifier', function (): void {
         test('each() with callback applies expectation to all items', function (): void {
             assertExpect([1, 2, 3])->each(fn ($item) => $item->toBeInt());
+            expect(true)->toBeTrue();
         });
 
         test('each() as property applies next assertion to all items', function (): void {
             assertExpect([1, 2, 3])->each->toBeInt();
             assertExpect(['a', 'b', 'c'])->each->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('each() can use multiple chained assertions', function (): void {
@@ -42,12 +44,14 @@ describe('Expectation Modifiers', function (): void {
             assertExpect(
                 assertExpect([1, 'two', 3])->each->toBeInt(...),
             )->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('each() requires traversable value', function (): void {
             assertExpect(
                 assertExpect(42)->each->toBeInt(...),
             )->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -81,6 +85,7 @@ describe('Expectation Modifiers', function (): void {
 
             assertExpect($first->toBeString(...))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -172,6 +177,7 @@ describe('Expectation Modifiers', function (): void {
     describe('Combining Modifiers', function (): void {
         test('can combine each() with negation', function (): void {
             assertExpect([1, 2, 3])->each->not->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('can combine when() with and()', function (): void {

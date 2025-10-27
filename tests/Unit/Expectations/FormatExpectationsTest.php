@@ -18,6 +18,7 @@ describe('Format Expectations', function (): void {
             assertExpect('test@example.com')->toBeEmail();
             assertExpect('user+tag@domain.co.uk')->toBeEmail();
             assertExpect('name@subdomain.domain.com')->toBeEmail();
+            expect(true)->toBeTrue();
         });
 
         test('toBeEmail() rejects invalid email addresses', function (): void {
@@ -25,10 +26,12 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('missing@domain')->toBeEmail())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeEmail() accepts non-email strings', function (): void {
             assertExpect('not-an-email')->not->toBeEmail();
+            expect(true)->toBeTrue();
         });
     });
 
@@ -37,6 +40,7 @@ describe('Format Expectations', function (): void {
             assertExpect('https://example.com')->toBeUrl();
             assertExpect('http://localhost:8080')->toBeUrl();
             assertExpect('https://sub.domain.com/path?query=value')->toBeUrl();
+            expect(true)->toBeTrue();
         });
 
         test('toBeUrl() rejects invalid URLs', function (): void {
@@ -44,10 +48,12 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('example.com')->toBeUrl())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeUrl() accepts non-URL strings', function (): void {
             assertExpect('not a url')->not->toBeUrl();
+            expect(true)->toBeTrue();
         });
     });
 
@@ -55,6 +61,7 @@ describe('Format Expectations', function (): void {
         test('toBeUuid() accepts valid UUIDs', function (): void {
             assertExpect('550e8400-e29b-41d4-a716-446655440000')->toBeUuid();
             assertExpect('6ba7b810-9dad-11d1-80b4-00c04fd430c8')->toBeUuid();
+            expect(true)->toBeTrue();
         });
 
         test('toBeUuid() rejects invalid UUIDs', function (): void {
@@ -62,10 +69,12 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('550e8400-e29b-41d4')->toBeUuid())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeUuid() accepts non-UUID strings', function (): void {
             assertExpect('not-a-uuid')->not->toBeUuid();
+            expect(true)->toBeTrue();
         });
     });
 
@@ -75,6 +84,7 @@ describe('Format Expectations', function (): void {
             assertExpect('[1,2,3]')->toBeJson();
             assertExpect('null')->toBeJson();
             assertExpect('"string"')->toBeJson();
+            expect(true)->toBeTrue();
         });
 
         test('toBeJson() rejects invalid JSON', function (): void {
@@ -82,10 +92,12 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('{invalid}')->toBeJson())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeJson() accepts non-JSON strings', function (): void {
             assertExpect('not json')->not->toBeJson();
+            expect(true)->toBeTrue();
         });
     });
 

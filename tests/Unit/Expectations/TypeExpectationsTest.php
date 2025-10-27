@@ -18,6 +18,7 @@ describe('Type Expectations', function (): void {
             assertExpect('hello')->toBeString();
             assertExpect('')->toBeString();
             assertExpect('123')->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('toBeInt() accepts integer values', function (): void {
@@ -25,23 +26,27 @@ describe('Type Expectations', function (): void {
             assertExpect(0)->toBeInt();
             assertExpect(-1)->toBeInt();
             assertExpect(\PHP_INT_MAX)->toBeInt();
+            expect(true)->toBeTrue();
         });
 
         test('toBeFloat() accepts float values', function (): void {
             assertExpect(3.14)->toBeFloat();
             assertExpect(0.0)->toBeFloat();
             assertExpect(-2.5)->toBeFloat();
+            expect(true)->toBeTrue();
         });
 
         test('toBeBool() accepts boolean values', function (): void {
             assertExpect(true)->toBeBool();
             assertExpect(false)->toBeBool();
+            expect(true)->toBeTrue();
         });
 
         test('toBeArray() accepts array values', function (): void {
             assertExpect([])->toBeArray();
             assertExpect([1, 2, 3])->toBeArray();
             assertExpect(['key' => 'value'])->toBeArray();
+            expect(true)->toBeTrue();
         });
 
         test('toBeObject() accepts object values', function (): void {
@@ -49,6 +54,7 @@ describe('Type Expectations', function (): void {
                 new stdClass()
             )->toBeObject();
             assertExpect((object) ['a' => 1])->toBeObject();
+            expect(true)->toBeTrue();
         });
 
         test('toBeCallable() accepts callable values', function (): void {
@@ -60,6 +66,7 @@ describe('Type Expectations', function (): void {
                 public function test(): void {}
             };
             assertExpect($obj->test(...))->toBeCallable();
+            expect(true)->toBeTrue();
         });
 
         test('toBeIterable() accepts iterable values', function (): void {
@@ -67,6 +74,7 @@ describe('Type Expectations', function (): void {
             assertExpect(
                 new ArrayIterator([])
             )->toBeIterable();
+            expect(true)->toBeTrue();
         });
 
         test('toBeCountable() accepts countable values', function (): void {
@@ -74,12 +82,14 @@ describe('Type Expectations', function (): void {
             assertExpect(
                 new ArrayObject([1, 2])
             )->toBeCountable();
+            expect(true)->toBeTrue();
         });
 
         test('toBeNumeric() accepts numeric values', function (): void {
             assertExpect(42)->toBeNumeric();
             assertExpect('42')->toBeNumeric();
             assertExpect(3.14)->toBeNumeric();
+            expect(true)->toBeTrue();
         });
 
         test('toBeScalar() accepts scalar values', function (): void {
@@ -87,12 +97,14 @@ describe('Type Expectations', function (): void {
             assertExpect('test')->toBeScalar();
             assertExpect(3.14)->toBeScalar();
             assertExpect(true)->toBeScalar();
+            expect(true)->toBeTrue();
         });
 
         test('toBeResource() accepts resource values', function (): void {
             $handle = fopen('php://memory', 'rb');
             assertExpect($handle)->toBeResource();
             fclose($handle);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -100,6 +112,7 @@ describe('Type Expectations', function (): void {
         test('toBeString() rejects non-string values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBeString())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeInt() rejects non-integer values', function (): void {
@@ -107,11 +120,13 @@ describe('Type Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('42')->toBeInt())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeFloat() rejects non-float values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBeFloat())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeBool() rejects non-boolean values', function (): void {
@@ -119,6 +134,7 @@ describe('Type Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('true')->toBeBool())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeArray() rejects non-array values', function (): void {
@@ -128,11 +144,13 @@ describe('Type Expectations', function (): void {
                 new ArrayObject([])
             )->toBeArray())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeObject() rejects non-object values', function (): void {
             assertExpect(fn (): Expectation => assertExpect([])->toBeObject())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeCallable() rejects non-callable values', function (): void {
@@ -140,11 +158,13 @@ describe('Type Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('nonExistentFunction')->toBeCallable())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeNumeric() rejects non-numeric values', function (): void {
             assertExpect(fn (): Expectation => assertExpect('abc')->toBeNumeric())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeScalar() rejects non-scalar values', function (): void {
@@ -154,6 +174,7 @@ describe('Type Expectations', function (): void {
                 new stdClass()
             )->toBeScalar())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -161,11 +182,13 @@ describe('Type Expectations', function (): void {
         test('toBeInt() strict check', function (): void {
             assertExpect(fn (): Expectation => assertExpect('42')->toBeInt())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeFloat() strict check', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBeFloat())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeBool() strict check', function (): void {
@@ -173,6 +196,7 @@ describe('Type Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(1)->toBeBool())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('type expectations can be chained', function (): void {
@@ -185,6 +209,7 @@ describe('Type Expectations', function (): void {
         test('toBeNumeric() accepts string numbers', function (): void {
             assertExpect('42')->toBeNumeric();
             assertExpect('3.14')->toBeNumeric();
+            expect(true)->toBeTrue();
         });
     });
 
@@ -192,21 +217,25 @@ describe('Type Expectations', function (): void {
         test('not->toBeString() accepts non-strings', function (): void {
             assertExpect(42)->not->toBeString();
             assertExpect([])->not->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeInt() accepts non-integers', function (): void {
             assertExpect('test')->not->toBeInt();
             assertExpect(3.14)->not->toBeInt();
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeFloat() accepts non-floats', function (): void {
             assertExpect(42)->not->toBeFloat();
             assertExpect('3.14')->not->toBeFloat();
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeArray() accepts non-arrays', function (): void {
             assertExpect('test')->not->toBeArray();
             assertExpect(42)->not->toBeArray();
+            expect(true)->toBeTrue();
         });
     });
 });

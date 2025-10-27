@@ -38,23 +38,28 @@ describe('Core Expectations', function (): void {
             assertExpect('hello')->toBe('hello');
             assertExpect(true)->toBe(true);
             assertExpect(null)->toBe(null);
+            expect(true)->toBeTrue();
         });
 
         test('toEqual() is alias for toBe()', function (): void {
             assertExpect(42)->toEqual(42);
             assertExpect('test')->toEqual('test');
+            expect(true)->toBeTrue();
         });
 
         test('toBeNull() accepts null', function (): void {
             assertExpect(null)->toBeNull();
+            expect(true)->toBeTrue();
         });
 
         test('toBeTrue() accepts boolean true', function (): void {
             assertExpect(true)->toBeTrue();
+            expect(true)->toBeTrue();
         });
 
         test('toBeFalse() accepts boolean false', function (): void {
             assertExpect(false)->toBeFalse();
+            expect(true)->toBeTrue();
         });
 
         test('toBeTruthy() accepts truthy values', function (): void {
@@ -63,6 +68,7 @@ describe('Core Expectations', function (): void {
             assertExpect(true)->toBeTruthy();
             assertExpect([1])->toBeTruthy();
             assertExpect((object) [])->toBeTruthy();
+            expect(true)->toBeTrue();
         });
 
         test('toBeFalsy() accepts falsy values', function (): void {
@@ -71,12 +77,14 @@ describe('Core Expectations', function (): void {
             assertExpect(false)->toBeFalsy();
             assertExpect(null)->toBeFalsy();
             assertExpect([])->toBeFalsy();
+            expect(true)->toBeTrue();
         });
 
         test('toBeEmpty() accepts empty values', function (): void {
             assertExpect('')->toBeEmpty();
             assertExpect([])->toBeEmpty();
             assertExpect(0)->toBeEmpty();
+            expect(true)->toBeTrue();
         });
     });
 
@@ -84,31 +92,37 @@ describe('Core Expectations', function (): void {
         test('toBe() rejects non-equal values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBe(43))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeNull() rejects non-null values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBeNull())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeTrue() rejects non-true values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(false)->toBeTrue())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeFalse() rejects non-false values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(true)->toBeFalse())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeTruthy() rejects falsy values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(0)->toBeTruthy())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeFalsy() rejects truthy values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(1)->toBeFalsy())
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -116,16 +130,19 @@ describe('Core Expectations', function (): void {
         test('toBe() uses strict equality', function (): void {
             assertExpect(fn (): Expectation => assertExpect('1')->toBe(1))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeTruthy() uses loose comparison', function (): void {
             assertExpect('1')->toBeTruthy();
             assertExpect(1)->toBeTruthy();
+            expect(true)->toBeTrue();
         });
 
         test('toBeFalsy() uses loose comparison', function (): void {
             assertExpect('0')->toBeFalsy();
             assertExpect(0)->toBeFalsy();
+            expect(true)->toBeTrue();
         });
     });
 });

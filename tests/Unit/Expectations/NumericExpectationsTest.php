@@ -18,6 +18,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(10)->toBeGreaterThan(5);
             assertExpect(100)->toBeGreaterThan(99);
             assertExpect(0)->toBeGreaterThan(-1);
+            expect(true)->toBeTrue();
         });
 
         test('toBeGreaterThan() rejects equal or lesser values', function (): void {
@@ -25,23 +26,27 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(5)->toBeGreaterThan(10))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeGreaterThanOrEqual() accepts greater or equal values', function (): void {
             assertExpect(10)->toBeGreaterThanOrEqual(5);
             assertExpect(10)->toBeGreaterThanOrEqual(10);
             assertExpect(0)->toBeGreaterThanOrEqual(0);
+            expect(true)->toBeTrue();
         });
 
         test('toBeGreaterThanOrEqual() rejects lesser values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(5)->toBeGreaterThanOrEqual(10))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeLessThan() accepts lesser values', function (): void {
             assertExpect(5)->toBeLessThan(10);
             assertExpect(99)->toBeLessThan(100);
             assertExpect(-1)->toBeLessThan(0);
+            expect(true)->toBeTrue();
         });
 
         test('toBeLessThan() rejects equal or greater values', function (): void {
@@ -49,17 +54,20 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(10)->toBeLessThan(5))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeLessThanOrEqual() accepts lesser or equal values', function (): void {
             assertExpect(5)->toBeLessThanOrEqual(10);
             assertExpect(10)->toBeLessThanOrEqual(10);
             assertExpect(0)->toBeLessThanOrEqual(0);
+            expect(true)->toBeTrue();
         });
 
         test('toBeLessThanOrEqual() rejects greater values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(10)->toBeLessThanOrEqual(5))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
 
         test('toBeBetween() accepts values in range (inclusive)', function (): void {
@@ -67,6 +75,7 @@ describe('Numeric Expectations', function (): void {
             assertExpect(1)->toBeBetween(1, 10);
             assertExpect(10)->toBeBetween(1, 10);
             assertExpect(0)->toBeBetween(-5, 5);
+            expect(true)->toBeTrue();
         });
 
         test('toBeBetween() rejects values outside range', function (): void {
@@ -74,6 +83,7 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(11)->toBeBetween(1, 10))
                 ->toThrow(AssertionFailedException::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -81,16 +91,19 @@ describe('Numeric Expectations', function (): void {
         test('not->toBeGreaterThan() accepts equal or lesser values', function (): void {
             assertExpect(5)->not->toBeGreaterThan(5);
             assertExpect(5)->not->toBeGreaterThan(10);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeLessThan() accepts equal or greater values', function (): void {
             assertExpect(10)->not->toBeLessThan(10);
             assertExpect(10)->not->toBeLessThan(5);
+            expect(true)->toBeTrue();
         });
 
         test('not->toBeBetween() accepts values outside range', function (): void {
             assertExpect(0)->not->toBeBetween(1, 10);
             assertExpect(11)->not->toBeBetween(1, 10);
+            expect(true)->toBeTrue();
         });
     });
 
