@@ -543,6 +543,54 @@ final class Expectation
     }
 
     /**
+     * Assert that date is before another date.
+     */
+    public function toBeBefore(DateTimeInterface|string $date): self
+    {
+        return $this->invoke('before', [$date]);
+    }
+
+    /**
+     * Assert that date is after another date.
+     */
+    public function toBeAfter(DateTimeInterface|string $date): self
+    {
+        return $this->invoke('after', [$date]);
+    }
+
+    /**
+     * Assert that date is between two dates (inclusive).
+     */
+    public function toBeBetween(DateTimeInterface|string $start, DateTimeInterface|string $end): self
+    {
+        return $this->invoke('between', [$start, $end]);
+    }
+
+    /**
+     * Assert that date is today.
+     */
+    public function toBeToday(): self
+    {
+        return $this->invoke('today');
+    }
+
+    /**
+     * Assert that date is yesterday.
+     */
+    public function toBeYesterday(): self
+    {
+        return $this->invoke('yesterday');
+    }
+
+    /**
+     * Assert that date is tomorrow.
+     */
+    public function toBeTomorrow(): self
+    {
+        return $this->invoke('tomorrow');
+    }
+
+    /**
      * Assert that value contains only digits.
      */
     public function toBeDigits(): self
@@ -1084,6 +1132,38 @@ final class Expectation
     }
 
     /**
+     * Assert that array is a subset of another array.
+     */
+    public function toBeSubsetOf(array $superset): self
+    {
+        return $this->invoke('subsetOf', [$superset]);
+    }
+
+    /**
+     * Assert that array has only unique values (no duplicates).
+     */
+    public function toHaveUniqueValues(): self
+    {
+        return $this->invoke('uniqueValues');
+    }
+
+    /**
+     * Assert that array is sorted in ascending order.
+     */
+    public function toBeSorted(): self
+    {
+        return $this->invoke('sorted');
+    }
+
+    /**
+     * Assert that array is sorted in descending order.
+     */
+    public function toBeSortedDesc(): self
+    {
+        return $this->invoke('sortedDesc');
+    }
+
+    /**
      * Assert that array contains only instances of a given class.
      */
     public function toContainOnlyInstancesOf(string $className): self
@@ -1467,6 +1547,29 @@ final class Expectation
             $message,
             $actualException->getMessage(),
         ), 0, null, $this->value);
+
+        return $this;
+    }
+
+    /**
+     * Assert that callable completes within specified time (in milliseconds).
+     */
+    public function toCompleteWithin(int $milliseconds): self
+    {
+        throw_unless(is_callable($this->value), InvalidArgumentException::class, 'toCompleteWithin() requires a callable value', 0, null, $this->value);
+
+        $start = hrtime(true);
+        ($this->value)();
+        $elapsed = (hrtime(true) - $start) / 1_000_000; // Convert nanoseconds to milliseconds
+
+        throw_if(
+            $elapsed > $milliseconds,
+            InvalidArgumentException::class,
+            sprintf('Expected callable to complete within %dms but took %.2fms', $milliseconds, $elapsed),
+            0,
+            null,
+            $this->value,
+        );
 
         return $this;
     }
