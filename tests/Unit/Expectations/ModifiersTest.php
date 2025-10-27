@@ -78,7 +78,7 @@ describe('Expectation Modifiers', function (): void {
             $first = assertExpect(42)->toBeInt();
             $second = $first->and('hello');
 
-            assertExpect($first->toBeString(...))
+            expect(fn () => ($first->toBeString(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
     });

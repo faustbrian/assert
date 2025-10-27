@@ -84,32 +84,32 @@ describe('Negation Modifier (->not)', function (): void {
         });
 
         test('not->toBeNull() fails when value is null', function (): void {
-            assertExpect(assertExpect(null)->not->toBeNull(...))
+            expect(fn () => (assertExpect(null)->not->toBeNull(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('not->toBeTrue() fails when value is true', function (): void {
-            assertExpect(assertExpect(true)->not->toBeTrue(...))
+            expect(fn () => (assertExpect(true)->not->toBeTrue(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('not->toBeFalse() fails when value is false', function (): void {
-            assertExpect(assertExpect(false)->not->toBeFalse(...))
+            expect(fn () => (assertExpect(false)->not->toBeFalse(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('not->toBeTruthy() fails when value is truthy', function (): void {
-            assertExpect(assertExpect(1)->not->toBeTruthy(...))
+            expect(fn () => (assertExpect(1)->not->toBeTruthy(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('not->toBeFalsy() fails when value is falsy', function (): void {
-            assertExpect(assertExpect(0)->not->toBeFalsy(...))
+            expect(fn () => (assertExpect(0)->not->toBeFalsy(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
 
         test('not->toBeString() fails when value is string', function (): void {
-            assertExpect(assertExpect('test')->not->toBeString(...))
+            expect(fn () => (assertExpect('test')->not->toBeString(...))())
                 ->toThrow(InvalidArgumentException::class);
         });
     });
