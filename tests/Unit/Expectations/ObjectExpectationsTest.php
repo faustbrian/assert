@@ -28,6 +28,7 @@ describe('Object Expectations', function (): void {
             $user = new class()
             {
                 public string $name = 'John';
+                private string $email = 'john@example.com';
             };
 
             assertExpect($user)->toHaveProperty('name');
@@ -41,7 +42,6 @@ describe('Object Expectations', function (): void {
 
             assertExpect(fn (): Expectation => assertExpect($obj)->toHaveProperty('email'))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toHaveMethod() accepts objects with existing method', function (): void {
@@ -65,7 +65,6 @@ describe('Object Expectations', function (): void {
 
             assertExpect(fn (): Expectation => assertExpect($obj)->toHaveMethod('delete'))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeInstanceOf() checks class inheritance', function (): void {
@@ -100,6 +99,7 @@ describe('Object Expectations', function (): void {
             assertExpect(
                 new stdClass()
             )->not->toBeInstanceOf(ArrayIterator::class);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -116,6 +116,7 @@ describe('Object Expectations', function (): void {
                 ->toBeObject()
                 ->toHaveProperty('name')
                 ->toHaveMethod('save');
+            expect(true)->toBeTrue();
         });
 
         test('can mix object and type checks', function (): void {
@@ -134,6 +135,7 @@ describe('Object Expectations', function (): void {
                 ->not->toBeNull()
                 ->toHaveProperty('name')
                 ->toHaveMethod('isActive');
+            expect(true)->toBeTrue();
         });
     });
 
@@ -142,6 +144,7 @@ describe('Object Expectations', function (): void {
             $obj = new class()
             {
                 public string $public = 'visible';
+                private string $private = 'hidden';
             };
 
             assertExpect($obj)->toHaveProperty('public');

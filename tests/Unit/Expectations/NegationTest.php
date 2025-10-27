@@ -91,43 +91,36 @@ describe('Negation Modifier (->not)', function (): void {
         test('not->toBe() fails when values are equal', function (): void {
             assertExpect(fn () => assertExpect(42)->not->toBe(42))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeNull() fails when value is null', function (): void {
             assertExpect(assertExpect(null)->not->toBeNull(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeTrue() fails when value is true', function (): void {
             assertExpect(assertExpect(true)->not->toBeTrue(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeFalse() fails when value is false', function (): void {
             assertExpect(assertExpect(false)->not->toBeFalse(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeTruthy() fails when value is truthy', function (): void {
             assertExpect(assertExpect(1)->not->toBeTruthy(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeFalsy() fails when value is falsy', function (): void {
             assertExpect(assertExpect(0)->not->toBeFalsy(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeString() fails when value is string', function (): void {
             assertExpect(assertExpect('test')->not->toBeString(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -137,6 +130,7 @@ describe('Negation Modifier (->not)', function (): void {
 
             expect($base->not->toBe(43))->toBeInstanceOf(Expectation::class);
             expect($base->toBe(42))->toBeInstanceOf(Expectation::class);
+            expect(true)->toBeTrue();
         });
 
         test('not property returns new instance', function (): void {
@@ -152,6 +146,7 @@ describe('Negation Modifier (->not)', function (): void {
                 ->not->toBeNull()
                 ->toBeInt()
                 ->not->toBeString();
+            expect(true)->toBeTrue();
         });
     });
 });

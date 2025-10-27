@@ -26,7 +26,6 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('missing@domain')->toBeEmail())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeEmail() accepts non-email strings', function (): void {
@@ -48,7 +47,6 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('example.com')->toBeUrl())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeUrl() accepts non-URL strings', function (): void {
@@ -69,7 +67,6 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('550e8400-e29b-41d4')->toBeUuid())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeUuid() accepts non-UUID strings', function (): void {
@@ -92,7 +89,6 @@ describe('Format Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect('{invalid}')->toBeJson())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('not->toBeJson() accepts non-JSON strings', function (): void {
@@ -107,6 +103,7 @@ describe('Format Expectations', function (): void {
                 ->toBeString()
                 ->toBeEmail()
                 ->toContain('@');
+            expect(true)->toBeTrue();
         });
 
         test('can use format checks with collections', function (): void {
@@ -114,6 +111,7 @@ describe('Format Expectations', function (): void {
                 'test@example.com',
                 'user@domain.com',
             ])->each->toBeEmail();
+            expect(true)->toBeTrue();
         });
 
         test('can mix format and conditional checks', function (): void {
@@ -122,6 +120,7 @@ describe('Format Expectations', function (): void {
             assertExpect($value)
                 ->toBeString()
                 ->when(str_contains($value, '@'), fn ($exp) => $exp->toBeEmail());
+            expect(true)->toBeTrue();
         });
     });
 });

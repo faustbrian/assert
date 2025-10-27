@@ -26,7 +26,6 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(5)->toBeGreaterThan(10))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeGreaterThanOrEqual() accepts greater or equal values', function (): void {
@@ -39,7 +38,6 @@ describe('Numeric Expectations', function (): void {
         test('toBeGreaterThanOrEqual() rejects lesser values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(5)->toBeGreaterThanOrEqual(10))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeLessThan() accepts lesser values', function (): void {
@@ -54,7 +52,6 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(10)->toBeLessThan(5))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeLessThanOrEqual() accepts lesser or equal values', function (): void {
@@ -67,7 +64,6 @@ describe('Numeric Expectations', function (): void {
         test('toBeLessThanOrEqual() rejects greater values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(10)->toBeLessThanOrEqual(5))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeBetween() accepts values in range (inclusive)', function (): void {
@@ -83,7 +79,6 @@ describe('Numeric Expectations', function (): void {
                 ->toThrow(AssertionFailedException::class);
             assertExpect(fn (): Expectation => assertExpect(11)->toBeBetween(1, 10))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -113,6 +108,7 @@ describe('Numeric Expectations', function (): void {
                 ->toBeGreaterThan(0)
                 ->toBeLessThan(10)
                 ->toBeBetween(1, 10);
+            expect(true)->toBeTrue();
         });
 
         test('can mix comparisons with type checks', function (): void {
@@ -120,6 +116,7 @@ describe('Numeric Expectations', function (): void {
                 ->toBeInt()
                 ->toBeGreaterThan(0)
                 ->toBeLessThan(100);
+            expect(true)->toBeTrue();
         });
     });
 });

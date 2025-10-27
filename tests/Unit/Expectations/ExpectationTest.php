@@ -92,37 +92,31 @@ describe('Core Expectations', function (): void {
         test('toBe() rejects non-equal values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBe(43))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeNull() rejects non-null values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(42)->toBeNull())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeTrue() rejects non-true values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(false)->toBeTrue())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeFalse() rejects non-false values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(true)->toBeFalse())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeTruthy() rejects falsy values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(0)->toBeTruthy())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeFalsy() rejects truthy values', function (): void {
             assertExpect(fn (): Expectation => assertExpect(1)->toBeFalsy())
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -130,7 +124,6 @@ describe('Core Expectations', function (): void {
         test('toBe() uses strict equality', function (): void {
             assertExpect(fn (): Expectation => assertExpect('1')->toBe(1))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('toBeTruthy() uses loose comparison', function (): void {

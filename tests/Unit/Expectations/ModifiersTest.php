@@ -28,6 +28,7 @@ describe('Expectation Modifiers', function (): void {
             assertExpect([1, 2, 3])->each(
                 fn ($item) => $item->toBeInt()->toBeGreaterThan(0),
             );
+            expect(true)->toBeTrue();
         });
 
         test('each() receives key as second parameter', function (): void {
@@ -44,14 +45,12 @@ describe('Expectation Modifiers', function (): void {
             assertExpect(
                 assertExpect([1, 'two', 3])->each->toBeInt(...),
             )->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
 
         test('each() requires traversable value', function (): void {
-            assertExpect(
-                assertExpect(42)->each->toBeInt(...),
+            assertExpect(fn() =>
+                assertExpect(42)->each->toBeInt()
             )->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -61,6 +60,7 @@ describe('Expectation Modifiers', function (): void {
                 ->toBeInt()
                 ->and()
                 ->toBeGreaterThan(0);
+            expect(true)->toBeTrue();
         });
 
         test('and() with argument creates new expectation', function (): void {
@@ -68,6 +68,7 @@ describe('Expectation Modifiers', function (): void {
                 ->toBeInt()
                 ->and('hello')
                 ->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('and() chains multiple different values', function (): void {
@@ -77,6 +78,7 @@ describe('Expectation Modifiers', function (): void {
                 ->toBeString()
                 ->and([1, 2])
                 ->toBeArray();
+            expect(true)->toBeTrue();
         });
 
         test('and() preserves original expectation', function (): void {
@@ -85,7 +87,6 @@ describe('Expectation Modifiers', function (): void {
 
             assertExpect($first->toBeString(...))
                 ->toThrow(AssertionFailedException::class);
-            expect(true)->toBeTrue();
         });
     });
 
@@ -117,6 +118,7 @@ describe('Expectation Modifiers', function (): void {
                 fn ($v): bool => $v > 0,
                 fn ($exp) => $exp->toBeGreaterThan(0),
             );
+            expect(true)->toBeTrue();
         });
 
         test('when() chains with other expectations', function (): void {
@@ -124,6 +126,7 @@ describe('Expectation Modifiers', function (): void {
                 ->toBeInt()
                 ->when(true, fn ($exp) => $exp->toBeGreaterThan(0))
                 ->toBeLessThan(100);
+            expect(true)->toBeTrue();
         });
     });
 
@@ -155,6 +158,7 @@ describe('Expectation Modifiers', function (): void {
                 fn ($v): bool => $v !== null,
                 fn ($exp) => $exp->toBeNull(),
             );
+            expect(true)->toBeTrue();
         });
 
         test('unless() is inverse of when()', function (): void {
@@ -185,6 +189,7 @@ describe('Expectation Modifiers', function (): void {
                 ->when(true, fn ($exp) => $exp->toBeInt())
                 ->and('test')
                 ->toBeString();
+            expect(true)->toBeTrue();
         });
 
         test('can chain multiple conditional modifiers', function (): void {
@@ -210,6 +215,7 @@ describe('Expectation Modifiers', function (): void {
                     ->toBeInt()
                     ->when(fn ($v): bool => $v > 3, fn ($exp) => $exp->toBeGreaterThan(3));
             });
+            expect(true)->toBeTrue();
         });
     });
 });
