@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Date;
 use function Cline\Assert\expect as assertExpect;
 
 describe('Asymmetric Matchers', function (): void {
-    describe('expect()->any() matcher', function (): void {
+    describe('assertExpect()->any() matcher', function (): void {
         test('matches values of specified type', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'id' => 123,
                 'name' => 'John',
             ])->toEqual([
-                'id' => expect()->any('integer'),
-                'name' => expect()->any('string'),
+                'id' => assertExpect()->any('integer'),
+                'name' => assertExpect()->any('string'),
             ]))->not->toThrow(Throwable::class);
         });
 
@@ -29,7 +29,7 @@ describe('Asymmetric Matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'id' => 'not-an-int',
             ])->toEqual([
-                'id' => expect()->any('integer'),
+                'id' => assertExpect()->any('integer'),
             ]))->toThrow(InvalidArgumentException::class);
         });
 
@@ -37,21 +37,21 @@ describe('Asymmetric Matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'date' => Date::now(),
             ])->toEqual([
-                'date' => expect()->any(DateTime::class),
+                'date' => assertExpect()->any(DateTime::class),
             ]))->not->toThrow(Throwable::class);
         });
     });
 
-    describe('expect()->anything() matcher', function (): void {
+    describe('assertExpect()->anything() matcher', function (): void {
         test('matches any non-null value', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'field1' => 123,
                 'field2' => 'test',
                 'field3' => [],
             ])->toEqual([
-                'field1' => expect()->anything(),
-                'field2' => expect()->anything(),
-                'field3' => expect()->anything(),
+                'field1' => assertExpect()->anything(),
+                'field2' => assertExpect()->anything(),
+                'field3' => assertExpect()->anything(),
             ]))->not->toThrow(Throwable::class);
         });
 
@@ -59,19 +59,19 @@ describe('Asymmetric Matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'field' => null,
             ])->toEqual([
-                'field' => expect()->anything(),
+                'field' => assertExpect()->anything(),
             ]))->toThrow(InvalidArgumentException::class);
         });
     });
 
-    describe('expect()->stringContaining() matcher', function (): void {
+    describe('assertExpect()->stringContaining() matcher', function (): void {
         test('matches strings containing substring', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
             ])->toEqual([
-                'name' => expect()->stringContaining('John'),
-                'email' => expect()->stringContaining('@example'),
+                'name' => assertExpect()->stringContaining('John'),
+                'email' => assertExpect()->stringContaining('@example'),
             ]))->not->toThrow(Throwable::class);
         });
 
@@ -79,7 +79,7 @@ describe('Asymmetric Matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'name' => 'Jane Smith',
             ])->toEqual([
-                'name' => expect()->stringContaining('John'),
+                'name' => assertExpect()->stringContaining('John'),
             ]))->toThrow(InvalidArgumentException::class);
         });
 
@@ -87,12 +87,12 @@ describe('Asymmetric Matchers', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'count' => 123,
             ])->toEqual([
-                'count' => expect()->stringContaining('123'),
+                'count' => assertExpect()->stringContaining('123'),
             ]))->toThrow(InvalidArgumentException::class);
         });
     });
 
-    describe('expect()->arrayContaining() matcher', function (): void {
+    describe('assertExpect()->arrayContaining() matcher', function (): void {
         test('matches arrays with subset of keys', function (): void {
             expect(fn (): Expectation => assertExpect([
                 'user' => [
@@ -102,7 +102,7 @@ describe('Asymmetric Matchers', function (): void {
                     'created_at' => '2025-01-01',
                 ],
             ])->toEqual([
-                'user' => expect()->arrayContaining([
+                'user' => assertExpect()->arrayContaining([
                     'id' => 1,
                     'name' => 'John',
                 ]),
@@ -115,7 +115,7 @@ describe('Asymmetric Matchers', function (): void {
                     'id' => 1,
                 ],
             ])->toEqual([
-                'user' => expect()->arrayContaining([
+                'user' => assertExpect()->arrayContaining([
                     'id' => 1,
                     'name' => 'John',
                 ]),
@@ -129,9 +129,9 @@ describe('Asymmetric Matchers', function (): void {
                     'name' => 'John Doe',
                 ],
             ])->toEqual([
-                'data' => expect()->arrayContaining([
-                    'id' => expect()->any('integer'),
-                    'name' => expect()->stringContaining('John'),
+                'data' => assertExpect()->arrayContaining([
+                    'id' => assertExpect()->any('integer'),
+                    'name' => assertExpect()->stringContaining('John'),
                 ]),
             ]))->not->toThrow(Throwable::class);
         });
@@ -146,11 +146,11 @@ describe('Asymmetric Matchers', function (): void {
                 'data' => ['key' => 'value'],
                 'timestamp' => 1_234_567_890,
             ])->toEqual([
-                'id' => expect()->any('integer'),
-                'name' => expect()->stringContaining('John'),
-                'email' => expect()->stringContaining('@'),
-                'data' => expect()->arrayContaining(['key' => 'value']),
-                'timestamp' => expect()->anything(),
+                'id' => assertExpect()->any('integer'),
+                'name' => assertExpect()->stringContaining('John'),
+                'email' => assertExpect()->stringContaining('@'),
+                'data' => assertExpect()->arrayContaining(['key' => 'value']),
+                'timestamp' => assertExpect()->anything(),
             ]))->not->toThrow(Throwable::class);
         });
 
@@ -165,10 +165,10 @@ describe('Asymmetric Matchers', function (): void {
                     ],
                 ],
             ])->toEqual([
-                'user' => expect()->arrayContaining([
-                    'profile' => expect()->arrayContaining([
-                        'name' => expect()->stringContaining('J'),
-                        'settings' => expect()->any('array'),
+                'user' => assertExpect()->arrayContaining([
+                    'profile' => assertExpect()->arrayContaining([
+                        'name' => assertExpect()->stringContaining('J'),
+                        'settings' => assertExpect()->any('array'),
                     ]),
                 ]),
             ]))->not->toThrow(Throwable::class);
