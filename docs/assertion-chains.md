@@ -271,4 +271,4 @@ Assert::that($name)
 
 - [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields
 - [Custom Assertions](./custom-assertions.md) - Add custom rules
-- [Getting Started](./getting-started.md) - Core concepts
+- [Getting Started](./README.md) - Core concepts

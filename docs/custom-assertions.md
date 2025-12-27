@@ -235,4 +235,4 @@ function assertUsername($value) {
 
 - [Lazy Assertions](./lazy-assertions.md) - Combine multiple validations
 - [Assertion Chains](./assertion-chains.md) - Chain custom rules
-- [Getting Started](./getting-started.md) - Core concepts
+- [Getting Started](./README.md) - Core concepts

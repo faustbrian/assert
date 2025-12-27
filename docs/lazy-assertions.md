@@ -221,5 +221,5 @@ Avoid when:
 ## Next Steps
 
 - [Assertion Chains](./assertion-chains.md) - Single-field validation
-- [Getting Started](./getting-started.md) - Basic concepts
+- [Getting Started](./README.md) - Basic concepts
 - [Custom Assertions](./custom-assertions.md) - Custom validation rules
