@@ -1,8 +1,3 @@
----
-title: Validation Assertions
-description: Check common data formats like emails, URLs, UUIDs, and IP addresses.
----
-
 Validation assertions check common data formats like emails, URLs, UUIDs, and IP addresses.
 
 ## Available Assertions

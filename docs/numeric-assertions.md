@@ -1,8 +1,3 @@
----
-title: Numeric Assertions
-description: Validate numbers and perform comparison operations.
----
-
 Numeric assertions validate numbers and perform comparison operations.
 
 ## Available Assertions

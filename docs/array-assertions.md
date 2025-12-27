@@ -1,8 +1,3 @@
----
-title: Array Assertions
-description: Validate arrays, collections, and array-accessible objects.
----
-
 Array assertions validate arrays, collections, and array-accessible objects.
 
 ## Available Assertions

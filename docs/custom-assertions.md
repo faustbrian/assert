@@ -1,8 +1,3 @@
----
-title: Custom Assertions
-description: Create custom validation rules using callbacks and custom assertion classes.
----
-
 Create custom validation rules using the `satisfy()` assertion and custom assertion classes.
 
 ## The satisfy() Assertion

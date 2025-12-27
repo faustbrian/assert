@@ -1,8 +1,3 @@
----
-title: File System Assertions
-description: Validate files, directories, and file permissions.
----
-
 File system assertions validate files, directories, and file permissions.
 
 ## Available Assertions

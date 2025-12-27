@@ -1,8 +1,3 @@
----
-title: Comparison Assertions
-description: Validate equality and identity between values.
----
-
 Comparison assertions validate equality and identity between values.
 
 ## Available Assertions

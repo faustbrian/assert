@@ -1,8 +1,3 @@
----
-title: Type Assertions
-description: Verify that values match expected PHP types.
----
-
 Type assertions verify that values match expected PHP types.
 
 ## Available Assertions

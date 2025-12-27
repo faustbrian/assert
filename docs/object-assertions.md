@@ -1,8 +1,3 @@
----
-title: Object Assertions
-description: Validate objects, classes, interfaces, and their properties.
----
-
 Object assertions validate objects, classes, interfaces, and their properties/methods.
 
 ## Available Assertions

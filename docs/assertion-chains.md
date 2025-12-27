@@ -1,8 +1,3 @@
----
-title: Assertion Chains
-description: Fluent interface for validating values with multiple assertions.
----
-
 Assertion chains provide a fluent interface for validating values with multiple assertions.
 
 ## Basic Chain Usage

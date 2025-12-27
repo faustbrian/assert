@@ -1,8 +1,3 @@
----
-title: Getting Started
-description: Install and start using Assert for validation in PHP 8.4+.
----
-
 Assert is a comprehensive assertion library for PHP 8.4+ that enables robust validation and preconditions throughout your code.
 
 ## Installation

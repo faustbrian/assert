@@ -1,8 +1,3 @@
----
-title: Lazy Assertions
-description: Collect multiple validation errors before throwing.
----
-
 Lazy assertions collect multiple validation errors before throwing, allowing you to report all validation failures at once.
 
 ## Why Lazy Assertions?

@@ -1,8 +1,3 @@
----
-title: Expect API
-description: Jest/Pest-style fluent expectations for testing and validation.
----
-
 The `expect()` API provides a Jest/Pest-style fluent interface for assertions, ideal for testing and validation with a natural, readable syntax.
 
 ## Installation

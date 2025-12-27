@@ -1,8 +1,3 @@
----
-title: Boolean Assertions
-description: Validate boolean values and truthiness.
----
-
 Boolean assertions validate boolean values and truthiness.
 
 ## Available Assertions
