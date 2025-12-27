@@ -269,6 +269,6 @@ Assert::that($name)
 
 ## Next Steps
 
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple fields
-- [Custom Assertions](/assert/custom-assertions/) - Add custom rules
-- [Getting Started](/assert/getting-started/) - Core concepts
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields
+- [Custom Assertions](./custom-assertions.md) - Add custom rules
+- [Getting Started](./getting-started.md) - Core concepts

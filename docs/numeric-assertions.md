@@ -183,6 +183,6 @@ Assert::that($value)
 
 ## Next Steps
 
-- [Type Assertions](/assert/type-assertions/) - Type checking for integers, floats
-- [Comparison Assertions](/assert/comparison-assertions/) - Equality operations
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple fields
+- [Type Assertions](./type-assertions.md) - Type checking for integers, floats
+- [Comparison Assertions](./comparison-assertions.md) - Equality operations
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields

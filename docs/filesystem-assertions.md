@@ -177,6 +177,6 @@ public function setupCache(): void
 
 ## Next Steps
 
-- [String Assertions](/assert/string-assertions/) - Path validation
-- [Custom Assertions](/assert/custom-assertions/) - Custom file validators
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple paths
+- [String Assertions](./string-assertions.md) - Path validation
+- [Custom Assertions](./custom-assertions.md) - Custom file validators
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple paths

@@ -174,6 +174,6 @@ Assert::that($handler)
 
 ## Next Steps
 
-- [Type Assertions](/assert/type-assertions/) - Basic type checking
-- [Custom Assertions](/assert/custom-assertions/) - Custom object validation
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple properties
+- [Type Assertions](./type-assertions.md) - Basic type checking
+- [Custom Assertions](./custom-assertions.md) - Custom object validation
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple properties

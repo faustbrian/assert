@@ -201,6 +201,6 @@ Assert::that($_POST['quantity'])
 
 ## Next Steps
 
-- [Numeric Assertions](/assert/numeric-assertions/) - Number validation
-- [Object Assertions](/assert/object-assertions/) - Object validation
-- [Array Assertions](/assert/array-assertions/) - Array validation
+- [Numeric Assertions](./numeric-assertions.md) - Number validation
+- [Object Assertions](./object-assertions.md) - Object validation
+- [Array Assertions](./array-assertions.md) - Array validation

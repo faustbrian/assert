@@ -142,6 +142,6 @@ Assertion::true($isVerified, 'Email address must be verified before proceeding')
 
 ## Next Steps
 
-- [Type Assertions](/assert/type-assertions/) - Type checking
-- [Comparison Assertions](/assert/comparison-assertions/) - Comparing values
-- [Custom Assertions](/assert/custom-assertions/) - Custom validators
+- [Type Assertions](./type-assertions.md) - Type checking
+- [Comparison Assertions](./comparison-assertions.md) - Comparing values
+- [Custom Assertions](./custom-assertions.md) - Custom validators

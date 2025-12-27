@@ -191,6 +191,6 @@ Assert::that($data['user'])
 
 ## Next Steps
 
-- [Type Assertions](/assert/type-assertions/) - Type checking
-- [Null and Empty Assertions](/assert/null-empty-assertions/) - Empty array checks
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple conditions
+- [Type Assertions](./type-assertions.md) - Type checking
+- [Null and Empty Assertions](./null-empty-assertions.md) - Empty array checks
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple conditions

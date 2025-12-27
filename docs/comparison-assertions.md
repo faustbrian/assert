@@ -148,6 +148,6 @@ Assert::that($value)
 
 ## Next Steps
 
-- [Numeric Assertions](/assert/numeric-assertions/) - Range comparisons
-- [Type Assertions](/assert/type-assertions/) - Type validation
-- [Array Assertions](/assert/array-assertions/) - Array comparisons
+- [Numeric Assertions](./numeric-assertions.md) - Range comparisons
+- [Type Assertions](./type-assertions.md) - Type validation
+- [Array Assertions](./array-assertions.md) - Array comparisons

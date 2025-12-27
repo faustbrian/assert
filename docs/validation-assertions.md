@@ -220,6 +220,6 @@ Assertion::regex($email, '/^[^@]+@[^@]+\.[^@]+$/');
 
 ## Next Steps
 
-- [String Assertions](/assert/string-assertions/) - String format validation
-- [Custom Assertions](/assert/custom-assertions/) - Create custom validators
-- [Lazy Assertions](/assert/lazy-assertions/) - Validate multiple fields
+- [String Assertions](./string-assertions.md) - String format validation
+- [Custom Assertions](./custom-assertions.md) - Create custom validators
+- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields

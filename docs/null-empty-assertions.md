@@ -182,6 +182,6 @@ Assert::that($name)
 
 ## Next Steps
 
-- [Type Assertions](/assert/type-assertions/) - Type validation
-- [String Assertions](/assert/string-assertions/) - String validation
-- [Assertion Chains](/assert/assertion-chains/) - Using nullOr()
+- [Type Assertions](./type-assertions.md) - Type validation
+- [String Assertions](./string-assertions.md) - String validation
+- [Assertion Chains](./assertion-chains.md) - Using nullOr()

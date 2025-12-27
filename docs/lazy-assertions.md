@@ -220,6 +220,6 @@ Avoid when:
 
 ## Next Steps
 
-- [Assertion Chains](/assert/assertion-chains/) - Single-field validation
-- [Getting Started](/assert/getting-started/) - Basic concepts
-- [Custom Assertions](/assert/custom-assertions/) - Custom validation rules
+- [Assertion Chains](./assertion-chains.md) - Single-field validation
+- [Getting Started](./getting-started.md) - Basic concepts
+- [Custom Assertions](./custom-assertions.md) - Custom validation rules

@@ -360,6 +360,6 @@ expect($data)->ray();
 
 ## Next Steps
 
-- [Getting Started](/assert/getting-started/) - Basic assertion concepts
-- [Assertion Chains](/assert/assertion-chains/) - Fluent API usage
-- [Custom Assertions](/assert/custom-assertions/) - Create custom rules
+- [Getting Started](./getting-started.md) - Basic assertion concepts
+- [Assertion Chains](./assertion-chains.md) - Fluent API usage
+- [Custom Assertions](./custom-assertions.md) - Create custom rules

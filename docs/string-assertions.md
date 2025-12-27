@@ -169,6 +169,6 @@ Assertion::minLength($text, 10, null, null, 'ISO-8859-1');
 
 ## Next Steps
 
-- [Validation Assertions](/assert/validation-assertions/) - Email, URL, UUID validation
-- [Type Assertions](/assert/type-assertions/) - Type checking
-- [Assertion Chains](/assert/assertion-chains/) - Fluent API
+- [Validation Assertions](./validation-assertions.md) - Email, URL, UUID validation
+- [Type Assertions](./type-assertions.md) - Type checking
+- [Assertion Chains](./assertion-chains.md) - Fluent API

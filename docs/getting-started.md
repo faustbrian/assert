@@ -129,7 +129,7 @@ Assert::that($user->email, null, 'user.email')
 
 ## Next Steps
 
-- [Expect API](/assert/expect-api/) - Jest/Pest-style fluent expectations
-- [Assertion Chains](/assert/assertion-chains/) - Fluent API usage
-- [Lazy Assertions](/assert/lazy-assertions/) - Batch validation patterns
-- [String Assertions](/assert/string-assertions/) - String validation
+- [Expect API](./expect-api.md) - Jest/Pest-style fluent expectations
+- [Assertion Chains](./assertion-chains.md) - Fluent API usage
+- [Lazy Assertions](./lazy-assertions.md) - Batch validation patterns
+- [String Assertions](./string-assertions.md) - String validation
