@@ -62,15 +62,15 @@ If you discover any security related issues, please use the [GitHub security rep
 
 The MIT License. Please see [License File](LICENSE.md) for more information.
 
-[ico-tests]: https://github.com/faustbrian/assert/actions/workflows/quality-assurance.yaml/badge.svg
+[ico-tests]: https://git.cline.sh/faustbrian/assert/actions/workflows/quality-assurance.yaml/badge.svg
 [ico-version]: https://img.shields.io/packagist/v/cline/assert.svg
 [ico-license]: https://img.shields.io/badge/License-MIT-green.svg
 [ico-downloads]: https://img.shields.io/packagist/dt/cline/assert.svg
 
-[link-tests]: https://github.com/faustbrian/assert/actions
+[link-tests]: https://git.cline.sh/faustbrian/assert/actions
 [link-packagist]: https://packagist.org/packages/cline/assert
 [link-downloads]: https://packagist.org/packages/cline/assert
-[link-security]: https://github.com/faustbrian/assert/security
-[link-maintainer]: https://github.com/faustbrian
+[link-security]: https://git.cline.sh/faustbrian/assert/security
+[link-maintainer]: https://git.cline.sh/faustbrian
 [link-author]: https://github.com/beberlei
 [link-contributors]: ../../contributors
