@@ -1,0 +1,24 @@
+parameters:
+    level: max
+    paths:
+        - src
+
+    reportUnmatchedIgnoredErrors: true
+
+    # Suppress errors inherent to runtime validation library design
+    ignoreErrors:
+        # Runtime validation requires accepting mixed types
+        - '#Parameter \#[0-9]+ .* of function (version_compare|phpversion|is_a|filter_var|str_replace) expects .*, mixed given#'
+        - '#Parameter \#[0-9]+ \$locale of function setlocale expects.*#'
+        - '#Parameter \#[0-9]+ .* of function (method_exists|property_exists|is_subclass_of) expects .*, mixed given#'
+        - '#Binary operation "\|" between mixed and .* results in an error#'
+        - '#Instanceof between mixed and mixed results in an error#'
+        - '#Cannot access constant class on mixed#'
+        - '#Parameter \#[0-9]+ \.\.\.\$values of function sprintf expects .*, (mixed|Closure) given#'
+        - '#Cannot cast mixed to string#'
+        # Unavoidable with static method resolution
+        - '#Call to an undefined static method#'
+        - '#Method .* has parameter \$[a-zA-Z0-9]+ with no value type specified in iterable type array#'
+        - '#Parameter \#[0-9]+ \$pattern of function preg_match expects string, mixed given#'
+        # Optional debugging helper
+        - '#Used function ray not found#'
