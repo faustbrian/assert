@@ -10,6 +10,9 @@
 namespace Cline\Assert\Exceptions;
 
 use Cline\Assert\Exceptions\AssertionFailedException;
+use Facade\IgnitionContracts\BaseSolution;
+use Facade\IgnitionContracts\ProvidesSolution;
+use Facade\IgnitionContracts\Solution;
 
 use function is_int;
 use function is_numeric;
@@ -25,7 +28,7 @@ use function is_string;
  *
  * @author Brian Faust <brian@cline.sh>
  */
-abstract class InvalidArgumentException extends \InvalidArgumentException implements AssertionFailedException
+abstract class InvalidArgumentException extends \InvalidArgumentException implements AssertionFailedException, ProvidesSolution
 {
     /**
      * Create a new assertion failure exception.
@@ -88,5 +91,17 @@ abstract class InvalidArgumentException extends \InvalidArgumentException implem
     public function getConstraints(): array
     {
         return $this->constraints;
+    }
+
+    public function getSolution(): Solution
+    {
+        /** @var BaseSolution $solution */
+        $solution = BaseSolution::create('Review package usage and configuration.');
+
+        return $solution
+            ->setSolutionDescription('Exception: '.$this->getMessage())
+            ->setDocumentationLinks([
+                'Package documentation' => 'https://github.com/cline/assert',
+            ]);
     }
 }
