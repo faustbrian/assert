@@ -1,20 +1,22 @@
 ## Table of Contents
 
-1. Overview (`docs/README.md`)
-2. Array Assertions (`docs/array-assertions.md`)
-3. Assertion Chains (`docs/assertion-chains.md`)
-4. Boolean Assertions (`docs/boolean-assertions.md`)
-5. Comparison Assertions (`docs/comparison-assertions.md`)
-6. Custom Assertions (`docs/custom-assertions.md`)
-7. Expect Api (`docs/expect-api.md`)
-8. Filesystem Assertions (`docs/filesystem-assertions.md`)
-9. Lazy Assertions (`docs/lazy-assertions.md`)
-10. Null Empty Assertions (`docs/null-empty-assertions.md`)
-11. Numeric Assertions (`docs/numeric-assertions.md`)
-12. Object Assertions (`docs/object-assertions.md`)
-13. String Assertions (`docs/string-assertions.md`)
-14. Type Assertions (`docs/type-assertions.md`)
-15. Validation Assertions (`docs/validation-assertions.md`)
+1. [Overview](#doc-docs-readme) (`docs/README.md`)
+2. [Array Assertions](#doc-docs-array-assertions) (`docs/array-assertions.md`)
+3. [Assertion Chains](#doc-docs-assertion-chains) (`docs/assertion-chains.md`)
+4. [Boolean Assertions](#doc-docs-boolean-assertions) (`docs/boolean-assertions.md`)
+5. [Comparison Assertions](#doc-docs-comparison-assertions) (`docs/comparison-assertions.md`)
+6. [Custom Assertions](#doc-docs-custom-assertions) (`docs/custom-assertions.md`)
+7. [Expect Api](#doc-docs-expect-api) (`docs/expect-api.md`)
+8. [Filesystem Assertions](#doc-docs-filesystem-assertions) (`docs/filesystem-assertions.md`)
+9. [Lazy Assertions](#doc-docs-lazy-assertions) (`docs/lazy-assertions.md`)
+10. [Null Empty Assertions](#doc-docs-null-empty-assertions) (`docs/null-empty-assertions.md`)
+11. [Numeric Assertions](#doc-docs-numeric-assertions) (`docs/numeric-assertions.md`)
+12. [Object Assertions](#doc-docs-object-assertions) (`docs/object-assertions.md`)
+13. [String Assertions](#doc-docs-string-assertions) (`docs/string-assertions.md`)
+14. [Type Assertions](#doc-docs-type-assertions) (`docs/type-assertions.md`)
+15. [Validation Assertions](#doc-docs-validation-assertions) (`docs/validation-assertions.md`)
+<a id="doc-docs-readme"></a>
+
 Assert is a comprehensive assertion library for PHP 8.4+ that enables robust validation and preconditions throughout your code.
 
 ## Installation
@@ -141,10 +143,12 @@ Assert::that($user->email, null, 'user.email')
 
 ## Next Steps
 
-- [Expect API](./expect-api.md) - Jest/Pest-style fluent expectations
-- [Assertion Chains](./assertion-chains.md) - Fluent API usage
-- [Lazy Assertions](./lazy-assertions.md) - Batch validation patterns
-- [String Assertions](./string-assertions.md) - String validation
+- [Expect API](#doc-docs-expect-api) - Jest/Pest-style fluent expectations
+- [Assertion Chains](#doc-docs-assertion-chains) - Fluent API usage
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Batch validation patterns
+- [String Assertions](#doc-docs-string-assertions) - String validation
+
+<a id="doc-docs-array-assertions"></a>
 
 Array assertions validate arrays, collections, and array-accessible objects.
 
@@ -334,9 +338,11 @@ Assert::that($data['user'])
 
 ## Next Steps
 
-- [Type Assertions](./type-assertions.md) - Type checking
-- [Null and Empty Assertions](./null-empty-assertions.md) - Empty array checks
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple conditions
+- [Type Assertions](#doc-docs-type-assertions) - Type checking
+- [Null and Empty Assertions](#doc-docs-null-empty-assertions) - Empty array checks
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple conditions
+
+<a id="doc-docs-assertion-chains"></a>
 
 Assertion chains provide a fluent interface for validating values with multiple assertions.
 
@@ -604,9 +610,11 @@ Assert::that($name)
 
 ## Next Steps
 
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields
-- [Custom Assertions](./custom-assertions.md) - Add custom rules
-- [Getting Started](./README.md) - Core concepts
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple fields
+- [Custom Assertions](#doc-docs-custom-assertions) - Add custom rules
+- [Getting Started](#doc-docs-readme) - Core concepts
+
+<a id="doc-docs-boolean-assertions"></a>
 
 Boolean assertions validate boolean values and truthiness.
 
@@ -747,9 +755,11 @@ Assertion::true($isVerified, 'Email address must be verified before proceeding')
 
 ## Next Steps
 
-- [Type Assertions](./type-assertions.md) - Type checking
-- [Comparison Assertions](./comparison-assertions.md) - Comparing values
-- [Custom Assertions](./custom-assertions.md) - Custom validators
+- [Type Assertions](#doc-docs-type-assertions) - Type checking
+- [Comparison Assertions](#doc-docs-comparison-assertions) - Comparing values
+- [Custom Assertions](#doc-docs-custom-assertions) - Custom validators
+
+<a id="doc-docs-comparison-assertions"></a>
 
 Comparison assertions validate equality and identity between values.
 
@@ -896,9 +906,11 @@ Assert::that($value)
 
 ## Next Steps
 
-- [Numeric Assertions](./numeric-assertions.md) - Range comparisons
-- [Type Assertions](./type-assertions.md) - Type validation
-- [Array Assertions](./array-assertions.md) - Array comparisons
+- [Numeric Assertions](#doc-docs-numeric-assertions) - Range comparisons
+- [Type Assertions](#doc-docs-type-assertions) - Type validation
+- [Array Assertions](#doc-docs-array-assertions) - Array comparisons
+
+<a id="doc-docs-custom-assertions"></a>
 
 Create custom validation rules using the `satisfy()` assertion and custom assertion classes.
 
@@ -1130,9 +1142,11 @@ function assertUsername($value) {
 
 ## Next Steps
 
-- [Lazy Assertions](./lazy-assertions.md) - Combine multiple validations
-- [Assertion Chains](./assertion-chains.md) - Chain custom rules
-- [Getting Started](./README.md) - Core concepts
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Combine multiple validations
+- [Assertion Chains](#doc-docs-assertion-chains) - Chain custom rules
+- [Getting Started](#doc-docs-readme) - Core concepts
+
+<a id="doc-docs-expect-api"></a>
 
 The `expect()` API provides a Jest/Pest-style fluent interface for assertions, ideal for testing and validation with a natural, readable syntax.
 
@@ -1491,9 +1505,11 @@ expect($data)->ray();
 
 ## Next Steps
 
-- [Getting Started](./README.md) - Basic assertion concepts
-- [Assertion Chains](./assertion-chains.md) - Fluent API usage
-- [Custom Assertions](./custom-assertions.md) - Create custom rules
+- [Getting Started](#doc-docs-readme) - Basic assertion concepts
+- [Assertion Chains](#doc-docs-assertion-chains) - Fluent API usage
+- [Custom Assertions](#doc-docs-custom-assertions) - Create custom rules
+
+<a id="doc-docs-filesystem-assertions"></a>
 
 File system assertions validate files, directories, and file permissions.
 
@@ -1669,9 +1685,11 @@ public function setupCache(): void
 
 ## Next Steps
 
-- [String Assertions](./string-assertions.md) - Path validation
-- [Custom Assertions](./custom-assertions.md) - Custom file validators
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple paths
+- [String Assertions](#doc-docs-string-assertions) - Path validation
+- [Custom Assertions](#doc-docs-custom-assertions) - Custom file validators
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple paths
+
+<a id="doc-docs-lazy-assertions"></a>
 
 Lazy assertions collect multiple validation errors before throwing, allowing you to report all validation failures at once.
 
@@ -1890,9 +1908,11 @@ Avoid when:
 
 ## Next Steps
 
-- [Assertion Chains](./assertion-chains.md) - Single-field validation
-- [Getting Started](./README.md) - Basic concepts
-- [Custom Assertions](./custom-assertions.md) - Custom validation rules
+- [Assertion Chains](#doc-docs-assertion-chains) - Single-field validation
+- [Getting Started](#doc-docs-readme) - Basic concepts
+- [Custom Assertions](#doc-docs-custom-assertions) - Custom validation rules
+
+<a id="doc-docs-null-empty-assertions"></a>
 
 Assertions for validating null values, empty values, and blank strings.
 
@@ -2073,9 +2093,11 @@ Assert::that($name)
 
 ## Next Steps
 
-- [Type Assertions](./type-assertions.md) - Type validation
-- [String Assertions](./string-assertions.md) - String validation
-- [Assertion Chains](./assertion-chains.md) - Using nullOr()
+- [Type Assertions](#doc-docs-type-assertions) - Type validation
+- [String Assertions](#doc-docs-string-assertions) - String validation
+- [Assertion Chains](#doc-docs-assertion-chains) - Using nullOr()
+
+<a id="doc-docs-numeric-assertions"></a>
 
 Numeric assertions validate numbers and perform comparison operations.
 
@@ -2257,9 +2279,11 @@ Assert::that($value)
 
 ## Next Steps
 
-- [Type Assertions](./type-assertions.md) - Type checking for integers, floats
-- [Comparison Assertions](./comparison-assertions.md) - Equality operations
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields
+- [Type Assertions](#doc-docs-type-assertions) - Type checking for integers, floats
+- [Comparison Assertions](#doc-docs-comparison-assertions) - Equality operations
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple fields
+
+<a id="doc-docs-object-assertions"></a>
 
 Object assertions validate objects, classes, interfaces, and their properties/methods.
 
@@ -2432,9 +2456,11 @@ Assert::that($handler)
 
 ## Next Steps
 
-- [Type Assertions](./type-assertions.md) - Basic type checking
-- [Custom Assertions](./custom-assertions.md) - Custom object validation
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple properties
+- [Type Assertions](#doc-docs-type-assertions) - Basic type checking
+- [Custom Assertions](#doc-docs-custom-assertions) - Custom object validation
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple properties
+
+<a id="doc-docs-string-assertions"></a>
 
 String assertions validate and check string values for various conditions including length, patterns, and content.
 
@@ -2602,9 +2628,11 @@ Assertion::minLength($text, 10, null, null, 'ISO-8859-1');
 
 ## Next Steps
 
-- [Validation Assertions](./validation-assertions.md) - Email, URL, UUID validation
-- [Type Assertions](./type-assertions.md) - Type checking
-- [Assertion Chains](./assertion-chains.md) - Fluent API
+- [Validation Assertions](#doc-docs-validation-assertions) - Email, URL, UUID validation
+- [Type Assertions](#doc-docs-type-assertions) - Type checking
+- [Assertion Chains](#doc-docs-assertion-chains) - Fluent API
+
+<a id="doc-docs-type-assertions"></a>
 
 Type assertions verify that values match expected PHP types.
 
@@ -2804,9 +2832,11 @@ Assert::that($_POST['quantity'])
 
 ## Next Steps
 
-- [Numeric Assertions](./numeric-assertions.md) - Number validation
-- [Object Assertions](./object-assertions.md) - Object validation
-- [Array Assertions](./array-assertions.md) - Array validation
+- [Numeric Assertions](#doc-docs-numeric-assertions) - Number validation
+- [Object Assertions](#doc-docs-object-assertions) - Object validation
+- [Array Assertions](#doc-docs-array-assertions) - Array validation
+
+<a id="doc-docs-validation-assertions"></a>
 
 Validation assertions check common data formats like emails, URLs, UUIDs, and IP addresses.
 
@@ -3025,6 +3055,6 @@ Assertion::regex($email, '/^[^@]+@[^@]+\.[^@]+$/');
 
 ## Next Steps
 
-- [String Assertions](./string-assertions.md) - String format validation
-- [Custom Assertions](./custom-assertions.md) - Create custom validators
-- [Lazy Assertions](./lazy-assertions.md) - Validate multiple fields
+- [String Assertions](#doc-docs-string-assertions) - String format validation
+- [Custom Assertions](#doc-docs-custom-assertions) - Create custom validators
+- [Lazy Assertions](#doc-docs-lazy-assertions) - Validate multiple fields
